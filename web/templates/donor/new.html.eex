@@ -1,0 +1,31 @@
+<h1>New Donor</h1>
+
+<%= form_for @changeset, donor_path(@conn, :create), fn f -> %>
+
+  <%= if f.errors != [] do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please checkthe errors below:</p>
+      <ul>
+        <%= for {attr, message} <- f.errors do %>
+          <li><%= humanize(attr) %> <%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="form-group">
+    <%= text_input f, :title, placeholder: "Title", class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= text_input f, :first_name, placeholder: "First Name", class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= text_input f, :middle_name, placeholder: "Middle Name", class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= text_input f, :last_name, placeholder: "Last Name", class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= text_input f, :name_ext, placeholder: "Extension (Jr., II, III, etc.)", class: "form-control" %>
+  </div>
+  <%= submit "Create Donor", class: "btn btn-primary" %>
+<% end %>

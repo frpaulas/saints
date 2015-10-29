@@ -1,0 +1,7 @@
+%h1 Donor Listing
+
+%table.table
+  - for donor <- @donors do 
+    %tr
+      %td = render "donor.html", donor: donor
+      %td = link "View", to: donor_path(@conn, :show, donor.id)
