@@ -6,9 +6,10 @@ defmodule Saints.Donor do
     field :first_name, :string      
     field :middle_name, :string     
     field :last_name, :string     
-    field :name_ext, :string      
+    field :name_ext, :string  
+    has_many :address, Saints.Address
+    has_many :phone, Saints.Phone    
     
-    timestamps
   end
 
   def changeset(model, params \\ :empty) do

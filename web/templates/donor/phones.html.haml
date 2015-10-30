@@ -1,0 +1,7 @@
+%h3 Get In Touch
+
+%table.table
+  - for phone <- @donor.phone do 
+    %tr
+      %td = "#{phone.number}"
+      %td = "#{phone.of_type}"

@@ -10,7 +10,9 @@ defmodule Saints.DonorController do
   end
 
   def show(conn, %{"id" => donor_id}) do
-    donor = Repo.get(Saints.Donor, donor_id)
+    donor = Repo.one( from d in Saints.Donor, 
+                      where: d.id == ^donor_id, 
+                      preload: [:address, :phone])
     render conn, "show.html", donor: donor
   end
 
