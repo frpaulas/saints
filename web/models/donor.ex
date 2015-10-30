@@ -8,7 +8,8 @@ defmodule Saints.Donor do
     field :last_name, :string     
     field :name_ext, :string  
     has_many :address, Saints.Address
-    has_many :phone, Saints.Phone    
+    has_many :phone, Saints.Phone 
+    has_many :note, Saints.Note   
     
   end
 
