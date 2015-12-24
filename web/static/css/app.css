@@ -78,3 +78,71 @@ form.link, form.button {
     border-bottom: 0;
   }
 }
+
+button.delete {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  vertical-align: baseline;
+  font-family: inherit;
+  color: inherit;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+}
+
+button {
+  outline: none;
+  font-size: 100%;
+}
+
+ul {
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.2em;
+  /* font-weight: bold; */
+  text-align: left;
+}
+
+li {
+  background: #61a1bc;
+  background: #fff;
+  height: 25px;
+  position: relative;
+  padding: 15px 30px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+li:hover {
+  background: #fcfcfc;
+  /* background: #61a1bc; */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+li .memo {
+  position: absolute;
+  top: 0px;
+  left: 20px;
+}
+
+li .delete {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  border: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+
+}
+li .delete:after {
+  content: '✖';
+  color: #e35885;
+}
+

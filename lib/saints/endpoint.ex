@@ -1,7 +1,6 @@
 defmodule Saints.Endpoint do
   use Phoenix.Endpoint, otp_app: :saints
 
-  socket "/socket", Saints.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -36,4 +35,5 @@ defmodule Saints.Endpoint do
     signing_salt: "BOurGyg1"
 
   plug Saints.Router
+  socket "/socket", Saints.UserSocket
 end

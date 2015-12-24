@@ -35,12 +35,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :saints, Saints.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "frpaulas",
-  password: "nwmnbarafundle1570",
+  username: "postgres",
+  password: "",
   database: "nwdb",
-  hostname: "nwmndb.cmt4sddzitto.us-east-1.rds.amazonaws.com",
-  # username: "postgres",
-  # password: "",
-  # database: "nwdb",
-  # hostname: "localhost",
+  hostname: "localhost",
   pool_size: 10

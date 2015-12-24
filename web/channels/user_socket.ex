@@ -3,6 +3,7 @@ defmodule Saints.UserSocket do
 
   ## Channels
   # channel "rooms:*", Saints.RoomChannel
+  channel "notes:*", Saints.NoteChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
