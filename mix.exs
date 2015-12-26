@@ -3,7 +3,7 @@ defmodule Saints.Mixfile do
 
   def project do
     [app: :saints,
-     version: "0.0.0",
+     version: "0.0.1",
      elixir: "~> 1.0",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
@@ -37,7 +37,8 @@ defmodule Saints.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:phoenix_haml, "~> 0.2.0"},
       {:cowboy, "~> 1.0"},
-      {:comeonin, "~> 1.0"}
+      {:comeonin, "~> 1.0"},
+      {:scrivener, "~> 1.0"}
     ]
   end
 

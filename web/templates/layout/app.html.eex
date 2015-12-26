@@ -26,8 +26,7 @@
             <li><%= link "log in", to: session_path(@conn, :new) %></li>
           <% end %>
         </ol>
-
-        <span class="logo"></span>
+        <%= Saints.DonorView.alphabet_filter %>
       </div>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

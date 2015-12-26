@@ -21,7 +21,7 @@ defmodule Saints.Web do
       use Ecto.Model
 
       import Ecto.Changeset
-      import Ecto.Query, only: [from: 1, from: 2]
+      import Ecto.Query
     end
   end
 
@@ -31,7 +31,7 @@ defmodule Saints.Web do
 
       alias Saints.Repo
       import Ecto.Model
-      import Ecto.Query, only: [from: 1, from: 2]
+      import Ecto.Query
 
       import Saints.Router.Helpers
     end

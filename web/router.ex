@@ -18,10 +18,12 @@ defmodule Saints.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/donors/alpha/:letter", DonorController, :alphaIndex
 
     resources "/users", UserController
     resources "/session", SessionController, only: [:new, :create, :delete]
     resources "/donors", DonorController
+
   end
 
   # Other scopes may use custom stacks.

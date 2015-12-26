@@ -4,9 +4,32 @@ defmodule Saints.DonorController do
   plug :authenticate when action in [:index, :show, :new, :create]
   alias Saints.Donor
 
-  def index(conn, _params) do
-    donors = Repo.all(Saints.Donor)
-    render conn, "index.html", donors: donors
+  def index(conn, params) do
+    page
+      = Saints.Donor
+      |> where([d], true)
+      |> order_by([d], [asc: d.last_name, asc: d.first_name])
+      |> Repo.paginate(page: params["page"])
+    render conn, "index.html", 
+      donors:         page.entries,
+      page_number:    page.page_number,
+      page_size:      page.page_size,
+      total_pages:    page.total_pages,
+      total_entries:  page.total_entries
+  end
+
+  def alphaIndex(conn, params) do
+    page
+      = Saints.Donor
+      |> where([d], like(d.last_name, ^("#{params["letter"]}%")) )
+      |> order_by([d], [asc: d.last_name, asc: d.first_name])
+      |> Repo.paginate(page: params["page"])
+    render conn, "index.html", 
+      donors:         page.entries,
+      page_number:    page.page_number,
+      page_size:      page.page_size,
+      total_pages:    page.total_pages,
+      total_entries:  page.total_entries
   end
 
   def show(conn, %{"id" => donor_id}) do

@@ -79,6 +79,32 @@ form.link, form.button {
   }
 }
 
+.alphabetDonors {
+  background: #a9e2f3;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f1f1;
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scrolling if the sidenav has too much */
+  position: absolute;
+  top: 80px;
+  right: 0;
+  width: 100px;
+  border: 3px solid #73AD21;
+}
+.alphabetDonors li{
+  padding: 0;
+  text-align: center;
+}
+.pagination {
+  width: 100%;
+  text-align: left;
+}
+.pagination td{
+  padding: 0px 10px 0px 10px;
+}
+
 button.delete {
   margin: 0;
   padding: 0;
@@ -144,15 +170,6 @@ li .delete {
 li .delete:after {
   content: '✖';
   color: #e35885;
-}
-li:hover .delete {
-  display: block;
-}
-
-li .delete:hover {
-  -webkit-transform: scale(1.4);
-  -ms-transform: scale(1.4);
-  transform: scale(1.4);
 }
 
 
