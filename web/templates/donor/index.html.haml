@@ -5,10 +5,11 @@
     %td = "Page Size: #{@page_size}"
     %td = "Total Pages: #{@total_pages}"
     %td = "Total Entries: #{@total_entries}"
-= pagination_number("First", 1)
-= pagination_number("Next", @page_number+1)
-= pagination_number("Previous", @page_number-1)
-= pagination_number("Last", @total_pages)
+= pagination_number("<First> ", 1)
+= pagination_number("<Next> ", @page_number+1)
+= pagination_number("<Previous> ", @page_number-1)
+= pagination_number("<Last> ", @total_pages)
+= new_donor(@conn)
 %table.table
   - for donor <- @donors do 
     %tr

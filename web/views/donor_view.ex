@@ -8,6 +8,10 @@ defmodule Saints.DonorView do
       " "
   end
 
+  def new_donor(conn) do
+    link "<New Donor> ", [to: donor_path(conn, :new)]
+  end
+
   def pagination_links(page) do
     link("2", [to: "?page=2"])
   end

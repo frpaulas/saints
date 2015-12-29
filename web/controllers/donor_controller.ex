@@ -75,12 +75,12 @@ defmodule Saints.DonorController do
     end
   end
 
-  def create(conn, %{"user" => donor_params}) do
+  def create(conn, %{"donor" => donor_params}) do
     changeset = Donor.changeset(%Donor{}, donor_params)
     case Repo.insert(changeset) do
       {:ok, donor} ->
         conn
-        |> put_flash(:info, "#{donor.name} created")
+        |> put_flash(:info, "#{donor.first_name} #{donor.last_name} created")
         |> redirect(to: donor_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
