@@ -20,10 +20,10 @@ defmodule Saints.DonorView do
     if n > 0, do: n, else: 1
   end
 
-  def alphabet_filter do
+  def alphabet_filter(conn) do
     links = ~w(A B C D E F G H I J K L M N O P Q R S T U V W X Y Z)
     |> Enum.map( fn(letter)->
-        content_tag(:li, link("#{letter}", [to: "/donors/alpha/#{letter}"]))
+        content_tag(:li, link("#{letter}", [to: donor_path(conn, :alphaIndex, letter)]))
       end)
 
     content_tag(:ul, links, [class: "alphabetDonors"])

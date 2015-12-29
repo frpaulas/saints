@@ -14,5 +14,5 @@
     %tr
       %td = render "donor.html", donor: donor
       %td = link "View", to: donor_path(@conn, :show, donor.id)
-      %td = "Edit"
+      %td = link "Edit", to: donor_path(@conn, :edit, donor.id)
       %td = "Delete"

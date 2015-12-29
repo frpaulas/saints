@@ -1,3 +1,4 @@
+require IEx
 defmodule Saints.DonorController do
   use Saints.Web, :controller
   import Saints.Authenticate, only: [authenticate: 2]
@@ -35,13 +36,43 @@ defmodule Saints.DonorController do
   def show(conn, %{"id" => donor_id}) do
     donor = Repo.one( from d in Saints.Donor, 
                       where: d.id == ^donor_id, 
-                      preload: [:address, :phone, :note])
+                      preload: [:address, :phone, :note]
+                    )
     render conn, "show.html", donor: donor
+  end
+
+  def edit(conn, %{"id" => donor_id}) do
+    changeset = 
+      Repo.one( from d in Saints.Donor,
+                where: d.id == ^donor_id,
+                preload: [:address, :phone, :note]
+              )
+      |> Donor.changeset
+    render conn, "edit.html", changeset: changeset
   end
 
   def new(conn, _params) do
     changeset = Donor.changeset %Donor{}
     render conn, "new.html", changeset: changeset
+  end
+
+  def update(conn, %{"id"=> donor_id, "donor" => donor_params}) do
+#  def update(conn, params) do
+#    IEx.pry
+    donor = Repo.one( from d in Saints.Donor, 
+                      where: d.id == ^donor_id, 
+                      preload: [:address, :phone, :note]
+                    )
+    changeset = Donor.changeset(donor, donor_params)
+    case Repo.update(changeset) do
+      {:ok, donor} ->
+        conn 
+          |> put_flash(:info, "Donor updated successfully.")
+          |> redirect(to: donor_path(conn, :show, donor))
+      {:error, changeset} ->
+        conn 
+          |> render "edit.html", changeset: changeset
+    end
   end
 
   def create(conn, %{"user" => donor_params}) do
