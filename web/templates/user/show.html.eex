@@ -1,0 +1,2 @@
+<h> Showing Users </h>
+<%= render "user.html", user: @user %>

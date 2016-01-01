@@ -1,0 +1,26 @@
+<h3> Mail To </h3>
+
+<table class="table">
+  <tr>
+    <th>Location</th>
+    <th>Address</th>
+    <th>City</th>
+    <th>State</th>
+    <th>Zip</th>
+    <th>Country</th>
+  </tr>
+  <%= for address <- @donor.address do %>
+    <tr>
+      <td> <%= address.location %> </td>
+      <td> 
+        <%= address.address1 %>
+        </br>
+        <%= address.address2 %>
+      </td>
+      <td> <%= address.city %> </td>
+      <td> <%= address.state %> </td>
+      <td> <%= address.zip %> </td>
+      <td> <%= address.country %> </td>
+    </tr>
+  <% end %>
+</table>

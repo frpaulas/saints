@@ -1,0 +1,2 @@
+<b><%= @user.name %>
+<%= " #{@user.email} #{@user.phone}" %>

@@ -1,0 +1,14 @@
+<h3> Get In Touch </h3>
+
+<table class="table">
+  <tr>
+    <th> Contact Point </th>
+    <th> Type </th>
+  </tr>
+  <%= for phone <- @donor.phone do %>
+    <tr>
+      <td> <%= phone.number %> </td>
+      <td> <%= phone.of_type %> </td>
+    </tr>
+  <% end %>
+</table>

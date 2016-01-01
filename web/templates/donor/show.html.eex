@@ -1,0 +1,7 @@
+<h1> Showing Donors </h1>
+<div id="donor_data" data-index="<%=@donor.id%>">
+  <%= render "donor.html", donor: @donor %>
+  <%= render "notes.html", donor: @donor %>
+  <%= render "phones.html", donor: @donor %>
+  <%= render "address.html", donor: @donor %>
+</div>

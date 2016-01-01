@@ -1,7 +1,0 @@
-%h1 User Listing
-
-%table.table
-  - for user <- @users do
-    %tr
-      %td = render "user.html", user: user
-      %td = link "View", to: user_path(@conn, :show, user.id)
