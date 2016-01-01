@@ -1,5 +1,6 @@
 defmodule Saints.Donor do
   use Saints.Web, :model
+
   schema "donor" do
     # field :donor_id, :integer     
     field :title, :string     
@@ -16,6 +17,9 @@ defmodule Saints.Donor do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, ~w(last_name), ~w(title first_name middle_name last_name name_ext))
+    |> cast_assoc(:address, require: true)
+    |> cast_assoc(:phone, require: true)
+    |> cast_assoc(:note, require: true)
   end
 
 end

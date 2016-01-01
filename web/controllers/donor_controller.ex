@@ -1,4 +1,3 @@
-require IEx
 defmodule Saints.DonorController do
   use Saints.Web, :controller
   import Saints.Authenticate, only: [authenticate: 2]
@@ -57,8 +56,6 @@ defmodule Saints.DonorController do
   end
 
   def update(conn, %{"id"=> donor_id, "donor" => donor_params}) do
-#  def update(conn, params) do
-#    IEx.pry
     donor = Repo.one( from d in Saints.Donor, 
                       where: d.id == ^donor_id, 
                       preload: [:address, :phone, :note]

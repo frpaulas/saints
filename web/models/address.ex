@@ -2,13 +2,13 @@ defmodule Saints.Address do
   use Saints.Web, :model
   schema "address" do
     # field :donor_id, :integer     
-    field :location, :string     
-    field :address1, :string      
-    field :address2, :string     
-    field :city, :string     
-    field :state, :string      
-    field :zip, :string      
-    field :country, :string      
+    field :location, :string, default: "home"
+    field :address1, :string, default: ""
+    field :address2, :string, default: ""
+    field :city, :string, default: ""
+    field :state, :string, default: ""
+    field :zip, :string, default: ""
+    field :country, :string, default: ""
     belongs_to :donor, Saints.Donor
     
   end

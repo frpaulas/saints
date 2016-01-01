@@ -1,7 +1,6 @@
 <h1>Edit <%= full_name(@changeset.model) %></h1>
-
 <%= form_for @changeset, donor_path(@conn, :update, @changeset.model.id), fn( f )-> %>
-
+  <%# IEx.pry %>
   <%= if f.errors != [] do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please checkthe errors below:</p>
@@ -27,6 +26,47 @@
   <div class="form-group">
     <%= text_input f, :name_ext, placeholder: "Extension (Jr., II, III, etc.)", class: "form-control" %>
   </div>
+
+  <%= inputs_for f, :phone, fn(p) -> %>
+    <div class="form-group">
+      <%= text_input p, :number, placeholder: "Phone or Email", class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= text_input p, :of_type, placeholder: "Of Type", class: "form-control" %>
+    </div>
+  <% end %>
+
+  <%= inputs_for f, :note, fn(p) -> %>
+    <div class="form-group">
+      <%= text_input p, :memo, placeholder: "Memo", class: "form-control" %>
+    </div>
+  <% end %>
+
+  <%= inputs_for f, :address, fn(addr) -> %>
+    <div class="form-group">
+      <%= text_input addr, :location, placeholder: "Home or other", class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= text_input addr, :address1, placeholder: "Address", class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= text_input addr, :address2, placeholder: "Address", class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= text_input addr, :city, placeholder: "City", class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= text_input addr, :state, placeholder: "State/Provence/Region", class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= text_input addr, :zip, placeholder: "Postal Code", class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= text_input addr, :country, placeholder: "Country", class: "form-control" %>
+    </div>
+  <% end %>
+
+
   <%= submit "Submit Changes", class: "btn btn-primary" %>
 <% end %>
 
