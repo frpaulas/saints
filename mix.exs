@@ -4,7 +4,7 @@ defmodule Saints.Mixfile do
   def project do
     [app: :saints,
      version: "0.0.1",
-     elixir: "~> 1.0",
+     elixir: "~> 1.1.1",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -18,8 +18,8 @@ defmodule Saints.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Saints, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex, :comeonin]]
+     applications: [:postgrex, :ecto, :phoenix, :phoenix_html, :cowboy, :logger,
+                    :phoenix_ecto, :comeonin]]
   end
 
   # Specifies which paths to compile per environment.
@@ -30,18 +30,18 @@ defmodule Saints.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [ {:phoenix, "~> 1.0.3"},
+    [ {:postgrex, ">= 0.0.0"},
+      {:ecto, "~> 1.1"},
+      {:phoenix, "~> 1.1.1"},
       {:phoenix_ecto, "~> 1.1"},
-      {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.1"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
-      {:phoenix_haml, "~> 0.2.0"},
+#      {:phoenix_haml, ">= 0.2.0"},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 1.0"},
       {:scrivener, "~> 1.0"}
     ]
   end
-
   # Aliases are shortcut or tasks specific to the current project.
   # For example, to create, migrate and run the seeds file at once:
   #
