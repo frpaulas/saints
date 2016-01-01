@@ -1,4 +1,6 @@
 <h1>Edit <%= full_name(@changeset.model) %></h1>
+<%= donor_view_button @conn, @changeset.model %>
+
 <%= form_for @changeset, donor_path(@conn, :update, @changeset.model.id), fn( f )-> %>
   <%# IEx.pry %>
   <%= if f.errors != [] do %>
@@ -35,6 +37,7 @@
       <%= text_input p, :of_type, placeholder: "Of Type", class: "form-control" %>
     </div>
   <% end %>
+
 
   <%= inputs_for f, :note, fn(p) -> %>
     <div class="form-group">

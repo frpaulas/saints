@@ -8,6 +8,15 @@ defmodule Saints.DonorView do
       " "
   end
 
+  def donor_view_button(conn, donor) do
+    button "view", to: donor_path(conn, :show, donor.id), method: :get
+  end
+
+  def donor_edit_button(conn, donor) do
+    button "edit", to: donor_path(conn, :edit, donor.id), method: :get
+    # link("edit", to: donor_path(conn, :edit, donor.id))
+  end
+
   def new_donor(conn) do
     link "<New Donor> ", [to: donor_path(conn, :new)]
   end
