@@ -13,7 +13,9 @@ defmodule Saints.DonorControllerTest do
       middle_name: "P",
       last_name: "Fudd",
       name_ext: "IV",
-
+      address: [],
+      phone: [],
+      note: []
     }
     Saints.Repo.insert(donor)
     query = from donor in Saints.Donor,

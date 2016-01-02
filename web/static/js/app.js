@@ -22,12 +22,11 @@ import "deps/phoenix_html/web/static/js/phoenix_html"
 import {Socket} from "deps/phoenix/web/static/js/phoenix"
 let socket = new Socket("/socket")
 socket.connect();
-let donor = document.getElementById('donor_data')
-,   donor_id = "notes:" + donor.getAttribute('data-index')
-,   channel = socket.channel(donor_id, {})
-,   elmDiv = document.getElementById('elm-main')
-,   initialState = {noteList: []} 
-,   elmApp = Elm.embed(Elm.NoteSaver, elmDiv, initialState)
+//let donor = document.getElementById('donor_data')
+//,   donor_id = "notes:" + donor.getAttribute('data-index')
+//,   channel = socket.channel(donor_id, {})
+let   elmDiv = document.getElementById('elm-main')
+,   elmApp = Elm.embed(Elm.ElmSaints, elmDiv)
 channel.join()
   .receive(
     "ok", notes => elmApp.ports.noteList.send(notes))

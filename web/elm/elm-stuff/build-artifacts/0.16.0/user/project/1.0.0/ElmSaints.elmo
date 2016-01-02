@@ -1,0 +1,151 @@
+Elm.ElmSaints = Elm.ElmSaints || {};
+Elm.ElmSaints.make = function (_elm) {
+   "use strict";
+   _elm.ElmSaints = _elm.ElmSaints || {};
+   if (_elm.ElmSaints.values) return _elm.ElmSaints.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp = Elm.StartApp.make(_elm),
+   $String = Elm.String.make(_elm),
+   $Task = Elm.Task.make(_elm);
+   var _op = {};
+   var fullNameText = function (d) {
+      return $Html.text(A2($String.join,
+      " ",
+      _U.list([d.title
+              ,d.first_name
+              ,d.middle_name
+              ,d.last_name
+              ,d.name_ext
+              ,"("
+              ,$Basics.toString(d.id)
+              ,")"])));
+   };
+   var oneDonor = F2(function (address,donor) {
+      return A2($Html.tr,
+      _U.list([]),
+      _U.list([A2($Html.td,
+      _U.list([]),
+      _U.list([fullNameText(donor)]))]));
+   });
+   var view = F2(function (address,model) {
+      return A2($Html.table,
+      _U.list([$Html$Attributes.$class("table")]),
+      _U.list([A2($Html.tbody,
+      _U.list([]),
+      A2($List.map,oneDonor(address),model))]));
+   });
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return {ctor: "_Tuple2",_0: model,_1: $Effects.none};
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = function () {
+      var donors = _U.list([{title: "The Rev."
+                            ,first_name: "Sam"
+                            ,last_name: "Abbott"
+                            ,id: 7008
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: "The Ven."
+                            ,first_name: "Jon"
+                            ,last_name: "Abboud"
+                            ,id: 7007
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: ""
+                            ,first_name: "Steve"
+                            ,last_name: "Abel"
+                            ,id: 7006
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: ""
+                            ,first_name: "Kim"
+                            ,last_name: "Abner"
+                            ,id: 7005
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: ""
+                            ,first_name: "Rosemarie"
+                            ,last_name: "Abrams"
+                            ,id: 7004
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: "The Rev."
+                            ,first_name: "Joseph"
+                            ,last_name: "Acanfora"
+                            ,id: 7003
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: ""
+                            ,first_name: "John & Betsy Acken,"
+                            ,last_name: "Sr"
+                            ,id: 7002
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: "The Rev."
+                            ,first_name: "Keith"
+                            ,last_name: "Acker"
+                            ,id: 7001
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: "The Rt. Rev."
+                            ,first_name: "Keith"
+                            ,last_name: "Ackerman"
+                            ,id: 7000
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: "The Rev."
+                            ,first_name: "Dennis"
+                            ,last_name: "Ackerson"
+                            ,id: 6999
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: "The Rev."
+                            ,first_name: "Josh"
+                            ,last_name: "Acton"
+                            ,id: 6998
+                            ,middle_name: ""
+                            ,name_ext: ""}
+                           ,{title: "The Rev."
+                            ,first_name: "Josh"
+                            ,last_name: "Acton"
+                            ,id: 6997
+                            ,middle_name: ""
+                            ,name_ext: ""}]);
+      return {ctor: "_Tuple2",_0: donors,_1: $Effects.none};
+   }();
+   var Donor = F6(function (a,b,c,d,e,f) {
+      return {id: a
+             ,title: b
+             ,first_name: c
+             ,middle_name: d
+             ,last_name: e
+             ,name_ext: f};
+   });
+   var app = $StartApp.start({init: init
+                             ,update: update
+                             ,view: view
+                             ,inputs: _U.list([])});
+   var main = app.html;
+   var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
+   app.tasks);
+   return _elm.ElmSaints.values = {_op: _op
+                                  ,app: app
+                                  ,Donor: Donor
+                                  ,init: init
+                                  ,main: main
+                                  ,NoOp: NoOp
+                                  ,update: update
+                                  ,view: view
+                                  ,oneDonor: oneDonor
+                                  ,fullNameText: fullNameText};
+};

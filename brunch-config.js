@@ -43,7 +43,7 @@ exports.config = {
       "deps/phoenix_html/web/static",
       "web/static",
       "test/static",
-      "web/elm/NoteSaver.elm"
+      "web/elm/ElmSaints.elm"
     ],
 
     // Where to compile files to
@@ -54,7 +54,7 @@ exports.config = {
   plugins: {
     elmBrunch: {
       elmFolder: 'web/elm',
-      mainModules: ['NoteSaver.elm'],
+      mainModules: ['ElmSaints.elm'],
       outputFolder: '../static/vendor'
     },
     babel: {
