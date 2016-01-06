@@ -1,7 +1,8 @@
 defmodule Saints.DonorController do
   use Saints.Web, :controller
   import Saints.Authenticate, only: [authenticate: 2]
-  plug :authenticate when action in [:index, :show, :new, :create]
+#  plug :authenticate when action in [:index, :show, :new, :create]
+  plug :authenticate when action in [:show, :new, :create]
   alias Saints.Donor
 
   def index(conn, params) do
@@ -10,12 +11,17 @@ defmodule Saints.DonorController do
       |> where([d], true)
       |> order_by([d], [asc: d.last_name, asc: d.first_name])
       |> Repo.paginate(page: params["page"])
-    render conn, "index.html", 
-      donors:         page.entries,
-      page_number:    page.page_number,
-      page_size:      page.page_size,
-      total_pages:    page.total_pages,
-      total_entries:  page.total_entries
+    case conn.private.phoenix_format do
+      "html" ->
+        render conn, "index.html", 
+          donors:         page.entries,
+          page_number:    page.page_number,
+          page_size:      page.page_size,
+          total_pages:    page.total_pages,
+          total_entries:  page.total_entries
+      "json" ->
+        render conn, "index.json", donors: page.entries
+    end
   end
 
   def alphaIndex(conn, params) do

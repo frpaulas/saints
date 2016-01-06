@@ -2,6 +2,18 @@ defmodule Saints.DonorView do
   use Saints.Web, :view
   alias Saints.Donor
 
+  def render("index.json", %{donors: donors}) do
+    donors |> Enum.map( fn(d)-> 
+      %{  id: d.id,
+          title: d.title,
+          firstName: d.first_name,
+          middleName: d.middle_name,
+          lastName: d.last_name,
+          nameExt: d.name_ext
+      }
+    end) 
+  end
+  
   def full_name(donor) do
     Regex.replace ~r/\s\s/, 
       "#{donor.title} #{donor.first_name} #{donor.middle_name} #{donor.last_name} #{donor.name_ext}",
