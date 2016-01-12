@@ -12,14 +12,20 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_info(:after_join, socket) do
-    donors = (from s in Saints.Donor, order_by: [asc: s.id]) |> Repo.all
+    page 
+      = ( from s in Saints.Donor, 
+          order_by: [asc: s.last_name, asc: s.first_name]
+        ) 
+      |> Repo.paginate(page: 1)
 
-#    donors 
-#      = Saints.Donor
-#      |> where([d], true)
-#      |> order_by([d], [asc: d.last_name, asc: d.first_name])
-#      |> Repo.paginate(page: params[:page])
-#
+    donors = # make it look nice for Elm
+      %{  totalPages: page.total_pages,
+          totalEntries: page.total_entries,
+          pageSize: page.page_size,
+          pageNumber: page.page_number,
+          donors: page.entries
+      }
+
     push socket, "set_donors", %{donors: donors}
     {:noreply, socket}
   end

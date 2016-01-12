@@ -42,11 +42,24 @@ type alias Donor =
   , nameExt: String
   }
 
-type alias Model = List Donor
+type alias Model = 
+  { totalPages: Int
+  , totalEntries: Int
+  , pageSize: Int
+  , pageNumber: Int
+  , donors: List Donor
+  }
 
 init: (Model, Effects Action)
 init = 
-  ( [] , Effects.none)
+  ( { totalPages = 0
+    , totalEntries = 0
+    , pageSize = 0
+    , pageNumber = 0
+    , donors = []
+    } 
+    , Effects.none
+  )
 
 -- UPDATE
 
@@ -125,7 +138,7 @@ findDonor address model =
 donorTable: Signal.Address Action -> Model -> Html
 donorTable address model =
   table [ class "table" ] [
-    tbody [] (List.map (oneDonor address) model)
+    tbody [] (List.map (oneDonor address) model.donors)
   ]
 
 oneDonor: Signal.Address Action -> Donor -> Html
