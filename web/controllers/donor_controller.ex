@@ -74,7 +74,7 @@ defmodule Saints.DonorController do
           |> redirect(to: donor_path(conn, :show, donor))
       {:error, changeset} ->
         conn 
-          |> render "edit.html", changeset: changeset
+          |> render("edit.html", changeset: changeset)
     end
   end
 

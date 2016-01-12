@@ -4,9 +4,9 @@ defmodule Saints.Mixfile do
   def project do
     [app: :saints,
      version: "0.0.1",
-     elixir: "~> 1.1.1",
+     elixir: "~> 1.2.0",
      elixirc_paths: elixirc_paths(Mix.env),
-     compilers: [:phoenix] ++ Mix.compilers,
+     compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases,
@@ -18,8 +18,8 @@ defmodule Saints.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Saints, []},
-     applications: [:postgrex, :ecto, :phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :comeonin]]
+     applications: [:postgrex, :phoenix, :phoenix_html, :cowboy, :logger,
+                    :gettext, :phoenix_ecto, :comeonin]]
   end
 
   # Specifies which paths to compile per environment.
@@ -30,16 +30,17 @@ defmodule Saints.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [ {:postgrex, ">= 0.0.0"},
-      {:ecto, "~> 1.1"},
-      {:phoenix, "~> 1.1.1"},
-      {:phoenix_ecto, "~> 1.1"},
-      {:phoenix_html, "~> 2.1"},
+    [ {:phoenix, "~> 1.1.1"},
+      {:phoenix_ecto, "~> 2.0"},
+      {:postgrex, ">= 0.0.0"},
+      {:phoenix_html, "~> 2.3"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
-#      {:phoenix_haml, ">= 0.2.0"},
+      {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 1.0"},
       {:scrivener, "~> 1.0"}
+#      {:ecto, "~> 1.1"},
+#      {:phoenix_haml, ">= 0.2.0"},
     ]
   end
   # Aliases are shortcut or tasks specific to the current project.

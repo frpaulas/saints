@@ -18,19 +18,20 @@ import "deps/phoenix_html/web/static/js/phoenix_html"
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-// import socket from "./socket"
-import {Socket} from "deps/phoenix/web/static/js/phoenix"
-let socket = new Socket("/socket")
-socket.connect();
-//let donor = document.getElementById('donor_data')
-//,   donor_id = "notes:" + donor.getAttribute('data-index')
-//,   channel = socket.channel(donor_id, {})
-let   elmDiv = document.getElementById('elm-main')
-,   elmApp = Elm.embed(Elm.ElmSaints, elmDiv)
+import socket from "./socket"
+let channel = socket.channel("donors:list")
+
 channel.join()
-  .receive(
-    "ok", notes => elmApp.ports.noteList.send(notes))
-    // "ok", resp => console.log("CHANNEL JOINED", resp))
-  .receive(
-    "error", resp => console.log(resp))
-channel.on("new:notes", notes=> console.log("CHANNEL ON", notes))
+  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("error", resp => { console.log("Unable to join", resp) })
+
+channel.on('set_donors', data => {
+  console.log('GOT SEATS', data.donors)
+  elmApp.ports.donorLists.send(data.donors)
+})
+
+// Hook Up Elm
+
+var elmDiv = document.getElementById('elm-main')
+  , initialState = {donorLists: []}
+  , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)

@@ -21,5 +21,16 @@ defmodule Saints.Donor do
     |> cast_assoc(:phone, require: true)
     |> cast_assoc(:note, require: true)
   end
+end
 
+defimpl Poison.Encoder, for: Saints.Donor  do
+  def encode(model, opts) do
+    %{  id: model.id,
+        title: model.title,
+        firstName: model.first_name,
+        middleName: model.middle_name,
+        lastName: model.last_name,
+        nameExt: model.name_ext
+      } |> Poison.Encoder.encode(opts)
+  end
 end

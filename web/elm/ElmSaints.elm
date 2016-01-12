@@ -1,52 +1,24 @@
 module ElmSaints where
 
+import Http
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import String exposing (join)
 import StartApp
 import Effects exposing (Effects, Never)
 import Task exposing (Task)
+import Json.Decode as Json exposing ((:=))
+import String
+import Debug
 
 app = 
   StartApp.start
     { init = init
     , update = update
     , view = view
-    , inputs = []
+    , inputs = [incomingActions]
     }
-
--- MODEL
-type alias Donor =
-  { id: Int
-  , title: String
-  , first_name: String
-  , middle_name: String
-  , last_name: String
-  , name_ext: String
-  }
-
-type alias Model = 
-  List Donor
-
-init: (Model, Effects Action)
-init = 
-  let
-    donors = 
-      [ {title="The Rev.", first_name="Sam", last_name="Abbott", id=7008, middle_name="", name_ext=""}
-      , {title="The Ven.", first_name="Jon", last_name="Abboud", id=7007, middle_name="", name_ext=""}
-      , {title="", first_name="Steve", last_name="Abel", id=7006, middle_name="", name_ext=""}
-      , {title="", first_name="Kim", last_name="Abner", id=7005, middle_name="", name_ext=""}
-      , {title="", first_name="Rosemarie", last_name="Abrams", id=7004, middle_name="", name_ext=""}
-      , {title="The Rev.", first_name="Joseph", last_name="Acanfora", id=7003, middle_name="", name_ext=""}
-      , {title="", first_name="John & Betsy Acken,", last_name="Sr", id=7002, middle_name="", name_ext=""}
-      , {title="The Rev.", first_name="Keith", last_name="Acker", id=7001, middle_name="", name_ext=""}
-      , {title="The Rt. Rev.", first_name="Keith", last_name="Ackerman", id=7000, middle_name="", name_ext=""}
-      , {title="The Rev.", first_name="Dennis", last_name="Ackerson", id=6999, middle_name="", name_ext=""}
-      , {title="The Rev.", first_name="Josh", last_name="Acton", id=6998, middle_name="", name_ext=""}
-      , {title="The Rev.", first_name="Josh", last_name="Acton", id=6997, middle_name="", name_ext=""}
-      ]
-  in
-    (donors, Effects.none)
 
 -- MAIN
 
@@ -59,19 +31,99 @@ port tasks =
   app.tasks
 
 
+-- MODEL
+
+type alias Donor =
+  { id: Int
+  , title: String
+  , firstName: String
+  , middleName: String
+  , lastName: String
+  , nameExt: String
+  }
+
+type alias Model = List Donor
+
+init: (Model, Effects Action)
+init = 
+  ( [] , Effects.none)
+
 -- UPDATE
+
 type Action 
   = NoOp
+  | SetDonors Model
+  | First | Last | Prev | Next
+  | UpdateFindDonor String
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
-    NoOp -> (model, Effects.none)
+    NoOp -> 
+      let
+        foo = Debug.log "UPDATE ACTION: " "NoOp"
+      in
+        (model, Effects.none)
+    First -> 
+      let
+        foo = Debug.log "UPDATE ACTION: " "First"
+      in
+        (model, Effects.none)
+    Last -> 
+      let
+        foo = Debug.log "UPDATE ACTION: " "Last"
+      in
+        (model, Effects.none)
+    Prev -> 
+      let
+        foo = Debug.log "UPDATE ACTION: " "Prev"
+      in
+        (model, Effects.none)
+    Next -> 
+      let
+        foo = Debug.log "UPDATE ACTION: " "Next"
+      in
+        (model, Effects.none)
+    UpdateFindDonor name ->
+      let
+        foo = Debug.log "FIND THESE: " name
+      in
+        (model, Effects.none)
+    SetDonors donors ->
+      (donors, Effects.none)
 
 -- VIEW
 
 view: Signal.Address Action -> Model -> Html
 view address model =
+  div [] 
+    [ basicNav address model
+    , donorTable address model 
+    ]
+
+basicNav: Signal.Address Action -> Model -> Html
+basicNav address model =
+  div []
+    [ button [ onClick address Prev]  [ text "Prev"]
+    , button [ onClick address First] [ text "First"]
+    , button [ onClick address Last]  [ text "Last"]
+    , button [ onClick address Next]  [ text "Next"]
+    , findDonor address model
+    ]
+
+findDonor: Signal.Address Action -> Model -> Html
+findDonor address model =
+  input
+    [ id "find-donor"
+    , placeholder "Find by Last Name "
+    , autofocus True
+    , name "findDonor"
+    , on "input" targetValue (Signal.message address << UpdateFindDonor)
+    ]
+    []
+
+donorTable: Signal.Address Action -> Model -> Html
+donorTable address model =
   table [ class "table" ] [
     tbody [] (List.map (oneDonor address) model)
   ]
@@ -84,4 +136,12 @@ oneDonor address donor =
 
 fullNameText: Donor -> Html
 fullNameText d =
-  text (join " " [d.title, d.first_name, d.middle_name, d.last_name, d.name_ext, "(", toString d.id, ")"])
+  text (join " " [d.title, d.firstName, d.middleName, d.lastName, d.nameExt, "(", toString d.id, ")"])
+
+-- SIGNALS
+
+port donorLists: Signal Model
+
+incomingActions: Signal Action
+incomingActions =
+  Signal.map SetDonors donorLists  
