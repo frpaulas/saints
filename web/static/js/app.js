@@ -34,11 +34,19 @@ channel.on('set_donors', data => {
 
 var elmDiv = document.getElementById('elm-main')
   , initialState = {donorLists: { 
-      totalPages: 0
-    , totalEntries: 0
-    , pageSize: 0
-    , pageNumber: 0
+    page: {
+        totalPages: 0
+      , totalEntries: 0
+      , pageSize: 0
+      , pageNumber: 0
+    }
     , donors: []
     } }
   , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)
 
+// now try askign for data
+
+elmApp.ports.requestPage.subscribe(function(pageNo) {
+  console.log("REQUESTING PAGE: ", pageNo)
+  channel.push("request_page", pageNo)
+})

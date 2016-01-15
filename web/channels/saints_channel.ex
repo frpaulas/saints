@@ -12,28 +12,42 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_info(:after_join, socket) do
-    page 
-      = ( from s in Saints.Donor, 
-          order_by: [asc: s.last_name, asc: s.first_name]
-        ) 
-      |> Repo.paginate(page: 1)
-
-    donors = # make it look nice for Elm
-      %{  totalPages: page.total_pages,
-          totalEntries: page.total_entries,
-          pageSize: page.page_size,
-          pageNumber: page.page_number,
-          donors: page.entries
-      }
-
-    push socket, "set_donors", %{donors: donors}
+    push socket, "set_donors", %{donors: ready_page(1)}
     {:noreply, socket}
   end
 
+  defp ready_page(page) do
+    get_page(page) |> jsonify_page
+  end
+
+  defp get_page(page) do
+    ( from s in Saints.Donor, 
+        order_by: [asc: s.last_name, asc: s.first_name]
+    ) 
+    |> Repo.paginate(page: max(1, page)) # one is the lowest page number
+  end
+
+  defp jsonify_page(page) do
+    %{  page: %{totalPages: page.total_pages,
+            totalEntries: page.total_entries,
+            pageSize: page.page_size,
+            pageNumber: page.page_number
+        },
+        donors: page.entries
+    }
+  end
 
 
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
+
+  def handle_in("request_page", payload, socket) do
+    # sanity check
+    IO.puts {:request_page, payload} |> inspect
+    push socket, "set_donors", %{donors: ready_page(payload)}
+    {:noreply, socket}    
+  end
+
   def handle_in("ping", payload, socket) do
     {:reply, {:ok, payload}, socket}
   end

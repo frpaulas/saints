@@ -11,6 +11,8 @@ import Task exposing (Task)
 import Json.Decode as Json exposing ((:=))
 import String
 import Debug
+import Mouse
+import Graphics.Element exposing (..)
 
 app = 
   StartApp.start
@@ -42,32 +44,47 @@ type alias Donor =
   , nameExt: String
   }
 
-type alias Model = 
+type alias Page =
   { totalPages: Int
   , totalEntries: Int
   , pageSize: Int
   , pageNumber: Int
+  } 
+
+type alias Model = 
+  { page: Page
   , donors: List Donor
   }
 
+initPage: Page
+initPage = 
+  { totalPages = 0
+  , totalEntries = 0
+  , pageSize = 0
+  , pageNumber = 0
+  } 
+
+
 init: (Model, Effects Action)
 init = 
-  ( { totalPages = 0
-    , totalEntries = 0
-    , pageSize = 0
-    , pageNumber = 0
+  ( { page = initPage
     , donors = []
     } 
     , Effects.none
   )
+
+type alias PageNo = Int
+initPageNo: PageNo
+initPageNo = 0
 
 -- UPDATE
 
 type Action 
   = NoOp
   | SetDonors Model
-  | First | Last | Prev | Next
-  | UpdateFindDonor String
+--  | First | Last | Prev | Next
+--  | ChangePage Int
+--  | UpdateFindDonor String
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
@@ -77,33 +94,9 @@ update action model =
         foo = Debug.log "UPDATE ACTION: " "NoOp"
       in
         (model, Effects.none)
-    First -> 
-      let
-        foo = Debug.log "UPDATE ACTION: " "First"
-      in
-        (model, Effects.none)
-    Last -> 
-      let
-        foo = Debug.log "UPDATE ACTION: " "Last"
-      in
-        (model, Effects.none)
-    Prev -> 
-      let
-        foo = Debug.log "UPDATE ACTION: " "Prev"
-      in
-        (model, Effects.none)
-    Next -> 
-      let
-        foo = Debug.log "UPDATE ACTION: " "Next"
-      in
-        (model, Effects.none)
-    UpdateFindDonor name ->
-      let
-        foo = Debug.log "FIND THESE: " name
-      in
-        (model, Effects.none)
     SetDonors donors ->
       (donors, Effects.none)
+        -- (model, Effects.none)
 
 -- VIEW
 
@@ -114,26 +107,27 @@ view address model =
     , donorTable address model 
     ]
 
+
 basicNav: Signal.Address Action -> Model -> Html
 basicNav address model =
   div []
-    [ button [ onClick address Prev]  [ text "Prev"]
-    , button [ onClick address First] [ text "First"]
-    , button [ onClick address Last]  [ text "Last"]
-    , button [ onClick address Next]  [ text "Next"]
-    , findDonor address model
+    [ button [ onClick requestNewPage.address  (model.page.pageNumber - 1)]  [ text "Prev"]
+    , button [ onClick requestNewPage.address  1] [ text "First"]
+    , button [ onClick requestNewPage.address  model.page.totalPages]  [ text "Last"]
+    , button [ onClick requestNewPage.address  (model.page.pageNumber + 1)]  [ text "Next"]
+--    , findDonor address model
     ]
 
-findDonor: Signal.Address Action -> Model -> Html
-findDonor address model =
-  input
-    [ id "find-donor"
-    , placeholder "Find by Last Name "
-    , autofocus True
-    , name "findDonor"
-    , on "input" targetValue (Signal.message address << UpdateFindDonor)
-    ]
-    []
+-- findDonor: Signal.Address Action -> Model -> Html
+-- findDonor address model =
+--   input
+--     [ id "find-donor"
+--     , placeholder "Find by Last Name "
+--     , autofocus True
+--     , name "findDonor"
+--     , on "input" targetValue (Signal.message address << UpdateFindDonor)
+--     ]
+--     []
 
 donorTable: Signal.Address Action -> Model -> Html
 donorTable address model =
@@ -153,8 +147,18 @@ fullNameText d =
 
 -- SIGNALS
 
-port donorLists: Signal Model
+requestNewPage: Signal.Mailbox PageNo
+requestNewPage =
+  Signal.mailbox initPageNo
 
 incomingActions: Signal Action
 incomingActions =
   Signal.map SetDonors donorLists  
+
+-- PORTS
+
+port requestPage: Signal PageNo
+port requestPage =
+  requestNewPage.signal
+
+port donorLists: Signal Model
