@@ -9,10 +9,7 @@ import StartApp
 import Effects exposing (Effects, Never)
 import Task exposing (Task)
 import Json.Decode as Json exposing ((:=))
-import String
 import Debug
-import Mouse
-import Graphics.Element exposing (..)
 
 app = 
   StartApp.start
@@ -26,12 +23,13 @@ app =
 
 main: Signal Html
 main = 
+  -- Signal.merge app.html nav.html
   app.html
+  -- nav.html
 
 port tasks: Signal (Task Never ())
 port tasks =
   app.tasks
-
 
 -- MODEL
 
@@ -44,6 +42,8 @@ type alias Donor =
   , nameExt: String
   }
 
+type alias SearchName = String
+
 type alias Page =
   { totalPages: Int
   , totalEntries: Int
@@ -52,7 +52,8 @@ type alias Page =
   } 
 
 type alias Model = 
-  { page: Page
+  { searchName: SearchName
+  , page: Page
   , donors: List Donor
   }
 
@@ -67,67 +68,93 @@ initPage =
 
 init: (Model, Effects Action)
 init = 
-  ( { page = initPage
+  ( { searchName = ""
+    , page = initPage
     , donors = []
     } 
     , Effects.none
   )
 
-type alias PageNo = Int
-initPageNo: PageNo
-initPageNo = 0
-
 -- UPDATE
+
 
 type Action 
   = NoOp
   | SetDonors Model
---  | First | Last | Prev | Next
---  | ChangePage Int
---  | UpdateFindDonor String
+  | UpdateFindDonor String
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
     NoOp -> 
-      let
-        foo = Debug.log "UPDATE ACTION: " "NoOp"
-      in
-        (model, Effects.none)
+      (model, Effects.none)
     SetDonors donors ->
       (donors, Effects.none)
         -- (model, Effects.none)
+    UpdateFindDonor name ->
+      let
+        thisPage = model.page
+        newPage = {thisPage | pageNumber = 1}
+        updatedModel = {model | page = newPage, searchName = name}
+        foo = Debug.log "UPDATED MODEL" updatedModel
+      in
+        (updatedModel, Effects.none)
 
 -- VIEW
 
 view: Signal.Address Action -> Model -> Html
 view address model =
-  div [] 
-    [ basicNav address model
-    , donorTable address model 
-    ]
-
+  div [ ] 
+      [ basicNav address model
+      , donorTable address model 
+      ]
 
 basicNav: Signal.Address Action -> Model -> Html
 basicNav address model =
   div []
-    [ button [ onClick requestNewPage.address  (model.page.pageNumber - 1)]  [ text "Prev"]
-    , button [ onClick requestNewPage.address  1] [ text "First"]
-    , button [ onClick requestNewPage.address  model.page.totalPages]  [ text "Last"]
-    , button [ onClick requestNewPage.address  (model.page.pageNumber + 1)]  [ text "Next"]
---    , findDonor address model
+    [ button [ onClick nextPage.address ((model.page.pageNumber - 1), model.searchName)]  [ text "Prev"]
+    , button [ onClick nextPage.address (1, model.searchName)] [ text "First"]
+    , button [ onClick nextPage.address (model.page.totalPages, model.searchName)]  [ text "Last"]
+    , button [ onClick nextPage.address ((model.page.pageNumber + 1), model.searchName)]  [ text "Next"]
+    , findDonor address model
+    , pageInfo address model
     ]
 
--- findDonor: Signal.Address Action -> Model -> Html
--- findDonor address model =
---   input
---     [ id "find-donor"
---     , placeholder "Find by Last Name "
---     , autofocus True
---     , name "findDonor"
---     , on "input" targetValue (Signal.message address << UpdateFindDonor)
---     ]
---     []
+pageInfo: Signal.Address Action -> Model -> Html
+pageInfo address model =
+  table 
+    [ class "page-info"]
+    [ tbody [] 
+      [ tr []
+          [ th [] [ text "Finding"]
+          , th [] [ text "Total Pages"]
+          , th [] [ text "Total Entries"]
+          , th [] [ text "Page Size"]
+          , th [] [ text "Page No."]
+          ]
+      , tr []
+          [ td [] [ text model.searchName]
+          , td [] [ text (toString model.page.totalPages)]
+          , td [] [ text (toString model.page.totalEntries)]
+          , td [] [ text (toString model.page.pageSize)]
+          , td [] [ text (toString model.page.pageNumber)]
+          ]
+      ]
+    ]
+
+findDonor: Signal.Address Action -> Model -> Html
+findDonor address model =
+  input
+    [ id "find-donor"
+    , type' "text"
+    , placeholder "Find by Last Name, First "
+    , autofocus True
+    , name "findDonor"
+    -- , on "input" targetValue (Signal.message address << UpdateFindDonor)
+    , on "input" targetValue (\str -> Signal.message nextPage.address (1, str))
+    ]
+    []
+
 
 donorTable: Signal.Address Action -> Model -> Html
 donorTable address model =
@@ -147,18 +174,17 @@ fullNameText d =
 
 -- SIGNALS
 
-requestNewPage: Signal.Mailbox PageNo
-requestNewPage =
-  Signal.mailbox initPageNo
+nextPage : Signal.Mailbox (Int, String)
+nextPage =
+  Signal.mailbox (0, "")
 
 incomingActions: Signal Action
 incomingActions =
-  Signal.map SetDonors donorLists  
+  Signal.map SetDonors donorLists
 
 -- PORTS
 
-port requestPage: Signal PageNo
-port requestPage =
-  requestNewPage.signal
-
 port donorLists: Signal Model
+port requestPage: Signal (Int, String)
+port requestPage = 
+  nextPage.signal

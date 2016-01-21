@@ -26,27 +26,28 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on('set_donors', data => {
-  console.log('GOT SEATS', data.donors)
   elmApp.ports.donorLists.send(data.donors)
 })
+
 
 // Hook Up Elm
 
 var elmDiv = document.getElementById('elm-main')
   , initialState = {donorLists: { 
-    page: {
-        totalPages: 0
-      , totalEntries: 0
-      , pageSize: 0
-      , pageNumber: 0
+      searchName: ""
+      , page: {
+            totalPages: 0
+          , totalEntries: 0
+          , pageSize: 0
+          , pageNumber: 0
+        }
+      , donors: []
+      }
     }
-    , donors: []
-    } }
   , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)
 
 // now try askign for data
 
-elmApp.ports.requestPage.subscribe(function(pageNo) {
-  console.log("REQUESTING PAGE: ", pageNo)
-  channel.push("request_page", pageNo)
-})
+elmApp.ports.requestPage.subscribe(function(pageRequest) {
+  channel.push("request_page", pageRequest)
+});

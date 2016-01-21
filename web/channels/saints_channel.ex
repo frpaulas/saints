@@ -12,28 +12,36 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_info(:after_join, socket) do
-    push socket, "set_donors", %{donors: ready_page(1)}
+    push socket, "set_donors", %{donors: ready_page(%{"page" => 1, "name" => ""})}
     {:noreply, socket}
   end
 
-  defp ready_page(page) do
-    get_page(page) |> jsonify_page
+  defp ready_page(request) do
+    get_page(request) |> jsonify_page
   end
 
-  defp get_page(page) do
-    ( from s in Saints.Donor, 
-        order_by: [asc: s.last_name, asc: s.first_name]
-    ) 
-    |> Repo.paginate(page: max(1, page)) # one is the lowest page number
+  defp get_page(request) do
+    split_name = request["name"] |> String.split(~r{[\,\s]+})
+    last_name = hd split_name
+    first_name = if split_name |> tl |> length > 0, do: split_name|>tl|>hd, else: ""
+    resp = 
+      ( from s in Saints.Donor, 
+          where: (ilike(s.last_name, ^("#{last_name}%")) and ilike(s.first_name, ^("#{first_name}%"))),
+          order_by: [asc: s.last_name, asc: s.first_name]
+      ) 
+      |> Repo.paginate(page: max(1, request["page"])) # one is the lowest page number
+    
+    {request["name"], resp}
   end
 
-  defp jsonify_page(page) do
-    %{  page: %{totalPages: page.total_pages,
-            totalEntries: page.total_entries,
-            pageSize: page.page_size,
-            pageNumber: page.page_number
+  defp jsonify_page({name, resp}) do
+    %{  searchName: name,
+        page: %{totalPages: resp.total_pages,
+            totalEntries:   resp.total_entries,
+            pageSize:       resp.page_size,
+            pageNumber:     resp.page_number
         },
-        donors: page.entries
+        donors: resp.entries
     }
   end
 
@@ -41,10 +49,8 @@ defmodule Saints.SaintsChannel do
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
 
-  def handle_in("request_page", payload, socket) do
-    # sanity check
-    IO.puts {:request_page, payload} |> inspect
-    push socket, "set_donors", %{donors: ready_page(payload)}
+  def handle_in("request_page", [page, name], socket) do
+    push socket, "set_donors", %{donors: ready_page(%{"page" => page, "name" => name})}
     {:noreply, socket}    
   end
 

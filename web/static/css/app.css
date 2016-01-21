@@ -12,6 +12,28 @@ body, form, ul, table {
   margin-bottom: 20px;
 }
 
+input#find-donor{
+  width: 200px;
+}
+
+table.page-info{
+  border-collapse: collapse;
+  border: 1px solid black;
+  width: 100%;
+  padding: 10px;
+}
+table.page-info th{
+  color: red;
+  border: 1px solid black;
+  text-align: center;
+  padding: 10px;
+}
+table.page-info td{
+  color: blue;
+  text-align: center;
+  border: 1px solid black;
+}
+
 /* Phoenix flash messages */
 .alert:empty { display: none; }
 
