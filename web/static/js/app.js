@@ -26,6 +26,7 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on('set_donors', data => {
+  console.log("DONORS: ", data.donors)
   elmApp.ports.donorLists.send(data.donors)
 })
 
@@ -50,4 +51,8 @@ var elmDiv = document.getElementById('elm-main')
 
 elmApp.ports.requestPage.subscribe(function(pageRequest) {
   channel.push("request_page", pageRequest)
+});
+elmApp.ports.requestDonorDetail.subscribe(function(donor_id) {
+  console.log("DONOR ID: ", donor_id);
+//  channel.push("request_donor_detail", donor_id)
 });

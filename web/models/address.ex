@@ -19,3 +19,17 @@ defmodule Saints.Address do
   end
 
 end
+
+defimpl Poison.Encoder, for: Saints.Address  do
+  def encode(model, opts) do
+    %{  id: model.id,
+        location: model.location,
+        address1: model.address1,
+        address2: model.address2,
+        city: model.city,
+        state: model.state,
+        zip: model.zip,
+        country: model.country
+      } |> Poison.Encoder.encode(opts)
+  end
+end

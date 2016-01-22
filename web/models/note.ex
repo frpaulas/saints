@@ -13,3 +13,11 @@ defmodule Saints.Note do
   end
 
 end
+
+defimpl Poison.Encoder, for: Saints.Note  do
+  def encode(model, opts) do
+    %{  id: model.id,
+        memo: model.memo
+      } |> Poison.Encoder.encode(opts)
+  end
+end

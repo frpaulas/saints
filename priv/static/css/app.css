@@ -34,6 +34,21 @@ table.page-info td{
   border: 1px solid black;
 }
 
+td.donor-edit{
+  width: 50px;
+}
+
+button.donor-edit{
+  background-color: transparent;
+  background-image: url("/images/ic_mode_edit_black_24dp_1x.png");
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+}
+
 /* Phoenix flash messages */
 .alert:empty { display: none; }
 
@@ -101,24 +116,6 @@ form.link, form.button {
   }
 }
 
-.alphabetDonors {
-  background: #a9e2f3;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  background-color: #f1f1f1;
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scrolling if the sidenav has too much */
-  position: absolute;
-  top: 80px;
-  right: 0;
-  width: 100px;
-  border: 3px solid #73AD21;
-}
-.alphabetDonors li{
-  padding: 0;
-  text-align: center;
-}
 .pagination {
   width: 100%;
   text-align: left;
@@ -146,6 +143,8 @@ button {
   font-size: 100%;
 }
 
+
+
 ul {
   margin: 20px 0;
   padding: 0;
@@ -153,21 +152,21 @@ ul {
   font-size: 1.2em;
   /* font-weight: bold; */
   text-align: left;
+  width: 100%;
 }
 
 li {
   background: #61a1bc;
   background: #fff;
-  height: 25px;
+  height: auto;
   position: relative;
-  padding: 15px 30px;
+  padding: 0px 30px;
   margin-bottom: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
 }
 
 li:hover {
   background: #fcfcfc;
-  /* background: #61a1bc; */
   box-shadow: 0 3px 6px rgba(0,0,0,0.2);
   cursor: pointer;
 }
@@ -193,6 +192,28 @@ li .delete:after {
   content: '✖';
   color: #e35885;
 }
+
+ul.hide_details{
+  display: none;
+}
+
+ul.donor_details{
+  display: block;
+  list-style-type: none;
+  font-size: 0.8em;
+  padding-bottom: 10px;
+}
+
+ul.donor_details li{
+  height: auto;
+  margin: 0px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5)
+}
+
+ul.donor_details li p{
+  margin: 0px;
+}
+
 
 
 

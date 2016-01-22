@@ -25,12 +25,16 @@ end
 
 defimpl Poison.Encoder, for: Saints.Donor  do
   def encode(model, opts) do
-    %{  id: model.id,
-        title: model.title,
-        firstName: model.first_name,
+    %{  id:         model.id,
+        title:      model.title,
+        firstName:  model.first_name,
         middleName: model.middle_name,
-        lastName: model.last_name,
-        nameExt: model.name_ext
+        lastName:   model.last_name,
+        nameExt:    model.name_ext,
+        address:    model.address,
+        phone:      model.phone,
+        note:       model.note,
+        detailsCss: "hide_details"
       } |> Poison.Encoder.encode(opts)
   end
 end

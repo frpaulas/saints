@@ -14,3 +14,12 @@ defmodule Saints.Phone do
   end
 
 end
+
+defimpl Poison.Encoder, for: Saints.Phone  do
+  def encode(model, opts) do
+    %{  id: model.id,
+        ofType: model.of_type,
+        number: model.number
+      } |> Poison.Encoder.encode(opts)
+  end
+end

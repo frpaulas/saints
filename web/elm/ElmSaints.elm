@@ -33,44 +33,107 @@ port tasks =
 
 -- MODEL
 
-type alias Donor =
-  { id: Int
-  , title: String
-  , firstName: String
-  , middleName: String
-  , lastName: String
-  , nameExt: String
+type alias Address =
+  { id:       Int
+  , location: String
+  , address1: String
+  , address2: String
+  , city:     String
+  , state:    String
+  , zip:      String
+  , country:  String
   }
+initAddress: Address
+initAddress =
+  { id = 0
+  , location = ""
+  , address1 = ""
+  , address2 = ""
+  , city =     ""
+  , state =    ""
+  , zip =      ""
+  , country =  ""
+  }
+
+type alias Phone =
+  { id:      Int
+  , ofType:  String
+  , number:  String
+  }
+initPhone: Phone
+initPhone =
+  { id      = 0
+  , ofType  = ""
+  , number  = ""
+  }
+
+type alias Note =
+  { id:   Int
+  , memo: String
+}
+initNote: Note
+initNote =
+  { id   = 0
+  , memo = ""
+  }
+
+
+type alias Donor =
+  { id:         Int
+  , title:      String
+  , firstName:  String
+  , middleName: String
+  , lastName:   String
+  , nameExt:    String
+  , phone:      List Phone
+  , address:    List Address
+  , note:       List Note
+  , detailsCss: String 
+  }
+initDonor: Donor
+initDonor =
+  { id          = 0
+  , title       = ""
+  , firstName   = ""
+  , middleName  = ""
+  , lastName    = ""
+  , nameExt     = ""
+  , phone       = []
+  , address     = []
+  , note        = []
+  , detailsCss  = "hide_details"
+  }
+
 
 type alias SearchName = String
 
 type alias Page =
-  { totalPages: Int
+  { totalPages:   Int
   , totalEntries: Int
-  , pageSize: Int
-  , pageNumber: Int
+  , pageSize:     Int
+  , pageNumber:   Int
   } 
 
 type alias Model = 
   { searchName: SearchName
-  , page: Page
-  , donors: List Donor
+  , page:       Page
+  , donors:     List Donor
   }
 
 initPage: Page
 initPage = 
-  { totalPages = 0
-  , totalEntries = 0
-  , pageSize = 0
-  , pageNumber = 0
+  { totalPages    = 0
+  , totalEntries  = 0
+  , pageSize      = 0
+  , pageNumber    = 0
   } 
 
 
 init: (Model, Effects Action)
 init = 
-  ( { searchName = ""
-    , page = initPage
-    , donors = []
+  ( { searchName  = ""
+    , page        = initPage
+    , donors      = []
     } 
     , Effects.none
   )
@@ -81,24 +144,26 @@ init =
 type Action 
   = NoOp
   | SetDonors Model
-  | UpdateFindDonor String
+  | ToggleDetails Donor
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
     NoOp -> 
       (model, Effects.none)
+    ToggleDetails donor ->
+      let
+        updateDonor d =
+          if d.id /= donor.id then
+            d
+          else if d.detailsCss == "donor_details"
+            then {d | detailsCss = "hide_details"}
+          else
+            {d | detailsCss = "donor_details"}
+      in
+        ({model | donors = List.map updateDonor model.donors}, Effects.none)
     SetDonors donors ->
       (donors, Effects.none)
-        -- (model, Effects.none)
-    UpdateFindDonor name ->
-      let
-        thisPage = model.page
-        newPage = {thisPage | pageNumber = 1}
-        updatedModel = {model | page = newPage, searchName = name}
-        foo = Debug.log "UPDATED MODEL" updatedModel
-      in
-        (updatedModel, Effects.none)
 
 -- VIEW
 
@@ -106,7 +171,7 @@ view: Signal.Address Action -> Model -> Html
 view address model =
   div [ ] 
       [ basicNav address model
-      , donorTable address model 
+      , donorList address model 
       ]
 
 basicNav: Signal.Address Action -> Model -> Html
@@ -150,23 +215,59 @@ findDonor address model =
     , placeholder "Find by Last Name, First "
     , autofocus True
     , name "findDonor"
-    -- , on "input" targetValue (Signal.message address << UpdateFindDonor)
     , on "input" targetValue (\str -> Signal.message nextPage.address (1, str))
     ]
     []
 
 
-donorTable: Signal.Address Action -> Model -> Html
-donorTable address model =
-  table [ class "table" ] [
-    tbody [] (List.map (oneDonor address) model.donors)
-  ]
+donorList: Signal.Address Action -> Model -> Html
+donorList address model =
+  ul [ class "donor_list" ] (List.map (oneDonor address) model.donors)
 
 oneDonor: Signal.Address Action -> Donor -> Html
 oneDonor address donor =
-  tr [] [
-    td [] [fullNameText donor]
-  ]
+  li 
+    [ onClick address (ToggleDetails donor)] 
+    [ fullNameText donor
+    , donorDetailsFor address donor
+    ]
+
+donorDetailsFor: Signal.Address Action -> Donor -> Html
+donorDetailsFor address donor =
+  ul
+    [ class donor.detailsCss]
+    (List.concat [(donorNotes donor), (donorAddresses donor), (donorPhones donor)])
+
+donorNotes: Donor -> List Html
+donorNotes d = 
+  List.map oneNote d.note
+
+oneNote: Note -> Html
+oneNote note =
+  li [] [text note.memo]
+
+donorAddresses: Donor -> List Html
+donorAddresses d = 
+  List.map oneAddress d.address
+
+oneAddress: Address -> Html
+oneAddress a =
+  li [] 
+    [ text a.location
+    , p [] [ text a.address1 ]
+    , p [] [ text a.address2 ]
+    , p [] [ text (a.city ++ ", " ++ a.state ++ " " ++ a.zip) ]
+    , p [] [ text a.country ]
+    ]
+
+donorPhones: Donor -> List Html
+donorPhones d =
+  List.map onePhone d.phone
+
+onePhone: Phone -> Html
+onePhone p =
+  li [] [ text (p.ofType ++ ": " ++ p.number)]
+
 
 fullNameText: Donor -> Html
 fullNameText d =
@@ -182,9 +283,16 @@ incomingActions: Signal Action
 incomingActions =
   Signal.map SetDonors donorLists
 
+donorDetail: Signal.Mailbox Int
+donorDetail =
+  Signal.mailbox 0
+
 -- PORTS
 
 port donorLists: Signal Model
 port requestPage: Signal (Int, String)
 port requestPage = 
   nextPage.signal
+port requestDonorDetail: Signal Int
+port requestDonorDetail =
+  donorDetail.signal

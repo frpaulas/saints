@@ -1,3 +1,5 @@
+require IEx
+require Poison
 defmodule Saints.SaintsChannel do
   use Saints.Web, :channel
   alias Saints.Donor
@@ -27,7 +29,8 @@ defmodule Saints.SaintsChannel do
     resp = 
       ( from s in Saints.Donor, 
           where: (ilike(s.last_name, ^("#{last_name}%")) and ilike(s.first_name, ^("#{first_name}%"))),
-          order_by: [asc: s.last_name, asc: s.first_name]
+          order_by: [asc: s.last_name, asc: s.first_name],
+          preload: [:address, :phone, :note]
       ) 
       |> Repo.paginate(page: max(1, request["page"])) # one is the lowest page number
     
@@ -35,6 +38,7 @@ defmodule Saints.SaintsChannel do
   end
 
   defp jsonify_page({name, resp}) do
+    # donors_with_everything = resp.entries |> Enum.map(&Map.merge %{address: [], phone: [], note: []}, &1)
     %{  searchName: name,
         page: %{totalPages: resp.total_pages,
             totalEntries:   resp.total_entries,
