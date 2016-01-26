@@ -4,12 +4,16 @@ import Http
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import String exposing (join)
 import StartApp
 import Effects exposing (Effects, Never)
 import Task exposing (Task)
 import Json.Decode as Json exposing ((:=))
 import Debug
+
+import Saints.Address as Addresss
+import Saints.Note as Note
+import Saints.Phone as Phone
+import Saints.Donor as Donor
 
 app = 
   StartApp.start
@@ -33,79 +37,8 @@ port tasks =
 
 -- MODEL
 
-type alias Address =
-  { id:       Int
-  , location: String
-  , address1: String
-  , address2: String
-  , city:     String
-  , state:    String
-  , zip:      String
-  , country:  String
-  }
-initAddress: Address
-initAddress =
-  { id = 0
-  , location = ""
-  , address1 = ""
-  , address2 = ""
-  , city =     ""
-  , state =    ""
-  , zip =      ""
-  , country =  ""
-  }
-
-type alias Phone =
-  { id:      Int
-  , ofType:  String
-  , number:  String
-  }
-initPhone: Phone
-initPhone =
-  { id      = 0
-  , ofType  = ""
-  , number  = ""
-  }
-
-type alias Note =
-  { id:   Int
-  , memo: String
-}
-initNote: Note
-initNote =
-  { id   = 0
-  , memo = ""
-  }
-
-
-type alias Donor =
-  { id:         Int
-  , title:      String
-  , firstName:  String
-  , middleName: String
-  , lastName:   String
-  , nameExt:    String
-  , phone:      List Phone
-  , address:    List Address
-  , note:       List Note
-  , detailsCss: String 
-  }
-initDonor: Donor
-initDonor =
-  { id          = 0
-  , title       = ""
-  , firstName   = ""
-  , middleName  = ""
-  , lastName    = ""
-  , nameExt     = ""
-  , phone       = []
-  , address     = []
-  , note        = []
-  , detailsCss  = "hide_details"
-  }
-
-
 type alias SearchName = String
+type alias ID = Int
 
 type alias Page =
   { totalPages:   Int
@@ -117,7 +50,7 @@ type alias Page =
 type alias Model = 
   { searchName: SearchName
   , page:       Page
-  , donors:     List Donor
+  , donors:     List Donor.Model
   }
 
 initPage: Page
@@ -144,35 +77,40 @@ init =
 type Action 
   = NoOp
   | SetDonors Model
-  | ToggleDetails Donor
+  | Modify ID Donor.Action
+
+--  | ToggleDetails Donor
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
     NoOp -> 
       (model, Effects.none)
-    ToggleDetails donor ->
-      let
-        updateDonor d =
-          if d.id /= donor.id then
-            d
-          else if d.detailsCss == "donor_details"
-            then {d | detailsCss = "hide_details"}
-          else
-            {d | detailsCss = "donor_details"}
-      in
-        ({model | donors = List.map updateDonor model.donors}, Effects.none)
     SetDonors donors ->
       (donors, Effects.none)
+    Modify id donorAction ->
+      let
+        updateDonor donorModel =
+          if donorModel.id == id
+            then Donor.update donorAction donorModel
+            else donorModel
+      in
+        ({model | donors = List.map updateDonor model.donors}, Effects.none)
 
 -- VIEW
 
 view: Signal.Address Action -> Model -> Html
 view address model =
-  div [ ] 
-      [ basicNav address model
-      , donorList address model 
-      ]
+  let donors = List.map (viewDonors address) model.donors
+  in
+    div [ ] 
+        [ basicNav address model
+        , ul [] donors 
+        ]
+
+viewDonors: Signal.Address Action -> Donor.Model -> Html
+viewDonors address model =
+  Donor.view (Signal.forwardTo address (Modify model.id)) model
 
 basicNav: Signal.Address Action -> Model -> Html
 basicNav address model =
@@ -218,60 +156,6 @@ findDonor address model =
     , on "input" targetValue (\str -> Signal.message nextPage.address (1, str))
     ]
     []
-
-
-donorList: Signal.Address Action -> Model -> Html
-donorList address model =
-  ul [ class "donor_list" ] (List.map (oneDonor address) model.donors)
-
-oneDonor: Signal.Address Action -> Donor -> Html
-oneDonor address donor =
-  li 
-    [ onClick address (ToggleDetails donor)] 
-    [ fullNameText donor
-    , donorDetailsFor address donor
-    ]
-
-donorDetailsFor: Signal.Address Action -> Donor -> Html
-donorDetailsFor address donor =
-  ul
-    [ class donor.detailsCss]
-    (List.concat [(donorNotes donor), (donorAddresses donor), (donorPhones donor)])
-
-donorNotes: Donor -> List Html
-donorNotes d = 
-  List.map oneNote d.note
-
-oneNote: Note -> Html
-oneNote note =
-  li [] [text note.memo]
-
-donorAddresses: Donor -> List Html
-donorAddresses d = 
-  List.map oneAddress d.address
-
-oneAddress: Address -> Html
-oneAddress a =
-  li [] 
-    [ text a.location
-    , p [] [ text a.address1 ]
-    , p [] [ text a.address2 ]
-    , p [] [ text (a.city ++ ", " ++ a.state ++ " " ++ a.zip) ]
-    , p [] [ text a.country ]
-    ]
-
-donorPhones: Donor -> List Html
-donorPhones d =
-  List.map onePhone d.phone
-
-onePhone: Phone -> Html
-onePhone p =
-  li [] [ text (p.ofType ++ ": " ++ p.number)]
-
-
-fullNameText: Donor -> Html
-fullNameText d =
-  text (join " " [d.title, d.firstName, d.middleName, d.lastName, d.nameExt, "(", toString d.id, ")"])
 
 -- SIGNALS
 

@@ -9131,71 +9131,6 @@ Elm.Json.Decode.make = function (_elm) {
                                     ,value: value
                                     ,customDecoder: customDecoder};
 };
-Elm.Native = Elm.Native || {};
-Elm.Native.Mouse = {};
-Elm.Native.Mouse.make = function(localRuntime) {
-	localRuntime.Native = localRuntime.Native || {};
-	localRuntime.Native.Mouse = localRuntime.Native.Mouse || {};
-	if (localRuntime.Native.Mouse.values)
-	{
-		return localRuntime.Native.Mouse.values;
-	}
-
-	var NS = Elm.Native.Signal.make(localRuntime);
-	var Utils = Elm.Native.Utils.make(localRuntime);
-
-	var position = NS.input('Mouse.position', Utils.Tuple2(0, 0));
-
-	var isDown = NS.input('Mouse.isDown', false);
-
-	var clicks = NS.input('Mouse.clicks', Utils.Tuple0);
-
-	var node = localRuntime.isFullscreen()
-		? document
-		: localRuntime.node;
-
-	localRuntime.addListener([clicks.id], node, 'click', function click() {
-		localRuntime.notify(clicks.id, Utils.Tuple0);
-	});
-	localRuntime.addListener([isDown.id], node, 'mousedown', function down() {
-		localRuntime.notify(isDown.id, true);
-	});
-	localRuntime.addListener([isDown.id], node, 'mouseup', function up() {
-		localRuntime.notify(isDown.id, false);
-	});
-	localRuntime.addListener([position.id], node, 'mousemove', function move(e) {
-		localRuntime.notify(position.id, Utils.getXY(e));
-	});
-
-	return localRuntime.Native.Mouse.values = {
-		position: position,
-		isDown: isDown,
-		clicks: clicks
-	};
-};
-
-Elm.Mouse = Elm.Mouse || {};
-Elm.Mouse.make = function (_elm) {
-   "use strict";
-   _elm.Mouse = _elm.Mouse || {};
-   if (_elm.Mouse.values) return _elm.Mouse.values;
-   var _U = Elm.Native.Utils.make(_elm),
-   $Basics = Elm.Basics.make(_elm),
-   $Native$Mouse = Elm.Native.Mouse.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
-   var _op = {};
-   var clicks = $Native$Mouse.clicks;
-   var isDown = $Native$Mouse.isDown;
-   var position = $Native$Mouse.position;
-   var x = A2($Signal.map,$Basics.fst,position);
-   var y = A2($Signal.map,$Basics.snd,position);
-   return _elm.Mouse.values = {_op: _op
-                              ,position: position
-                              ,x: x
-                              ,y: y
-                              ,isDown: isDown
-                              ,clicks: clicks};
-};
 Elm.Native.Effects = {};
 Elm.Native.Effects.make = function(localRuntime) {
 
@@ -12249,6 +12184,250 @@ Elm.StartApp.make = function (_elm) {
                                  ,Config: Config
                                  ,App: App};
 };
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Address = Elm.Saints.Address || {};
+Elm.Saints.Address.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Address = _elm.Saints.Address || {};
+   if (_elm.Saints.Address.values)
+   return _elm.Saints.Address.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var view = function (model) {
+      return A2($Html.li,
+      _U.list([]),
+      _U.list([$Html.text(model.location)
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text(model.address1)]))
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text(model.address2)]))
+              ,A2($Html.p,
+              _U.list([]),
+              _U.list([$Html.text(A2($Basics._op["++"],
+              model.city,
+              A2($Basics._op["++"],
+              ", ",
+              A2($Basics._op["++"],
+              model.state,
+              A2($Basics._op["++"]," ",model.zip)))))]))
+              ,A2($Html.p,
+              _U.list([]),
+              _U.list([$Html.text(model.country)]))]));
+   };
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return model;
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0
+              ,location: ""
+              ,address1: ""
+              ,address2: ""
+              ,city: ""
+              ,state: ""
+              ,zip: ""
+              ,country: ""};
+   var Model = F8(function (a,b,c,d,e,f,g,h) {
+      return {id: a
+             ,location: b
+             ,address1: c
+             ,address2: d
+             ,city: e
+             ,state: f
+             ,zip: g
+             ,country: h};
+   });
+   return _elm.Saints.Address.values = {_op: _op
+                                       ,init: init
+                                       ,update: update
+                                       ,view: view
+                                       ,Model: Model};
+};
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Note = Elm.Saints.Note || {};
+Elm.Saints.Note.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Note = _elm.Saints.Note || {};
+   if (_elm.Saints.Note.values) return _elm.Saints.Note.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var view = function (model) {
+      return A2($Html.li,
+      _U.list([]),
+      _U.list([$Html.text(model.memo)]));
+   };
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return model;
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0,memo: ""};
+   var Model = F2(function (a,b) {    return {id: a,memo: b};});
+   return _elm.Saints.Note.values = {_op: _op
+                                    ,init: init
+                                    ,update: update
+                                    ,view: view
+                                    ,Model: Model};
+};
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Phone = Elm.Saints.Phone || {};
+Elm.Saints.Phone.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Phone = _elm.Saints.Phone || {};
+   if (_elm.Saints.Phone.values) return _elm.Saints.Phone.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var view = function (p) {
+      return A2($Html.li,
+      _U.list([]),
+      _U.list([$Html.text(A2($Basics._op["++"],
+      p.ofType,
+      A2($Basics._op["++"],": ",p.number)))]));
+   };
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return model;
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0,ofType: "",number: ""};
+   var Model = F3(function (a,b,c) {
+      return {id: a,ofType: b,number: c};
+   });
+   return _elm.Saints.Phone.values = {_op: _op
+                                     ,init: init
+                                     ,update: update
+                                     ,view: view
+                                     ,Model: Model};
+};
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Donor = Elm.Saints.Donor || {};
+Elm.Saints.Donor.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Donor = _elm.Saints.Donor || {};
+   if (_elm.Saints.Donor.values) return _elm.Saints.Donor.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Saints$Address = Elm.Saints.Address.make(_elm),
+   $Saints$Note = Elm.Saints.Note.make(_elm),
+   $Saints$Phone = Elm.Saints.Phone.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm);
+   var _op = {};
+   var fullNameText = function (m) {
+      return $Html.text(A2($String.join,
+      " ",
+      _U.list([m.title
+              ,m.firstName
+              ,m.middleName
+              ,m.lastName
+              ,m.nameExt
+              ,"("
+              ,$Basics.toString(m.id)
+              ,")"])));
+   };
+   var donorDetailsFor = F2(function (address,model) {
+      return A2($Html.ul,
+      _U.list([$Html$Attributes.$class(model.detailsCss)]),
+      A2($Basics._op["++"],
+      A2($List.map,$Saints$Note.view,model.note),
+      A2($Basics._op["++"],
+      A2($List.map,$Saints$Address.view,model.address),
+      A2($List.map,$Saints$Phone.view,model.phone))));
+   });
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      if (_p0.ctor === "NoOp") {
+            return model;
+         } else {
+            var show_details = _U.eq(model.detailsCss,
+            "donor_details") ? "hide_details" : "donor_details";
+            return _U.update(model,{detailsCss: show_details});
+         }
+   });
+   var ToggleDetails = {ctor: "ToggleDetails"};
+   var view = F2(function (address,model) {
+      return A2($Html.li,
+      _U.list([A2($Html$Events.onClick,address,ToggleDetails)]),
+      _U.list([fullNameText(model)
+              ,A2(donorDetailsFor,address,model)]));
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0
+              ,title: ""
+              ,firstName: ""
+              ,middleName: ""
+              ,lastName: ""
+              ,nameExt: ""
+              ,phone: _U.list([])
+              ,address: _U.list([])
+              ,note: _U.list([])
+              ,detailsCss: "hide_details"};
+   var Model = function (a) {
+      return function (b) {
+         return function (c) {
+            return function (d) {
+               return function (e) {
+                  return function (f) {
+                     return function (g) {
+                        return function (h) {
+                           return function (i) {
+                              return function (j) {
+                                 return {id: a
+                                        ,title: b
+                                        ,firstName: c
+                                        ,middleName: d
+                                        ,lastName: e
+                                        ,nameExt: f
+                                        ,phone: g
+                                        ,address: h
+                                        ,note: i
+                                        ,detailsCss: j};
+                              };
+                           };
+                        };
+                     };
+                  };
+               };
+            };
+         };
+      };
+   };
+   return _elm.Saints.Donor.values = {_op: _op
+                                     ,init: init
+                                     ,update: update
+                                     ,view: view
+                                     ,Model: Model};
+};
 Elm.ElmSaints = Elm.ElmSaints || {};
 Elm.ElmSaints.make = function (_elm) {
    "use strict";
@@ -12264,142 +12443,236 @@ Elm.ElmSaints.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Saints$Donor = Elm.Saints.Donor.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $StartApp = Elm.StartApp.make(_elm),
-   $String = Elm.String.make(_elm),
    $Task = Elm.Task.make(_elm);
    var _op = {};
    var donorLists = Elm.Native.Port.make(_elm).inboundSignal("donorLists",
    "ElmSaints.Model",
    function (v) {
-      return typeof v === "object" && "page" in v && "donors" in v ? {_: {}
-                                                                     ,page: typeof v.page === "object" && "totalPages" in v.page && "totalEntries" in v.page && "pageSize" in v.page && "pageNumber" in v.page ? {_: {}
-                                                                                                                                                                                                                 ,totalPages: typeof v.page.totalPages === "number" && isFinite(v.page.totalPages) && Math.floor(v.page.totalPages) === v.page.totalPages ? v.page.totalPages : _U.badPort("an integer",
-                                                                                                                                                                                                                 v.page.totalPages)
-                                                                                                                                                                                                                 ,totalEntries: typeof v.page.totalEntries === "number" && isFinite(v.page.totalEntries) && Math.floor(v.page.totalEntries) === v.page.totalEntries ? v.page.totalEntries : _U.badPort("an integer",
-                                                                                                                                                                                                                 v.page.totalEntries)
-                                                                                                                                                                                                                 ,pageSize: typeof v.page.pageSize === "number" && isFinite(v.page.pageSize) && Math.floor(v.page.pageSize) === v.page.pageSize ? v.page.pageSize : _U.badPort("an integer",
-                                                                                                                                                                                                                 v.page.pageSize)
-                                                                                                                                                                                                                 ,pageNumber: typeof v.page.pageNumber === "number" && isFinite(v.page.pageNumber) && Math.floor(v.page.pageNumber) === v.page.pageNumber ? v.page.pageNumber : _U.badPort("an integer",
-                                                                                                                                                                                                                 v.page.pageNumber)} : _U.badPort("an object with fields `totalPages`, `totalEntries`, `pageSize`, `pageNumber`",
-                                                                     v.page)
-                                                                     ,donors: typeof v.donors === "object" && v.donors instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.donors.map(function (v) {
-                                                                        return typeof v === "object" && "id" in v && "title" in v && "firstName" in v && "middleName" in v && "lastName" in v && "nameExt" in v ? {_: {}
-                                                                                                                                                                                                                  ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
-                                                                                                                                                                                                                  v.id)
-                                                                                                                                                                                                                  ,title: typeof v.title === "string" || typeof v.title === "object" && v.title instanceof String ? v.title : _U.badPort("a string",
-                                                                                                                                                                                                                  v.title)
-                                                                                                                                                                                                                  ,firstName: typeof v.firstName === "string" || typeof v.firstName === "object" && v.firstName instanceof String ? v.firstName : _U.badPort("a string",
-                                                                                                                                                                                                                  v.firstName)
-                                                                                                                                                                                                                  ,middleName: typeof v.middleName === "string" || typeof v.middleName === "object" && v.middleName instanceof String ? v.middleName : _U.badPort("a string",
-                                                                                                                                                                                                                  v.middleName)
-                                                                                                                                                                                                                  ,lastName: typeof v.lastName === "string" || typeof v.lastName === "object" && v.lastName instanceof String ? v.lastName : _U.badPort("a string",
-                                                                                                                                                                                                                  v.lastName)
-                                                                                                                                                                                                                  ,nameExt: typeof v.nameExt === "string" || typeof v.nameExt === "object" && v.nameExt instanceof String ? v.nameExt : _U.badPort("a string",
-                                                                                                                                                                                                                  v.nameExt)} : _U.badPort("an object with fields `id`, `title`, `firstName`, `middleName`, `lastName`, `nameExt`",
-                                                                        v);
-                                                                     })) : _U.badPort("an array",
-                                                                     v.donors)} : _U.badPort("an object with fields `page`, `donors`",
+      return typeof v === "object" && "searchName" in v && "page" in v && "donors" in v ? {_: {}
+                                                                                          ,searchName: typeof v.searchName === "string" || typeof v.searchName === "object" && v.searchName instanceof String ? v.searchName : _U.badPort("a string",
+                                                                                          v.searchName)
+                                                                                          ,page: typeof v.page === "object" && "totalPages" in v.page && "totalEntries" in v.page && "pageSize" in v.page && "pageNumber" in v.page ? {_: {}
+                                                                                                                                                                                                                                      ,totalPages: typeof v.page.totalPages === "number" && isFinite(v.page.totalPages) && Math.floor(v.page.totalPages) === v.page.totalPages ? v.page.totalPages : _U.badPort("an integer",
+                                                                                                                                                                                                                                      v.page.totalPages)
+                                                                                                                                                                                                                                      ,totalEntries: typeof v.page.totalEntries === "number" && isFinite(v.page.totalEntries) && Math.floor(v.page.totalEntries) === v.page.totalEntries ? v.page.totalEntries : _U.badPort("an integer",
+                                                                                                                                                                                                                                      v.page.totalEntries)
+                                                                                                                                                                                                                                      ,pageSize: typeof v.page.pageSize === "number" && isFinite(v.page.pageSize) && Math.floor(v.page.pageSize) === v.page.pageSize ? v.page.pageSize : _U.badPort("an integer",
+                                                                                                                                                                                                                                      v.page.pageSize)
+                                                                                                                                                                                                                                      ,pageNumber: typeof v.page.pageNumber === "number" && isFinite(v.page.pageNumber) && Math.floor(v.page.pageNumber) === v.page.pageNumber ? v.page.pageNumber : _U.badPort("an integer",
+                                                                                                                                                                                                                                      v.page.pageNumber)} : _U.badPort("an object with fields `totalPages`, `totalEntries`, `pageSize`, `pageNumber`",
+                                                                                          v.page)
+                                                                                          ,donors: typeof v.donors === "object" && v.donors instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.donors.map(function (v) {
+                                                                                             return typeof v === "object" && "id" in v && "title" in v && "firstName" in v && "middleName" in v && "lastName" in v && "nameExt" in v && "phone" in v && "address" in v && "note" in v && "detailsCss" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                             ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                             v.id)
+                                                                                                                                                                                                                                                                                                             ,title: typeof v.title === "string" || typeof v.title === "object" && v.title instanceof String ? v.title : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                             v.title)
+                                                                                                                                                                                                                                                                                                             ,firstName: typeof v.firstName === "string" || typeof v.firstName === "object" && v.firstName instanceof String ? v.firstName : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                             v.firstName)
+                                                                                                                                                                                                                                                                                                             ,middleName: typeof v.middleName === "string" || typeof v.middleName === "object" && v.middleName instanceof String ? v.middleName : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                             v.middleName)
+                                                                                                                                                                                                                                                                                                             ,lastName: typeof v.lastName === "string" || typeof v.lastName === "object" && v.lastName instanceof String ? v.lastName : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                             v.lastName)
+                                                                                                                                                                                                                                                                                                             ,nameExt: typeof v.nameExt === "string" || typeof v.nameExt === "object" && v.nameExt instanceof String ? v.nameExt : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                             v.nameExt)
+                                                                                                                                                                                                                                                                                                             ,phone: typeof v.phone === "object" && v.phone instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.phone.map(function (v) {
+                                                                                                                                                                                                                                                                                                                return typeof v === "object" && "id" in v && "ofType" in v && "number" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                                                              ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                              v.id)
+                                                                                                                                                                                                                                                                                                                                                                                              ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                              v.ofType)
+                                                                                                                                                                                                                                                                                                                                                                                              ,number: typeof v.number === "string" || typeof v.number === "object" && v.number instanceof String ? v.number : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                              v.number)} : _U.badPort("an object with fields `id`, `ofType`, `number`",
+                                                                                                                                                                                                                                                                                                                v);
+                                                                                                                                                                                                                                                                                                             })) : _U.badPort("an array",
+                                                                                                                                                                                                                                                                                                             v.phone)
+                                                                                                                                                                                                                                                                                                             ,address: typeof v.address === "object" && v.address instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.address.map(function (v) {
+                                                                                                                                                                                                                                                                                                                return typeof v === "object" && "id" in v && "location" in v && "address1" in v && "address2" in v && "city" in v && "state" in v && "zip" in v && "country" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.id)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,location: typeof v.location === "string" || typeof v.location === "object" && v.location instanceof String ? v.location : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.location)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,address1: typeof v.address1 === "string" || typeof v.address1 === "object" && v.address1 instanceof String ? v.address1 : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.address1)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,address2: typeof v.address2 === "string" || typeof v.address2 === "object" && v.address2 instanceof String ? v.address2 : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.address2)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,city: typeof v.city === "string" || typeof v.city === "object" && v.city instanceof String ? v.city : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.city)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,state: typeof v.state === "string" || typeof v.state === "object" && v.state instanceof String ? v.state : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.state)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,zip: typeof v.zip === "string" || typeof v.zip === "object" && v.zip instanceof String ? v.zip : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.zip)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,country: typeof v.country === "string" || typeof v.country === "object" && v.country instanceof String ? v.country : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    v.country)} : _U.badPort("an object with fields `id`, `location`, `address1`, `address2`, `city`, `state`, `zip`, `country`",
+                                                                                                                                                                                                                                                                                                                v);
+                                                                                                                                                                                                                                                                                                             })) : _U.badPort("an array",
+                                                                                                                                                                                                                                                                                                             v.address)
+                                                                                                                                                                                                                                                                                                             ,note: typeof v.note === "object" && v.note instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.note.map(function (v) {
+                                                                                                                                                                                                                                                                                                                return typeof v === "object" && "id" in v && "memo" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                                           ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                           v.id)
+                                                                                                                                                                                                                                                                                                                                                                           ,memo: typeof v.memo === "string" || typeof v.memo === "object" && v.memo instanceof String ? v.memo : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                           v.memo)} : _U.badPort("an object with fields `id`, `memo`",
+                                                                                                                                                                                                                                                                                                                v);
+                                                                                                                                                                                                                                                                                                             })) : _U.badPort("an array",
+                                                                                                                                                                                                                                                                                                             v.note)
+                                                                                                                                                                                                                                                                                                             ,detailsCss: typeof v.detailsCss === "string" || typeof v.detailsCss === "object" && v.detailsCss instanceof String ? v.detailsCss : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                             v.detailsCss)} : _U.badPort("an object with fields `id`, `title`, `firstName`, `middleName`, `lastName`, `nameExt`, `phone`, `address`, `note`, `detailsCss`",
+                                                                                             v);
+                                                                                          })) : _U.badPort("an array",
+                                                                                          v.donors)} : _U.badPort("an object with fields `searchName`, `page`, `donors`",
       v);
    });
-   var fullNameText = function (d) {
-      return $Html.text(A2($String.join,
-      " ",
-      _U.list([d.title
-              ,d.firstName
-              ,d.middleName
-              ,d.lastName
-              ,d.nameExt
-              ,"("
-              ,$Basics.toString(d.id)
-              ,")"])));
-   };
-   var oneDonor = F2(function (address,donor) {
-      return A2($Html.tr,
-      _U.list([]),
-      _U.list([A2($Html.td,
-      _U.list([]),
-      _U.list([fullNameText(donor)]))]));
+   var donorDetail = $Signal.mailbox(0);
+   var requestDonorDetail = Elm.Native.Port.make(_elm).outboundSignal("requestDonorDetail",
+   function (v) {
+      return v;
+   },
+   donorDetail.signal);
+   var nextPage = $Signal.mailbox({ctor: "_Tuple2",_0: 0,_1: ""});
+   var requestPage = Elm.Native.Port.make(_elm).outboundSignal("requestPage",
+   function (v) {
+      return [v._0,v._1];
+   },
+   nextPage.signal);
+   var findDonor = F2(function (address,model) {
+      return A2($Html.input,
+      _U.list([$Html$Attributes.id("find-donor")
+              ,$Html$Attributes.type$("text")
+              ,$Html$Attributes.placeholder("Find by Last Name, First ")
+              ,$Html$Attributes.autofocus(true)
+              ,$Html$Attributes.name("findDonor")
+              ,A3($Html$Events.on,
+              "input",
+              $Html$Events.targetValue,
+              function (str) {
+                 return A2($Signal.message,
+                 nextPage.address,
+                 {ctor: "_Tuple2",_0: 1,_1: str});
+              })]),
+      _U.list([]));
    });
-   var donorTable = F2(function (address,model) {
+   var pageInfo = F2(function (address,model) {
       return A2($Html.table,
-      _U.list([$Html$Attributes.$class("table")]),
+      _U.list([$Html$Attributes.$class("page-info")]),
       _U.list([A2($Html.tbody,
       _U.list([]),
-      A2($List.map,oneDonor(address),model.donors))]));
+      _U.list([A2($Html.tr,
+              _U.list([]),
+              _U.list([A2($Html.th,
+                      _U.list([]),
+                      _U.list([$Html.text("Finding")]))
+                      ,A2($Html.th,_U.list([]),_U.list([$Html.text("Total Pages")]))
+                      ,A2($Html.th,_U.list([]),_U.list([$Html.text("Total Entries")]))
+                      ,A2($Html.th,_U.list([]),_U.list([$Html.text("Page Size")]))
+                      ,A2($Html.th,_U.list([]),_U.list([$Html.text("Page No.")]))]))
+              ,A2($Html.tr,
+              _U.list([]),
+              _U.list([A2($Html.td,
+                      _U.list([]),
+                      _U.list([$Html.text(model.searchName)]))
+                      ,A2($Html.td,
+                      _U.list([]),
+                      _U.list([$Html.text($Basics.toString(model.page.totalPages))]))
+                      ,A2($Html.td,
+                      _U.list([]),
+                      _U.list([$Html.text($Basics.toString(model.page.totalEntries))]))
+                      ,A2($Html.td,
+                      _U.list([]),
+                      _U.list([$Html.text($Basics.toString(model.page.pageSize))]))
+                      ,A2($Html.td,
+                      _U.list([]),
+                      _U.list([$Html.text($Basics.toString(model.page.pageNumber))]))]))]))]));
+   });
+   var basicNav = F2(function (address,model) {
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2($Html.button,
+              _U.list([A2($Html$Events.onClick,
+              nextPage.address,
+              {ctor: "_Tuple2"
+              ,_0: model.page.pageNumber - 1
+              ,_1: model.searchName})]),
+              _U.list([$Html.text("Prev")]))
+              ,A2($Html.button,
+              _U.list([A2($Html$Events.onClick,
+              nextPage.address,
+              {ctor: "_Tuple2",_0: 1,_1: model.searchName})]),
+              _U.list([$Html.text("First")]))
+              ,A2($Html.button,
+              _U.list([A2($Html$Events.onClick,
+              nextPage.address,
+              {ctor: "_Tuple2"
+              ,_0: model.page.totalPages
+              ,_1: model.searchName})]),
+              _U.list([$Html.text("Last")]))
+              ,A2($Html.button,
+              _U.list([A2($Html$Events.onClick,
+              nextPage.address,
+              {ctor: "_Tuple2"
+              ,_0: model.page.pageNumber + 1
+              ,_1: model.searchName})]),
+              _U.list([$Html.text("Next")]))
+              ,A2(findDonor,address,model)
+              ,A2(pageInfo,address,model)]));
    });
    var update = F2(function (action,model) {
       var _p0 = action;
-      if (_p0.ctor === "NoOp") {
-            var foo = A2($Debug.log,"UPDATE ACTION: ","NoOp");
-            return {ctor: "_Tuple2",_0: model,_1: $Effects.none};
-         } else {
-            return {ctor: "_Tuple2",_0: _p0._0,_1: $Effects.none};
-         }
+      switch (_p0.ctor)
+      {case "NoOp": return {ctor: "_Tuple2"
+                           ,_0: model
+                           ,_1: $Effects.none};
+         case "SetDonors": return {ctor: "_Tuple2"
+                                  ,_0: _p0._0
+                                  ,_1: $Effects.none};
+         default: var updateDonor = function (donorModel) {
+              return _U.eq(donorModel.id,_p0._0) ? A2($Saints$Donor.update,
+              _p0._1,
+              donorModel) : donorModel;
+           };
+           return {ctor: "_Tuple2"
+                  ,_0: _U.update(model,
+                  {donors: A2($List.map,updateDonor,model.donors)})
+                  ,_1: $Effects.none};}
+   });
+   var Modify = F2(function (a,b) {
+      return {ctor: "Modify",_0: a,_1: b};
+   });
+   var viewDonors = F2(function (address,model) {
+      return A2($Saints$Donor.view,
+      A2($Signal.forwardTo,address,Modify(model.id)),
+      model);
+   });
+   var view = F2(function (address,model) {
+      var donors = A2($List.map,viewDonors(address),model.donors);
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2(basicNav,address,model)
+              ,A2($Html.ul,_U.list([]),donors)]));
    });
    var SetDonors = function (a) {
       return {ctor: "SetDonors",_0: a};
    };
    var incomingActions = A2($Signal.map,SetDonors,donorLists);
    var NoOp = {ctor: "NoOp"};
-   var initPageNo = 0;
-   var requestNewPage = $Signal.mailbox(initPageNo);
-   var basicNav = F2(function (address,model) {
-      return A2($Html.div,
-      _U.list([]),
-      _U.list([A2($Html.button,
-              _U.list([A2($Html$Events.onClick,
-              requestNewPage.address,
-              model.page.pageNumber - 1)]),
-              _U.list([$Html.text("Prev")]))
-              ,A2($Html.button,
-              _U.list([A2($Html$Events.onClick,requestNewPage.address,1)]),
-              _U.list([$Html.text("First")]))
-              ,A2($Html.button,
-              _U.list([A2($Html$Events.onClick,
-              requestNewPage.address,
-              model.page.totalPages)]),
-              _U.list([$Html.text("Last")]))
-              ,A2($Html.button,
-              _U.list([A2($Html$Events.onClick,
-              requestNewPage.address,
-              model.page.pageNumber + 1)]),
-              _U.list([$Html.text("Next")]))]));
-   });
-   var view = F2(function (address,model) {
-      return A2($Html.div,
-      _U.list([]),
-      _U.list([A2(basicNav,address,model)
-              ,A2(donorTable,address,model)]));
-   });
-   var requestPage = Elm.Native.Port.make(_elm).outboundSignal("requestPage",
-   function (v) {
-      return v;
-   },
-   requestNewPage.signal);
    var initPage = {totalPages: 0
                   ,totalEntries: 0
                   ,pageSize: 0
                   ,pageNumber: 0};
    var init = {ctor: "_Tuple2"
-              ,_0: {page: initPage,donors: _U.list([])}
+              ,_0: {searchName: "",page: initPage,donors: _U.list([])}
               ,_1: $Effects.none};
-   var Model = F2(function (a,b) {
-      return {page: a,donors: b};
+   var Model = F3(function (a,b,c) {
+      return {searchName: a,page: b,donors: c};
    });
    var Page = F4(function (a,b,c,d) {
       return {totalPages: a
              ,totalEntries: b
              ,pageSize: c
              ,pageNumber: d};
-   });
-   var Donor = F6(function (a,b,c,d,e,f) {
-      return {id: a
-             ,title: b
-             ,firstName: c
-             ,middleName: d
-             ,lastName: e
-             ,nameExt: f};
    });
    var app = $StartApp.start({init: init
                              ,update: update
@@ -12411,20 +12684,20 @@ Elm.ElmSaints.make = function (_elm) {
    return _elm.ElmSaints.values = {_op: _op
                                   ,app: app
                                   ,main: main
-                                  ,Donor: Donor
                                   ,Page: Page
                                   ,Model: Model
                                   ,initPage: initPage
                                   ,init: init
-                                  ,initPageNo: initPageNo
                                   ,NoOp: NoOp
                                   ,SetDonors: SetDonors
+                                  ,Modify: Modify
                                   ,update: update
                                   ,view: view
+                                  ,viewDonors: viewDonors
                                   ,basicNav: basicNav
-                                  ,donorTable: donorTable
-                                  ,oneDonor: oneDonor
-                                  ,fullNameText: fullNameText
-                                  ,requestNewPage: requestNewPage
-                                  ,incomingActions: incomingActions};
+                                  ,pageInfo: pageInfo
+                                  ,findDonor: findDonor
+                                  ,nextPage: nextPage
+                                  ,incomingActions: incomingActions
+                                  ,donorDetail: donorDetail};
 };

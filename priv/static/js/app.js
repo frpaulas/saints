@@ -12295,6 +12295,250 @@ Elm.StartApp.make = function (_elm) {
                                  ,Config: Config
                                  ,App: App};
 };
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Address = Elm.Saints.Address || {};
+Elm.Saints.Address.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Address = _elm.Saints.Address || {};
+   if (_elm.Saints.Address.values)
+   return _elm.Saints.Address.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var view = function (model) {
+      return A2($Html.li,
+      _U.list([]),
+      _U.list([$Html.text(model.location)
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text(model.address1)]))
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text(model.address2)]))
+              ,A2($Html.p,
+              _U.list([]),
+              _U.list([$Html.text(A2($Basics._op["++"],
+              model.city,
+              A2($Basics._op["++"],
+              ", ",
+              A2($Basics._op["++"],
+              model.state,
+              A2($Basics._op["++"]," ",model.zip)))))]))
+              ,A2($Html.p,
+              _U.list([]),
+              _U.list([$Html.text(model.country)]))]));
+   };
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return model;
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0
+              ,location: ""
+              ,address1: ""
+              ,address2: ""
+              ,city: ""
+              ,state: ""
+              ,zip: ""
+              ,country: ""};
+   var Model = F8(function (a,b,c,d,e,f,g,h) {
+      return {id: a
+             ,location: b
+             ,address1: c
+             ,address2: d
+             ,city: e
+             ,state: f
+             ,zip: g
+             ,country: h};
+   });
+   return _elm.Saints.Address.values = {_op: _op
+                                       ,init: init
+                                       ,update: update
+                                       ,view: view
+                                       ,Model: Model};
+};
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Note = Elm.Saints.Note || {};
+Elm.Saints.Note.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Note = _elm.Saints.Note || {};
+   if (_elm.Saints.Note.values) return _elm.Saints.Note.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var view = function (model) {
+      return A2($Html.li,
+      _U.list([]),
+      _U.list([$Html.text(model.memo)]));
+   };
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return model;
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0,memo: ""};
+   var Model = F2(function (a,b) {    return {id: a,memo: b};});
+   return _elm.Saints.Note.values = {_op: _op
+                                    ,init: init
+                                    ,update: update
+                                    ,view: view
+                                    ,Model: Model};
+};
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Phone = Elm.Saints.Phone || {};
+Elm.Saints.Phone.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Phone = _elm.Saints.Phone || {};
+   if (_elm.Saints.Phone.values) return _elm.Saints.Phone.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var view = function (p) {
+      return A2($Html.li,
+      _U.list([]),
+      _U.list([$Html.text(A2($Basics._op["++"],
+      p.ofType,
+      A2($Basics._op["++"],": ",p.number)))]));
+   };
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return model;
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0,ofType: "",number: ""};
+   var Model = F3(function (a,b,c) {
+      return {id: a,ofType: b,number: c};
+   });
+   return _elm.Saints.Phone.values = {_op: _op
+                                     ,init: init
+                                     ,update: update
+                                     ,view: view
+                                     ,Model: Model};
+};
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Donor = Elm.Saints.Donor || {};
+Elm.Saints.Donor.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Donor = _elm.Saints.Donor || {};
+   if (_elm.Saints.Donor.values) return _elm.Saints.Donor.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Saints$Address = Elm.Saints.Address.make(_elm),
+   $Saints$Note = Elm.Saints.Note.make(_elm),
+   $Saints$Phone = Elm.Saints.Phone.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm);
+   var _op = {};
+   var fullNameText = function (m) {
+      return $Html.text(A2($String.join,
+      " ",
+      _U.list([m.title
+              ,m.firstName
+              ,m.middleName
+              ,m.lastName
+              ,m.nameExt
+              ,"("
+              ,$Basics.toString(m.id)
+              ,")"])));
+   };
+   var donorDetailsFor = F2(function (address,model) {
+      return A2($Html.ul,
+      _U.list([$Html$Attributes.$class(model.detailsCss)]),
+      A2($Basics._op["++"],
+      A2($List.map,$Saints$Note.view,model.note),
+      A2($Basics._op["++"],
+      A2($List.map,$Saints$Address.view,model.address),
+      A2($List.map,$Saints$Phone.view,model.phone))));
+   });
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      if (_p0.ctor === "NoOp") {
+            return model;
+         } else {
+            var show_details = _U.eq(model.detailsCss,
+            "donor_details") ? "hide_details" : "donor_details";
+            return _U.update(model,{detailsCss: show_details});
+         }
+   });
+   var ToggleDetails = {ctor: "ToggleDetails"};
+   var view = F2(function (address,model) {
+      return A2($Html.li,
+      _U.list([A2($Html$Events.onClick,address,ToggleDetails)]),
+      _U.list([fullNameText(model)
+              ,A2(donorDetailsFor,address,model)]));
+   });
+   var NoOp = {ctor: "NoOp"};
+   var init = {id: 0
+              ,title: ""
+              ,firstName: ""
+              ,middleName: ""
+              ,lastName: ""
+              ,nameExt: ""
+              ,phone: _U.list([])
+              ,address: _U.list([])
+              ,note: _U.list([])
+              ,detailsCss: "hide_details"};
+   var Model = function (a) {
+      return function (b) {
+         return function (c) {
+            return function (d) {
+               return function (e) {
+                  return function (f) {
+                     return function (g) {
+                        return function (h) {
+                           return function (i) {
+                              return function (j) {
+                                 return {id: a
+                                        ,title: b
+                                        ,firstName: c
+                                        ,middleName: d
+                                        ,lastName: e
+                                        ,nameExt: f
+                                        ,phone: g
+                                        ,address: h
+                                        ,note: i
+                                        ,detailsCss: j};
+                              };
+                           };
+                        };
+                     };
+                  };
+               };
+            };
+         };
+      };
+   };
+   return _elm.Saints.Donor.values = {_op: _op
+                                     ,init: init
+                                     ,update: update
+                                     ,view: view
+                                     ,Model: Model};
+};
 Elm.ElmSaints = Elm.ElmSaints || {};
 Elm.ElmSaints.make = function (_elm) {
    "use strict";
@@ -12310,9 +12554,9 @@ Elm.ElmSaints.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Saints$Donor = Elm.Saints.Donor.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $StartApp = Elm.StartApp.make(_elm),
-   $String = Elm.String.make(_elm),
    $Task = Elm.Task.make(_elm);
    var _op = {};
    var donorLists = Elm.Native.Port.make(_elm).inboundSignal("donorLists",
@@ -12405,63 +12649,6 @@ Elm.ElmSaints.make = function (_elm) {
       return [v._0,v._1];
    },
    nextPage.signal);
-   var fullNameText = function (d) {
-      return $Html.text(A2($String.join,
-      " ",
-      _U.list([d.title
-              ,d.firstName
-              ,d.middleName
-              ,d.lastName
-              ,d.nameExt
-              ,"("
-              ,$Basics.toString(d.id)
-              ,")"])));
-   };
-   var onePhone = function (p) {
-      return A2($Html.li,
-      _U.list([]),
-      _U.list([$Html.text(A2($Basics._op["++"],
-      p.ofType,
-      A2($Basics._op["++"],": ",p.number)))]));
-   };
-   var donorPhones = function (d) {
-      return A2($List.map,onePhone,d.phone);
-   };
-   var oneAddress = function (a) {
-      return A2($Html.li,
-      _U.list([]),
-      _U.list([$Html.text(a.location)
-              ,A2($Html.p,_U.list([]),_U.list([$Html.text(a.address1)]))
-              ,A2($Html.p,_U.list([]),_U.list([$Html.text(a.address2)]))
-              ,A2($Html.p,
-              _U.list([]),
-              _U.list([$Html.text(A2($Basics._op["++"],
-              a.city,
-              A2($Basics._op["++"],
-              ", ",
-              A2($Basics._op["++"],
-              a.state,
-              A2($Basics._op["++"]," ",a.zip)))))]))
-              ,A2($Html.p,_U.list([]),_U.list([$Html.text(a.country)]))]));
-   };
-   var donorAddresses = function (d) {
-      return A2($List.map,oneAddress,d.address);
-   };
-   var oneNote = function (note) {
-      return A2($Html.li,
-      _U.list([]),
-      _U.list([$Html.text(note.memo)]));
-   };
-   var donorNotes = function (d) {
-      return A2($List.map,oneNote,d.note);
-   };
-   var donorDetailsFor = F2(function (address,donor) {
-      return A2($Html.ul,
-      _U.list([$Html$Attributes.$class(donor.detailsCss)]),
-      $List.concat(_U.list([donorNotes(donor)
-                           ,donorAddresses(donor)
-                           ,donorPhones(donor)])));
-   });
    var findDonor = F2(function (address,model) {
       return A2($Html.input,
       _U.list([$Html$Attributes.id("find-donor")
@@ -12549,39 +12736,33 @@ Elm.ElmSaints.make = function (_elm) {
       {case "NoOp": return {ctor: "_Tuple2"
                            ,_0: model
                            ,_1: $Effects.none};
-         case "ToggleDetails": var updateDonor = function (d) {
-              return !_U.eq(d.id,_p0._0.id) ? d : _U.eq(d.detailsCss,
-              "donor_details") ? _U.update(d,
-              {detailsCss: "hide_details"}) : _U.update(d,
-              {detailsCss: "donor_details"});
+         case "SetDonors": return {ctor: "_Tuple2"
+                                  ,_0: _p0._0
+                                  ,_1: $Effects.none};
+         default: var updateDonor = function (donorModel) {
+              return _U.eq(donorModel.id,_p0._0) ? A2($Saints$Donor.update,
+              _p0._1,
+              donorModel) : donorModel;
            };
            return {ctor: "_Tuple2"
                   ,_0: _U.update(model,
                   {donors: A2($List.map,updateDonor,model.donors)})
-                  ,_1: $Effects.none};
-         default: return {ctor: "_Tuple2",_0: _p0._0,_1: $Effects.none};}
+                  ,_1: $Effects.none};}
    });
-   var ToggleDetails = function (a) {
-      return {ctor: "ToggleDetails",_0: a};
-   };
-   var oneDonor = F2(function (address,donor) {
-      return A2($Html.li,
-      _U.list([A2($Html$Events.onClick,
-      address,
-      ToggleDetails(donor))]),
-      _U.list([fullNameText(donor)
-              ,A2(donorDetailsFor,address,donor)]));
+   var Modify = F2(function (a,b) {
+      return {ctor: "Modify",_0: a,_1: b};
    });
-   var donorList = F2(function (address,model) {
-      return A2($Html.ul,
-      _U.list([$Html$Attributes.$class("donor_list")]),
-      A2($List.map,oneDonor(address),model.donors));
+   var viewDonors = F2(function (address,model) {
+      return A2($Saints$Donor.view,
+      A2($Signal.forwardTo,address,Modify(model.id)),
+      model);
    });
    var view = F2(function (address,model) {
+      var donors = A2($List.map,viewDonors(address),model.donors);
       return A2($Html.div,
       _U.list([]),
       _U.list([A2(basicNav,address,model)
-              ,A2(donorList,address,model)]));
+              ,A2($Html.ul,_U.list([]),donors)]));
    });
    var SetDonors = function (a) {
       return {ctor: "SetDonors",_0: a};
@@ -12604,70 +12785,6 @@ Elm.ElmSaints.make = function (_elm) {
              ,pageSize: c
              ,pageNumber: d};
    });
-   var initDonor = {id: 0
-                   ,title: ""
-                   ,firstName: ""
-                   ,middleName: ""
-                   ,lastName: ""
-                   ,nameExt: ""
-                   ,phone: _U.list([])
-                   ,address: _U.list([])
-                   ,note: _U.list([])
-                   ,detailsCss: "hide_details"};
-   var Donor = function (a) {
-      return function (b) {
-         return function (c) {
-            return function (d) {
-               return function (e) {
-                  return function (f) {
-                     return function (g) {
-                        return function (h) {
-                           return function (i) {
-                              return function (j) {
-                                 return {id: a
-                                        ,title: b
-                                        ,firstName: c
-                                        ,middleName: d
-                                        ,lastName: e
-                                        ,nameExt: f
-                                        ,phone: g
-                                        ,address: h
-                                        ,note: i
-                                        ,detailsCss: j};
-                              };
-                           };
-                        };
-                     };
-                  };
-               };
-            };
-         };
-      };
-   };
-   var initNote = {id: 0,memo: ""};
-   var Note = F2(function (a,b) {    return {id: a,memo: b};});
-   var initPhone = {id: 0,ofType: "",number: ""};
-   var Phone = F3(function (a,b,c) {
-      return {id: a,ofType: b,number: c};
-   });
-   var initAddress = {id: 0
-                     ,location: ""
-                     ,address1: ""
-                     ,address2: ""
-                     ,city: ""
-                     ,state: ""
-                     ,zip: ""
-                     ,country: ""};
-   var Address = F8(function (a,b,c,d,e,f,g,h) {
-      return {id: a
-             ,location: b
-             ,address1: c
-             ,address2: d
-             ,city: e
-             ,state: f
-             ,zip: g
-             ,country: h};
-   });
    var app = $StartApp.start({init: init
                              ,update: update
                              ,view: view
@@ -12678,36 +12795,19 @@ Elm.ElmSaints.make = function (_elm) {
    return _elm.ElmSaints.values = {_op: _op
                                   ,app: app
                                   ,main: main
-                                  ,Address: Address
-                                  ,initAddress: initAddress
-                                  ,Phone: Phone
-                                  ,initPhone: initPhone
-                                  ,Note: Note
-                                  ,initNote: initNote
-                                  ,Donor: Donor
-                                  ,initDonor: initDonor
                                   ,Page: Page
                                   ,Model: Model
                                   ,initPage: initPage
                                   ,init: init
                                   ,NoOp: NoOp
                                   ,SetDonors: SetDonors
-                                  ,ToggleDetails: ToggleDetails
+                                  ,Modify: Modify
                                   ,update: update
                                   ,view: view
+                                  ,viewDonors: viewDonors
                                   ,basicNav: basicNav
                                   ,pageInfo: pageInfo
                                   ,findDonor: findDonor
-                                  ,donorList: donorList
-                                  ,oneDonor: oneDonor
-                                  ,donorDetailsFor: donorDetailsFor
-                                  ,donorNotes: donorNotes
-                                  ,oneNote: oneNote
-                                  ,donorAddresses: donorAddresses
-                                  ,oneAddress: oneAddress
-                                  ,donorPhones: donorPhones
-                                  ,onePhone: onePhone
-                                  ,fullNameText: fullNameText
                                   ,nextPage: nextPage
                                   ,incomingActions: incomingActions
                                   ,donorDetail: donorDetail};
