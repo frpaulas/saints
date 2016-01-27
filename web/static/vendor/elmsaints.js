@@ -12366,19 +12366,132 @@ Elm.Saints.Donor.make = function (_elm) {
    });
    var update = F2(function (action,model) {
       var _p0 = action;
-      if (_p0.ctor === "NoOp") {
-            return model;
-         } else {
-            var show_details = _U.eq(model.detailsCss,
-            "donor_details") ? "hide_details" : "donor_details";
-            return _U.update(model,{detailsCss: show_details});
-         }
+      switch (_p0.ctor)
+      {case "NoOp": return model;
+         case "ToggleDetails": var show_details = _U.eq(model.detailsCss,
+           "donor_details") ? "hide_details" : "donor_details";
+           return _U.update(model,{detailsCss: show_details});
+         case "Title": return _U.update(model,{title: _p0._0});
+         case "FirstName": return _U.update(model,{firstName: _p0._0});
+         case "MiddleName": return _U.update(model,{middleName: _p0._0});
+         case "LastName": return _U.update(model,{lastName: _p0._0});
+         default: return _U.update(model,{nameExt: _p0._0});}
+   });
+   var NameExt = function (a) {
+      return {ctor: "NameExt",_0: a};
+   };
+   var inputNameExt = F2(function (address,model) {
+      return A2($Html.input,
+      _U.list([$Html$Attributes.id("name_ext")
+              ,$Html$Attributes.type$("text")
+              ,$Html$Attributes.placeholder("Extension")
+              ,$Html$Attributes.autofocus(true)
+              ,$Html$Attributes.name("name_ext")
+              ,A3($Html$Events.on,
+              "input",
+              $Html$Events.targetValue,
+              function (str) {
+                 return A2($Signal.message,address,NameExt(str));
+              })
+              ,$Html$Attributes.value(model.nameExt)]),
+      _U.list([]));
+   });
+   var LastName = function (a) {
+      return {ctor: "LastName",_0: a};
+   };
+   var inputLastName = F2(function (address,model) {
+      return A2($Html.input,
+      _U.list([$Html$Attributes.id("last_name")
+              ,$Html$Attributes.type$("text")
+              ,$Html$Attributes.placeholder("Last Name")
+              ,$Html$Attributes.autofocus(true)
+              ,$Html$Attributes.name("last_name")
+              ,A3($Html$Events.on,
+              "input",
+              $Html$Events.targetValue,
+              function (str) {
+                 return A2($Signal.message,address,LastName(str));
+              })
+              ,$Html$Attributes.value(model.lastName)]),
+      _U.list([]));
+   });
+   var MiddleName = function (a) {
+      return {ctor: "MiddleName",_0: a};
+   };
+   var inputMiddleName = F2(function (address,model) {
+      return A2($Html.input,
+      _U.list([$Html$Attributes.id("middle_name")
+              ,$Html$Attributes.type$("text")
+              ,$Html$Attributes.placeholder("Middle Name")
+              ,$Html$Attributes.autofocus(true)
+              ,$Html$Attributes.name("middle_name")
+              ,A3($Html$Events.on,
+              "input",
+              $Html$Events.targetValue,
+              function (str) {
+                 return A2($Signal.message,address,MiddleName(str));
+              })
+              ,$Html$Attributes.value(model.middleName)]),
+      _U.list([]));
+   });
+   var FirstName = function (a) {
+      return {ctor: "FirstName",_0: a};
+   };
+   var inputFirstName = F2(function (address,model) {
+      return A2($Html.input,
+      _U.list([$Html$Attributes.id("first_name")
+              ,$Html$Attributes.type$("text")
+              ,$Html$Attributes.placeholder("First Name")
+              ,$Html$Attributes.autofocus(true)
+              ,$Html$Attributes.name("first_name")
+              ,A3($Html$Events.on,
+              "input",
+              $Html$Events.targetValue,
+              function (str) {
+                 return A2($Signal.message,address,FirstName(str));
+              })
+              ,$Html$Attributes.value(model.firstName)]),
+      _U.list([]));
+   });
+   var Title = function (a) {    return {ctor: "Title",_0: a};};
+   var inputTitle = F2(function (address,model) {
+      return A2($Html.input,
+      _U.list([$Html$Attributes.id("title")
+              ,$Html$Attributes.type$("text")
+              ,$Html$Attributes.placeholder("Title")
+              ,$Html$Attributes.autofocus(true)
+              ,$Html$Attributes.name("title")
+              ,A3($Html$Events.on,
+              "input",
+              $Html$Events.targetValue,
+              function (str) {
+                 return A2($Signal.message,address,Title(str));
+              })
+              ,$Html$Attributes.value(model.title)]),
+      _U.list([]));
+   });
+   var donorNameEdit = F2(function (address,model) {
+      return A2($Html.ul,
+      _U.list([$Html$Attributes.$class(A2($Basics._op["++"],
+      "name_edit ",
+      model.detailsCss))]),
+      _U.list([$Html.text("Edit Name")
+              ,A2($Html.li,
+              _U.list([]),
+              _U.list([A2(inputTitle,address,model)
+                      ,A2(inputFirstName,address,model)
+                      ,A2(inputMiddleName,address,model)
+                      ,A2(inputLastName,address,model)
+                      ,A2(inputNameExt,address,model)]))]));
    });
    var ToggleDetails = {ctor: "ToggleDetails"};
    var view = F2(function (address,model) {
       return A2($Html.li,
-      _U.list([A2($Html$Events.onClick,address,ToggleDetails)]),
-      _U.list([fullNameText(model)
+      _U.list([]),
+      _U.list([A2($Html.span,
+              _U.list([A2($Html$Events.onClick,address,ToggleDetails)]),
+              _U.list([fullNameText(model)]))
+              ,A2(donorNameEdit,address,model)
               ,A2(donorDetailsFor,address,model)]));
    });
    var NoOp = {ctor: "NoOp"};

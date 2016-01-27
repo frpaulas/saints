@@ -41,6 +41,11 @@ init =
 type Action 
   = NoOp
   | ToggleDetails
+  | Title String
+  | FirstName String
+  | MiddleName String
+  | LastName String
+  | NameExt String
 
 update: Action -> Model -> Model
 update action model =
@@ -53,16 +58,104 @@ update action model =
             else "donor_details"
       in
         {model | detailsCss = show_details}
+    Title       s -> { model | title = s }
+    FirstName   s -> { model | firstName = s }
+    MiddleName  s -> { model | middleName = s }
+    LastName    s -> { model | lastName = s }
+    NameExt     s -> { model | nameExt = s }
 
 -- VIEW
 
 view: Signal.Address Action -> Model -> Html
 view address model =
   li 
-    [ onClick address ToggleDetails] 
-    [ fullNameText model
+    [] 
+    [ span 
+      [ onClick address ToggleDetails]
+      [ fullNameText model ]
+    , donorNameEdit address model
     , donorDetailsFor address model
     ]
+
+donorNameEdit: Signal.Address Action -> Model -> Html
+donorNameEdit address model =
+  ul 
+  [ class ("name_edit " ++ model.detailsCss)] 
+  [ text "Edit Name" 
+  , li 
+    []
+    [ inputTitle address model
+    , inputFirstName address model
+    , inputMiddleName address model
+    , inputLastName address model
+    , inputNameExt address model
+    ]
+  ]
+
+inputTitle: Signal.Address Action -> Model -> Html
+inputTitle address model =
+  input 
+    [ id "title"
+    , type' "text"
+    , placeholder "Title"
+    , autofocus True
+    , name "title"
+    , on "input" targetValue (\str -> Signal.message address (Title str))
+    , value model.title
+    ]
+    []
+
+inputFirstName: Signal.Address Action -> Model -> Html
+inputFirstName address model =
+  input 
+    [ id "first_name"
+    , type' "text"
+    , placeholder "First Name"
+    , autofocus True
+    , name "first_name"
+    , on "input" targetValue (\str -> Signal.message address (FirstName str))
+    , value model.firstName
+    ]
+    []
+
+inputMiddleName: Signal.Address Action -> Model -> Html
+inputMiddleName address model =
+  input 
+    [ id "middle_name"
+    , type' "text"
+    , placeholder "Middle Name"
+    , autofocus True
+    , name "middle_name"
+    , on "input" targetValue (\str -> Signal.message address (MiddleName str))
+    , value model.middleName
+    ]
+    []
+
+inputLastName: Signal.Address Action -> Model -> Html
+inputLastName address model =
+  input 
+    [ id "last_name"
+    , type' "text"
+    , placeholder "Last Name"
+    , autofocus True
+    , name "last_name"
+    , on "input" targetValue (\str -> Signal.message address (LastName str))
+    , value model.lastName
+    ]
+    []
+
+inputNameExt: Signal.Address Action -> Model -> Html
+inputNameExt address model =
+  input 
+    [ id "name_ext"
+    , type' "text"
+    , placeholder "Extension"
+    , autofocus True
+    , name "name_ext"
+    , on "input" targetValue (\str -> Signal.message address (NameExt str))
+    , value model.nameExt
+    ]
+    []
 
 donorDetailsFor: Signal.Address Action -> Model -> Html
 donorDetailsFor address model =
