@@ -197,7 +197,7 @@ ul.hide_details{
   display: none;
 }
 
-ul.donor_details{
+ul.edit_details, ul.donor_details{
   display: block;
   list-style-type: none;
   font-size: 0.8em;

@@ -79,8 +79,6 @@ type Action
   | SetDonors Model
   | Modify ID Donor.Action
 
---  | ToggleDetails Donor
-
 update: Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
