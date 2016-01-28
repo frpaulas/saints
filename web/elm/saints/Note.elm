@@ -25,4 +25,7 @@ update action model =
 
 view: Model -> Html
 view model =
-  li [] [text model.memo]
+  li [] 
+    [ span [ style [("float", "right")]] [ button [] [ text "Edit"]]
+    , text model.memo
+    ]

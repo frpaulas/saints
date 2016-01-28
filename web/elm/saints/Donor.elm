@@ -186,8 +186,11 @@ donorDetailsFor: Signal.Address Action -> Model -> Html
 donorDetailsFor address model =
   ul
     [ detailsClass model]
-    (    List.map Note.view model.note
+    (   [button [] [text "add note"], br [][]]   
+      ++ List.map Note.view model.note
+      ++ [button [] [text "add address"], br [][]]
       ++ List.map Address.view model.address
+      ++ [button [] [text "add phone"], br [][]]
       ++ List.map Phone.view model.phone
     )
 

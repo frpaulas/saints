@@ -38,6 +38,7 @@ view: Model -> Html
 view model =
   li [] 
     [ text model.location
+    , span [style [("float", "right")]] [ button [] [text "edit"]]
     , p [] [ text model.address1 ]
     , p [] [ text model.address2 ]
     , p [] [ text (model.city ++ ", " ++ model.state ++ " " ++ model.zip) ]

@@ -26,4 +26,7 @@ update action model =
     
 view: Model -> Html
 view p =
-  li [] [ text (p.ofType ++ ": " ++ p.number)]
+  li [] 
+    [ text (p.ofType ++ ": " ++ p.number)
+    , span [style [("float", "right")]] [ button [] [text "edit"]]
+    ]
