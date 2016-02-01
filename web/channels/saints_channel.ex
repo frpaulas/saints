@@ -38,7 +38,6 @@ defmodule Saints.SaintsChannel do
   end
 
   defp jsonify_page({name, resp}) do
-    # donors_with_everything = resp.entries |> Enum.map(&Map.merge %{address: [], phone: [], note: []}, &1)
     %{  searchName: name,
         page: %{totalPages: resp.total_pages,
             totalEntries:   resp.total_entries,
@@ -56,6 +55,19 @@ defmodule Saints.SaintsChannel do
   def handle_in("request_page", [page, name], socket) do
     push socket, "set_donors", %{donors: ready_page(%{"page" => page, "name" => name})}
     {:noreply, socket}    
+  end
+
+  def handle_in("update_donor", donor, socket) do
+    vp = %{"first_name" => donor["firstName"], "middle_name" => donor["middleName"], "last_name"=>donor["lastName"], "name_ext"=>donor["nameExt"], "address"=>donor["address"], "phone"=>donor["phone"], "note"=>donor["note"]}
+    changeset = Repo.one(from u in Saints.Donor, where: u.id == ^donor["id"], preload: [:address, :phone, :note])
+      |> Saints.Donor.changeset(vp)
+    case Repo.update(changeset) do
+      {:ok, donor} ->
+        push socket, "ok_donor", %{donor: donor}
+        {:noreply, socket}
+      {:error, changeset} ->
+        {:error, %{reason: "database failure"}}
+    end
   end
 
   def handle_in("ping", payload, socket) do

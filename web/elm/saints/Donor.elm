@@ -1,4 +1,4 @@
-module Saints.Donor (Model, init, Action, update, view) where
+module Saints.Donor (Model, init, Action, update, view, donorUpdate) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -38,12 +38,21 @@ init =
   , hideEdit      = True
   }
 
+-- SIGNALS
+
+donorUpdate: Signal.Mailbox Model
+donorUpdate =
+  Signal.mailbox init
+
+
 -- UPDATE
 
 type Action 
   = NoOp
+  | OK String
   | ToggleDetails
   | ToggleEdit
+  | SaveDonor
   | Title String
   | FirstName String
   | MiddleName String
@@ -54,8 +63,18 @@ update: Action -> Model -> Model
 update action model =
   case action of
     NoOp -> model
+    OK resp ->
+      let
+        foo = Debug.log "OK RESP" resp
+      in
+        model
     ToggleDetails -> { model | hideDetails = (not model.hideDetails)}
     ToggleEdit    -> { model | hideEdit = (not model.hideEdit)}
+    SaveDonor     ->
+      let 
+        foo = Debug.log "DO SOMETHING TO SAVE" ""
+      in
+        {model | hideEdit = (not model.hideEdit)}
     Title       s -> { model | title = s }
     FirstName   s -> { model | firstName = s }
     MiddleName  s -> { model | middleName = s }
@@ -75,7 +94,8 @@ view address model =
         [ style [("float", "right"), ("margin-top", "-6px")] ]
         [ text "$"
         , donation address model
-        , button [onClick address ToggleEdit] [text "Edit"]
+        , button [ editButton model, onClick address ToggleEdit] [text "Edit"]
+        , saveButton address model
         ]
     , donorNameEdit address model
     , donorDetailsFor address model
@@ -109,6 +129,18 @@ donorNameEdit address model =
     ]
   ]
 
+editButton: Model -> Html.Attribute
+editButton model =
+  class (if model.hideEdit then "edit_button" else "hide")
+
+saveButton: Signal.Address Action -> Model -> Html
+saveButton address model =
+  button
+    [ class (if model.hideEdit then "hide" else "save_button")
+--    , onClick address SaveDonor
+    , onClick donorUpdate.address model
+    ]
+    [ text "Save"]
 editClass: Model -> Html.Attribute
 editClass model =
   class (if model.hideEdit then "hide_details" else "edit_details")
@@ -198,4 +230,3 @@ donorDetailsFor address model =
 fullNameText: Model -> Html
 fullNameText m =
   text (join " " [m.title, m.firstName, m.middleName, m.lastName, m.nameExt, "(", toString m.id, ")"])
-

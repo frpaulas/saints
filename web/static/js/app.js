@@ -26,25 +26,42 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on('set_donors', data => {
-  console.log("DONORS: ", data.donors)
   elmApp.ports.donorLists.send(data.donors)
+})
+
+channel.on('ok_donor', data => {
+  elmApp.ports.okDonor.send(data.donor)
 })
 
 
 // Hook Up Elm
 
 var elmDiv = document.getElementById('elm-main')
-  , initialState = {donorLists: { 
-      searchName: ""
-      , page: {
-            totalPages: 0
-          , totalEntries: 0
-          , pageSize: 0
-          , pageNumber: 0
+  , initialState = {
+      donorLists: { 
+        searchName: ""
+        , page: {
+              totalPages: 0
+            , totalEntries: 0
+            , pageSize: 0
+            , pageNumber: 0
+          }
+        , donors: []
         }
-      , donors: []
+      , okDonor: {
+            id:           0
+          , title:        ""
+          , firstName:    ""
+          , middleName:   ""
+          , lastName:     ""
+          , nameExt:      ""
+          , phone:        []
+          , address:      []
+          , note:         []
+          , hideDetails:  true
+          , hideEdit:     true
+        }
       }
-    }
   , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)
 
 // now try askign for data
@@ -56,3 +73,6 @@ elmApp.ports.requestDonorDetail.subscribe(function(donor_id) {
   console.log("DONOR ID: ", donor_id);
 //  channel.push("request_donor_detail", donor_id)
 });
+elmApp.ports.updateDonor.subscribe(function(donor) {
+  channel.push("update_donor", donor)
+})

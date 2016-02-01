@@ -13,6 +13,7 @@ import Debug
 import Saints.Address as Addresss
 import Saints.Note as Note
 import Saints.Phone as Phone
+import Saints.Donor exposing (donorUpdate)
 import Saints.Donor as Donor
 
 app = 
@@ -20,7 +21,7 @@ app =
     { init = init
     , update = update
     , view = view
-    , inputs = [incomingActions]
+    , inputs = [incomingActions, incomingDonor]
     }
 
 -- MAIN
@@ -76,6 +77,7 @@ init =
 
 type Action 
   = NoOp
+  | OKDonor Donor.Model
   | SetDonors Model
   | Modify ID Donor.Action
 
@@ -84,6 +86,12 @@ update action model =
   case action of
     NoOp -> 
       (model, Effects.none)
+    OKDonor donor ->
+      let 
+        updateDonor donorModel =
+          if donorModel.id == donor.id then donor else donorModel
+      in
+        ({model | donors = List.map updateDonor model.donors}, Effects.none)
     SetDonors donors ->
       (donors, Effects.none)
     Modify id donorAction ->
@@ -165,9 +173,20 @@ incomingActions: Signal Action
 incomingActions =
   Signal.map SetDonors donorLists
 
+incomingDonor: Signal Action
+incomingDonor =
+  Signal.map OKDonor okDonor
+
 donorDetail: Signal.Mailbox Int
 donorDetail =
   Signal.mailbox 0
+
+donorOK: Signal.Mailbox Donor.Model
+donorOK =
+  Signal.mailbox Donor.init
+  --Signal.forwardTo Donor.update (Modify 1) Donor.init
+  --Donor.view (Signal.forwardTo address (Modify model.id)) model
+
 
 -- PORTS
 
@@ -178,3 +197,7 @@ port requestPage =
 port requestDonorDetail: Signal Int
 port requestDonorDetail =
   donorDetail.signal
+port updateDonor: Signal Donor.Model
+port updateDonor = 
+  donorUpdate.signal
+port okDonor: Signal Donor.Model

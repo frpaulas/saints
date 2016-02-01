@@ -197,6 +197,18 @@ ul.hide_details{
   display: none;
 }
 
+.hide {
+  display: none;
+}
+
+.save_button {
+  background-color: red;
+}
+
+.edit_button {
+  background-color: lightblue;
+}
+
 ul.edit_details, ul.donor_details{
   display: block;
   list-style-type: none;
