@@ -29,8 +29,7 @@ defmodule Saints.SaintsChannel do
     resp = 
       ( from s in Saints.Donor, 
           where: (ilike(s.last_name, ^("#{last_name}%")) and ilike(s.first_name, ^("#{first_name}%"))),
-          order_by: [asc: s.last_name, asc: s.first_name],
-          preload: [:address, :phone, :note]
+          order_by: [asc: s.last_name, asc: s.first_name]
       ) 
       |> Repo.paginate(page: max(1, request["page"])) # one is the lowest page number
     
@@ -58,9 +57,16 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_in("update_donor", donor, socket) do
-    vp = %{"first_name" => donor["firstName"], "middle_name" => donor["middleName"], "last_name"=>donor["lastName"], "name_ext"=>donor["nameExt"], "address"=>donor["address"], "phone"=>donor["phone"], "note"=>donor["note"]}
+    vp = %{ "first_name" => donor["firstName"], 
+            "middle_name" => donor["middleName"], 
+            "last_name"=>donor["lastName"], 
+            "name_ext"=>donor["nameExt"] #, 
+#            "address"=>donor["address"], 
+#            "phone"=>donor["phone"], 
+#            "note"=>donor["note"]
+          }
     changeset = Repo.one(from u in Saints.Donor, where: u.id == ^donor["id"], preload: [:address, :phone, :note])
-      |> Saints.Donor.changeset(vp)
+      |> Saints.Donor.changename(vp)
     case Repo.update(changeset) do
       {:ok, donor} ->
         push socket, "ok_donor", %{donor: donor}

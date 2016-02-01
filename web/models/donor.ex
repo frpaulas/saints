@@ -1,3 +1,4 @@
+require IEx
 defmodule Saints.Donor do
   use Saints.Web, :model
 
@@ -21,6 +22,10 @@ defmodule Saints.Donor do
     |> cast_assoc(:phone, require: true)
     |> cast_assoc(:note, require: true)
   end
+  def changename(model, params \\ :empty) do
+    model
+    |> cast(params, ~w(last_name), ~w(title first_name middle_name last_name name_ext))
+  end
 end
 
 defimpl Poison.Encoder, for: Saints.Donor  do
@@ -31,9 +36,9 @@ defimpl Poison.Encoder, for: Saints.Donor  do
         middleName:   model.middle_name,
         lastName:     model.last_name,
         nameExt:      model.name_ext,
-        address:      model.address,
-        phone:        model.phone,
-        note:         model.note,
+        address:      (if Ecto.assoc_loaded?( model.address ), do: model.address, else: []),
+        phone:        (if Ecto.assoc_loaded?( model.phone ), do: model.phone, else: []),
+        note:         (if Ecto.assoc_loaded?( model.note ), do: model.note, else: []),
         hideDetails:  true,
         hideEdit:     true
       } |> Poison.Encoder.encode(opts)
