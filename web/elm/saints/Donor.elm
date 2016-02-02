@@ -1,4 +1,6 @@
-module Saints.Donor (Model, init, Action, update, view, donorUpdate) where
+module Saints.Donor ( Model, init, Action, update, view, donorUpdate, 
+                      detailsGet
+                    ) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -44,6 +46,10 @@ donorUpdate: Signal.Mailbox Model
 donorUpdate =
   Signal.mailbox init
 
+detailsGet: Signal.Mailbox Model
+detailsGet =
+  Signal.mailbox init
+
 
 -- UPDATE
 
@@ -71,10 +77,7 @@ update action model =
     ToggleDetails -> { model | hideDetails = (not model.hideDetails)}
     ToggleEdit    -> { model | hideEdit = (not model.hideEdit)}
     SaveDonor     ->
-      let 
-        foo = Debug.log "DO SOMETHING TO SAVE" ""
-      in
-        {model | hideEdit = (not model.hideEdit)}
+      {model | hideEdit = (not model.hideEdit)}
     Title       s -> { model | title = s }
     FirstName   s -> { model | firstName = s }
     MiddleName  s -> { model | middleName = s }
@@ -88,7 +91,7 @@ view address model =
   li 
     [] 
     [ span 
-      [ onClick address ToggleDetails]
+      [ onClickDetails address model ]
       [ fullNameText model ]
     , span
         [ style [("float", "right"), ("margin-top", "-6px")] ]
@@ -109,8 +112,6 @@ donation address model =
     , placeholder "Donation"
     , autofocus True
     , name "donation"
---    , on "input" targetValue (\str -> Signal.message address (Title str))
---    , value model.title
     , style [("width", "85px"), ("margin-right", "5px")]
     ]
     []
@@ -128,6 +129,12 @@ donorNameEdit address model =
     , inputNameExt address model
     ]
   ]
+
+onClickDetails: Signal.Address Action -> Model -> Html.Attribute
+onClickDetails address model =
+  if (List.length model.address + List.length model.phone + List.length model.note) > 0
+    then (onClick address ToggleDetails)
+    else (onClick detailsGet.address model)
 
 editButton: Model -> Html.Attribute
 editButton model =

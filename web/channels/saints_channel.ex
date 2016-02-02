@@ -76,6 +76,17 @@ defmodule Saints.SaintsChannel do
     end
   end
 
+  def handle_in("request_donor_detail", donor_id, socket) do
+    donor = 
+      Repo.one( from s in Saints.Donor,
+        where: s.id == ^donor_id,
+        preload: [:address, :phone, :note]    
+      )
+      |> Map.merge(%{hideDetails: false})
+    push socket, "ok_donor", %{donor: donor}
+    {:noreply, socket}
+  end
+
   def handle_in("ping", payload, socket) do
     {:reply, {:ok, payload}, socket}
   end

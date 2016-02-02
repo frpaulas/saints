@@ -36,11 +36,11 @@ defimpl Poison.Encoder, for: Saints.Donor  do
         middleName:   model.middle_name,
         lastName:     model.last_name,
         nameExt:      model.name_ext,
-        address:      (if Ecto.assoc_loaded?( model.address ), do: model.address, else: []),
-        phone:        (if Ecto.assoc_loaded?( model.phone ), do: model.phone, else: []),
-        note:         (if Ecto.assoc_loaded?( model.note ), do: model.note, else: []),
-        hideDetails:  true,
-        hideEdit:     true
+        address:      (if Ecto.assoc_loaded?( model.address ),  do: model.address,      else: []),
+        phone:        (if Ecto.assoc_loaded?( model.phone ),    do: model.phone,        else: []),
+        note:         (if Ecto.assoc_loaded?( model.note ),     do: model.note,         else: []),
+        hideDetails:  (if model |> Map.has_key?(:hideDetails),  do: model.hideDetails,  else: true),
+        hideEdit:     (if model |> Map.has_key?(:hideEdit),     do: model.hideEdit,     else: true)
       } |> Poison.Encoder.encode(opts)
   end
 end

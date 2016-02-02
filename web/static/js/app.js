@@ -33,7 +33,6 @@ channel.on('ok_donor', data => {
   elmApp.ports.okDonor.send(data.donor)
 })
 
-
 // Hook Up Elm
 
 var elmDiv = document.getElementById('elm-main')
@@ -69,9 +68,9 @@ var elmDiv = document.getElementById('elm-main')
 elmApp.ports.requestPage.subscribe(function(pageRequest) {
   channel.push("request_page", pageRequest)
 });
-elmApp.ports.requestDonorDetail.subscribe(function(donor_id) {
-  console.log("DONOR ID: ", donor_id);
-//  channel.push("request_donor_detail", donor_id)
+elmApp.ports.requestDonorDetail.subscribe(function(donor) {
+  console.log("REQUEST DETAILS: ", donor);
+  channel.push("request_donor_detail", donor.id)
 });
 elmApp.ports.updateDonor.subscribe(function(donor) {
   channel.push("update_donor", donor)
