@@ -1,7 +1,6 @@
 defmodule Saints.Phone do
   use Saints.Web, :model
-  schema "phone" do
-    # field :donor_id, :integer     
+  schema "phones" do
     field :of_type, :string     
     field :number, :string      
     belongs_to :donor, Saints.Donor
@@ -11,6 +10,7 @@ defmodule Saints.Phone do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, ~w(of_type number), [])
+    |> validate_inclusion(:of_type, ~w(home office away other mobil email fax url pager))
   end
 
 end

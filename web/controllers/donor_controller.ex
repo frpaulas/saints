@@ -41,7 +41,7 @@ defmodule Saints.DonorController do
   def show(conn, %{"id" => donor_id}) do
     donor = Repo.one( from d in Saints.Donor, 
                       where: d.id == ^donor_id, 
-                      preload: [:address, :phone, :note]
+                      preload: [:addresses, :phones, :notes]
                     )
     render conn, "show.html", donor: donor
   end
@@ -50,7 +50,7 @@ defmodule Saints.DonorController do
     changeset = 
       Repo.one( from d in Saints.Donor,
                 where: d.id == ^donor_id,
-                preload: [:address, :phone, :note]
+                preload: [:addresses, :phones, :notes]
               )
       |> Donor.changeset
     render conn, "edit.html", changeset: changeset
@@ -64,7 +64,7 @@ defmodule Saints.DonorController do
   def update(conn, %{"id"=> donor_id, "donor" => donor_params}) do
     donor = Repo.one( from d in Saints.Donor, 
                       where: d.id == ^donor_id, 
-                      preload: [:address, :phone, :note]
+                      preload: [:addresses, :phones, :notes]
                     )
     changeset = Donor.changeset(donor, donor_params)
     case Repo.update(changeset) do

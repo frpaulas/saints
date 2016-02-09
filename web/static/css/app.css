@@ -226,4 +226,175 @@ ul.donor_details li p{
   margin: 0px;
 }
 
+.profile-container {
+    position: relative;
+    width: 143px;
+    float: left;
+}
+
+.profile {
+    background: #f6f6f6;
+    float: left;
+    padding: 4px;
+    border-radius: 3px;
+    -o-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.avatar img {
+    display: block;
+    border-radius: 3px;
+    -o-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.follow {
+    margin: 4px 0 0 0;
+}
+
+.follow button {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: #268cde;
+    color: white;
+    padding: 7px 0;
+    margin: 0;
+    border-radius: 3px;
+    -o-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.follow button i {
+    font-size: 10px;
+    color: #b9daf4;
+}
+
+.follow button:hover {
+    background: #3096e8;
+}
+
+.follow button:active {
+    background: #2085d6;
+}
+
+.profile-list {
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+    color: #767b7e;
+    font-size: 13px;
+}
+
+.profile-list li {
+    cursor: pointer;
+    background: #ffffff;
+    border-top: 1px solid #e5e6e6;
+    padding: 15px 10px;
+}
+
+.profile-list li:last-child {  
+    border-radius: 0 0 3px 3px;;
+    -o-border-radius: 0 0 3px 3px;
+    -ms-border-radius: 0 0 3px 3px;
+    -moz-border-radius: 0 0 3px 3px;
+    -webkit-border-radius: 0 0 3px 3px;
+}
+
+.profile-list li [class^="icon-"] {
+    margin: 0 3px 0 0;
+}
+
+
+.profile-list .profile {
+    border-radius: 3px 3px 0 0;
+    position: relative;
+}
+
+.profile-list li {
+    -webkit-transform-origin: 50% 0%;
+    -o-transform-origin: 50% 0%;
+    transform-origin: 50% 0%;
+    -webkit-transform: perspective(250px) rotateX(-90deg);
+    -o-transform: perspective(250px) rotateX(-90deg);
+    transform: perspective(250px) rotateX(-90deg);
+    -moz-box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
+}
+
+.profile-list .first {
+    -webkit-transition: 0.2s linear 0.8s;
+    -o-transition: 0.2s linear 0.8s;
+    transition: 0.2s linear 0.8s;
+}
+
+.profile-list .second {
+    -webkit-transition: 0.2s linear 0.6s;
+    -o-transition: 0.2s linear 0.6s;
+    transition: 0.2s linear 0.6s;
+}
+
+.profile-list .third {
+    -webkit-transition: 0.2s linear 0.4s;
+    -o-transition: 0.2s linear 0.4s;
+    transition: 0.2s linear 0.4s;
+}
+
+.profile-list .fourth {
+    -webkit-transition: 0.2s linear 0.2s;
+    -o-transition: 0.2s linear 0.2s;
+    transition: 0.2s linear 0.2s;
+}
+
+.profile-container:hover .profile {
+    border-radius: 3px 3px 0 0;
+    -o-border-radius: 3px 3px 0 0;
+    -ms-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+}
+
+.profile-container:hover .profile-list li {
+    -webkit-transform: perspective(350px) rotateX(0deg);
+    -o-transform: perspective(350px) rotateX(0deg);
+    transform: perspective(350px) rotateX(0deg);
+    -webkit-transition: 0.2s linear 0s;
+    -o-transition: 0.2s linear 0s;
+    transition: 0.2s linear 0s;
+}
+
+.profile-container:hover .profile-list .second {
+    -webkit-transition-delay: 0.2s;
+    -o-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+}
+
+.profile-container:hover .profile-list .third {
+    -webkit-transition-delay: 0.4s;
+    -o-transition-delay: 0.4s;
+    transition-delay: 0.4s;
+}
+
+.profile-container:hover .profile-list .fourth {
+    transition-delay: 0.6s;
+    -o-transition-delay: 0.6s;
+    transition-delay: 0.6s;
+} 
+
 

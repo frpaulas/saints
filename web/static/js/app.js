@@ -30,6 +30,7 @@ channel.on('set_donors', data => {
 })
 
 channel.on('ok_donor', data => {
+  console.log("OK DONOR: ", data)
   elmApp.ports.okDonor.send(data.donor)
 })
 
@@ -54,11 +55,9 @@ var elmDiv = document.getElementById('elm-main')
           , middleName:   ""
           , lastName:     ""
           , nameExt:      ""
-          , phone:        []
-          , address:      []
-          , note:         []
-          , hideDetails:  true
-          , hideEdit:     true
+          , phones:        []
+          , addresses:      []
+          , notes:         []
         }
       }
   , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)
@@ -69,9 +68,17 @@ elmApp.ports.requestPage.subscribe(function(pageRequest) {
   channel.push("request_page", pageRequest)
 });
 elmApp.ports.requestDonorDetail.subscribe(function(donor) {
-  console.log("REQUEST DETAILS: ", donor);
   channel.push("request_donor_detail", donor.id)
 });
 elmApp.ports.updateDonor.subscribe(function(donor) {
   channel.push("update_donor", donor)
+})
+elmApp.ports.updateNote.subscribe(function(note) {
+  channel.push("update_note", note)
+})
+elmApp.ports.updatePhone.subscribe(function(phone) {
+  channel.push("update_phone", phone)
+})
+elmApp.ports.updateAddress.subscribe(function(address) {
+  channel.push("update_address", address)
 })

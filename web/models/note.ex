@@ -1,6 +1,6 @@
 defmodule Saints.Note do
   use Saints.Web, :model
-  schema "note" do
+  schema "notes" do
     # field :donor_id, :integer     
     field :memo, :string     
     timestamps

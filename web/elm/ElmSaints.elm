@@ -10,9 +10,12 @@ import Task exposing (Task)
 import Json.Decode as Json exposing ((:=))
 import Debug
 
-import Saints.Address as Addresss
+import Saints.Address as Address
+import Saints.Address exposing (addressUpdate)
 import Saints.Note as Note
+import Saints.Note exposing (noteUpdate)
 import Saints.Phone as Phone
+import Saints.Phone exposing (phoneUpdate)
 import Saints.Donor exposing (donorUpdate, detailsGet)
 import Saints.Donor as Donor
 
@@ -54,6 +57,19 @@ type alias Model =
   , donors:     List Donor.Model
   }
 
+type alias DBDonorList =
+  { searchName: SearchName
+  , page:       Page
+  , donors:     List Donor.DBDonor
+  }
+initDBDonorList: DBDonorList
+initDBDonorList =
+  { searchName  = ""
+  , page        = initPage
+  , donors      = []
+  }
+
+
 initPage: Page
 initPage = 
   { totalPages    = 0
@@ -72,13 +88,16 @@ init =
     , Effects.none
   )
 
+hideDetails = True
+showDetails = False
+
 -- UPDATE
 
 
 type Action 
   = NoOp
-  | OKDonor Donor.Model
-  | SetDonors Model
+  | OKDonor Donor.DBDonor
+  | SetDonors DBDonorList
   | Modify ID Donor.Action
 
 update: Action -> Model -> (Model, Effects Action)
@@ -88,17 +107,26 @@ update action model =
       (model, Effects.none)
     OKDonor donor ->
       let 
-        foo = Debug.log "OK DONOR" donor
         updateDonor donorModel =
-          if donorModel.id == donor.id then donor else donorModel
+          if donorModel.donor.id == donor.id 
+            then Donor.makeModel showDetails donor 
+            else donorModel
       in
         ({model | donors = List.map updateDonor model.donors}, Effects.none)
-    SetDonors donors ->
-      (donors, Effects.none)
+    SetDonors db ->
+      let
+        newModel = 
+          { searchName = db.searchName
+          , page = db.page
+          , donors = List.map (Donor.makeModel hideDetails) db.donors
+          }
+      in
+        -- (donors, Effects.none)
+        (newModel, Effects.none)
     Modify id donorAction ->
       let
         updateDonor donorModel =
-          if donorModel.id == id
+          if donorModel.donor.id == id
             then Donor.update donorAction donorModel
             else donorModel
       in
@@ -117,7 +145,7 @@ view address model =
 
 viewDonors: Signal.Address Action -> Donor.Model -> Html
 viewDonors address model =
-  Donor.view (Signal.forwardTo address (Modify model.id)) model
+  Donor.view (Signal.forwardTo address (Modify model.donor.id)) model
 
 basicNav: Signal.Address Action -> Model -> Html
 basicNav address model =
@@ -178,22 +206,36 @@ incomingDonor: Signal Action
 incomingDonor =
   Signal.map OKDonor okDonor
 
-donorOK: Signal.Mailbox Donor.Model
+donorOK: Signal.Mailbox Donor.Donor
 donorOK =
-  Signal.mailbox Donor.init
+  Signal.mailbox Donor.initDonor
 
 -- PORTS
 
 port requestPage: Signal (Int, String)
 port requestPage = 
   nextPage.signal
-port updateDonor: Signal Donor.Model
+
+port updateDonor: Signal Donor.Donor
 port updateDonor = 
   donorUpdate.signal
-port requestDonorDetail: Signal Donor.Model
+
+port updateNote: Signal Note.Note
+port updateNote = 
+  noteUpdate.signal
+
+port updateAddress: Signal Address.Address
+port updateAddress =
+  addressUpdate.signal
+
+port updatePhone: Signal Phone.Phone
+port updatePhone =
+  phoneUpdate.signal
+
+port requestDonorDetail: Signal Donor.Donor
 port requestDonorDetail =
   detailsGet.signal
 
 
-port donorLists: Signal Model
-port okDonor: Signal Donor.Model
+port donorLists: Signal DBDonorList
+port okDonor: Signal Donor.DBDonor

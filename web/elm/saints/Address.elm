@@ -1,11 +1,15 @@
-module Saints.Address (Model, init, Action, update, view) where
+module Saints.Address ( Model, Address, init, makeModel, addressUpdate,
+                        Action, update, view
+                      ) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Graphics.Input exposing (dropDown)
 
-type alias Model =
-  { id:       Int
+type alias ID = Int
+type alias Address =
+  { id:       ID
   , location: String
   , address1: String
   , address2: String
@@ -14,8 +18,8 @@ type alias Model =
   , zip:      String
   , country:  String
   }
-init: Model
-init =
+initAddress: Address
+initAddress =
   { id = 0
   , location = ""
   , address1 = ""
@@ -26,21 +30,234 @@ init =
   , country =  ""
   }
 
+type alias Model =
+  { address: Address
+  , editing: Bool
+  }
+
+init: Model
+init =
+  { address = initAddress
+  , editing = False
+  }
+
+makeModel: Address -> Model
+makeModel addr =
+  { address = addr
+  , editing = False
+  }
+
+
+-- SIGNALS
+
+addressUpdate: Signal.Mailbox Address
+addressUpdate =
+  Signal.mailbox initAddress
+
+
+-- UPDATE
+
 type Action 
   = NoOp
+  | ToggleEditing
+  | SaveEdit
+  | Location String
+  | Address1 String
+  | Address2 String
+  | City String
+  | State String
+  | Zip String
+  | Country String
 
 update: Action -> Model -> Model
 update action model =
   case action of
     NoOp -> model
+    ToggleEditing -> {model | editing = not model.editing}
+    SaveEdit -> {model | editing = not model.editing}
+    Location s -> 
+      let
+        addr = model.address
+        newAddress = {addr | location = s}
+      in
+        { model | address = newAddress }
+    Address1 s -> 
+      let
+        addr = model.address
+        newAddress = {addr | address1 = s}
+      in
+        { model | address = newAddress }
+    Address2 s -> 
+      let
+        addr = model.address
+        newAddress = {addr | address2 = s}
+      in
+        { model | address = newAddress }
+    City s -> 
+      let
+        addr = model.address
+        newAddress = {addr | city = s}
+      in
+        { model | address = newAddress }
+    State s -> 
+      let
+        addr = model.address
+        newAddress = {addr | state = s}
+      in
+        { model | address = newAddress }
+    Zip s  -> 
+      let
+        addr = model.address
+        newAddress = {addr | zip = s}
+      in
+        { model | address = newAddress }
+    Country s -> 
+      let
+        addr = model.address
+        newAddress = {addr | country = s}
+      in
+        { model | address = newAddress }
 
-view: Model -> Html
-view model =
-  li [] 
-    [ text model.location
-    , span [style [("float", "right")]] [ button [] [text "edit"]]
-    , p [] [ text model.address1 ]
-    , p [] [ text model.address2 ]
-    , p [] [ text (model.city ++ ", " ++ model.state ++ " " ++ model.zip) ]
-    , p [] [ text model.country ]
+view: Signal.Address Action -> Model -> List Html
+view address model =
+  let addr = model.address
+  in
+    [ li [ onClick address ToggleEditing] 
+        [ text addr.location
+        , p [] [ text addr.address1 ]
+        , p [] [ text addr.address2 ]
+        , p [] [ text (addr.city ++ ", " ++ addr.state ++ " " ++ addr.zip) ]
+        , p [] [ text addr.country ]
+        ]
+    , li
+      []
+      [ ul 
+        [ editingClass model ] 
+        [ li 
+          [] 
+          [ span [] [ inputLocation address addr ]
+          , cancelSave address model
+          ]
+        , li [] [inputAddress1 address addr]
+        , li [] [inputAddress2 address addr]
+        , li [] [inputCity address addr]
+        , li [] [inputState address addr]
+        , li [] [inputZip address addr]
+        , li [] [inputCountry address addr]
+        ]
+      ]
     ]
+
+
+inputLocation: Signal.Address Action -> Address -> Html
+inputLocation address model =
+  input 
+  [ id "location"
+  , type' "text"
+  , placeholder "Location"
+  , autofocus True
+  , name "location"
+  , on "input" targetValue (\str -> Signal.message address (Location str))
+  , value model.location
+  ]
+  []
+  
+
+inputAddress1: Signal.Address Action -> Address -> Html
+inputAddress1 address model =
+  input 
+    [ id "address1"
+    , type' "text"
+    , placeholder "Street Address"
+    , autofocus True
+    , name "address1"
+    , on "input" targetValue (\str -> Signal.message address (Address1 str))
+    , value model.address1
+    ]
+    []
+  
+
+inputAddress2: Signal.Address Action -> Address -> Html
+inputAddress2 address model =
+  input 
+    [ id "address2"
+    , type' "text"
+    , placeholder "Street Address"
+    , autofocus True
+    , name "address2"
+    , on "input" targetValue (\str -> Signal.message address (Address2 str))
+    , value model.address2
+    ]
+    []
+  
+
+inputCity: Signal.Address Action -> Address -> Html
+inputCity address model =
+  input 
+    [ id "city"
+    , type' "text"
+    , placeholder "City"
+    , autofocus True
+    , name "city"
+    , on "input" targetValue (\str -> Signal.message address (City str))
+    , value model.city
+    ]
+    []
+  
+
+inputState: Signal.Address Action -> Address -> Html
+inputState address model =
+  input 
+    [ id "state"
+    , type' "text"
+    , placeholder "State or Province"
+    , autofocus True
+    , name "state"
+    , on "input" targetValue (\str -> Signal.message address (State str))
+    , value model.state
+    ]
+    []
+  
+
+inputZip: Signal.Address Action -> Address -> Html
+inputZip address model =
+  input 
+    [ id "zip"
+    , type' "text"
+    , placeholder "Postal Code"
+    , autofocus True
+    , name "zip"
+    , on "input" targetValue (\str -> Signal.message address (Zip str))
+    , value model.zip
+    ]
+    []
+  
+
+inputCountry: Signal.Address Action -> Address -> Html
+inputCountry address model =
+  input 
+    [ id "country"
+    , type' "text"
+    , placeholder "Country"
+    , autofocus True
+    , name "country"
+    , on "input" targetValue (\str -> Signal.message address (Country str))
+    , value model.country
+    ]
+    []
+  
+
+editingClass: Model -> Html.Attribute
+editingClass model =
+  class (if model.editing then "edit_details" else "hide")
+viewingClass model =
+  class (if model.editing then "hide" else "")
+cancelSave: Signal.Address Action -> Model -> Html
+cancelSave address model = 
+  span 
+    [ style [("float", "right"), ("margin-top", "-6px")] ]
+    [ button [ onClick address ToggleEditing] [text "cancel"]
+    , button [ onClick addressUpdate.address model.address] [text "save"]
+    ]
+
+

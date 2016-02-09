@@ -1,6 +1,6 @@
 defmodule Saints.Address do
   use Saints.Web, :model
-  schema "address" do
+  schema "addresses" do
     # field :donor_id, :integer     
     field :location, :string, default: "home"
     field :address1, :string, default: ""
@@ -16,6 +16,7 @@ defmodule Saints.Address do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, ~w(location), ~w(address1 address2 city state zip country))
+    |> validate_inclusion(:location, ~w(unknown home office church vacation))
   end
 
 end

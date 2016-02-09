@@ -57,7 +57,7 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_in("update_donor", donor, socket) do
-    vp = %{ "first_name" => donor["firstName"], 
+    db_donor = %{ "first_name" => donor["firstName"], 
             "middle_name" => donor["middleName"], 
             "last_name"=>donor["lastName"], 
             "name_ext"=>donor["nameExt"] #, 
@@ -65,24 +65,68 @@ defmodule Saints.SaintsChannel do
 #            "phone"=>donor["phone"], 
 #            "note"=>donor["note"]
           }
-    changeset = Repo.one(from u in Saints.Donor, where: u.id == ^donor["id"], preload: [:address, :phone, :note])
-      |> Saints.Donor.changename(vp)
+    changeset = Repo.one(from u in Saints.Donor, where: u.id == ^donor["id"], preload: [:addresses, :phones, :notes])
+      |> Saints.Donor.changename(db_donor)
     case Repo.update(changeset) do
       {:ok, donor} ->
         push socket, "ok_donor", %{donor: donor}
         {:noreply, socket}
       {:error, changeset} ->
-        {:error, %{reason: "database failure"}}
+        {:error, %{reason: "DB failed to update donor"}}
     end
+  end
+
+  def handle_in("update_note", note, socket) do
+    changeset = Repo.one(from n in Saints.Note, where: n.id == ^note["id"])
+      |> Saints.Note.changeset(note)
+    case Repo.update(changeset) do
+      {:ok, note} -> 
+        pushDonor note.donor_id, socket
+      {:error, changeset} ->
+        {:error, %{reason: "DB failed to update note"}}
+    end
+  end
+
+  def handle_in("update_address", address, socket) do
+    changeset = Repo.one(from a in Saints.Address, where: a.id == ^address["id"])
+      |> Saints.Address.changeset(address)
+    case Repo.update(changeset) do
+      {:ok, address} ->
+        pushDonor address.donor_id, socket
+      {:error, changeset} ->
+        {:error, %{reason: "DB failed to update address"}}
+    end
+  end
+
+  def handle_in("update_phone", phone, socket) do
+    phone_db = %{ "id" => phone["id"],
+                  "number" => phone["number"],
+                  "of_type" => phone["ofType"]
+                }
+    changeset = Repo.one(from p in Saints.Phone, where: p.id == ^phone["id"])
+      |> Saints.Phone.changeset(phone_db)
+    case Repo.update(changeset) do
+      {:ok, phone} ->
+        pushDonor phone.donor_id, socket
+      {:error, changeset} ->
+        {:error, %{reason: "DB failed to update phone/email"}}
+    end
+  end
+
+
+
+  defp pushDonor(id, socket) do
+    d = Repo.one(from d in Saints.Donor, where: d.id == ^id, preload: [:addresses, :phones, :notes])
+    push socket, "ok_donor", %{donor: d}
+    {:noreply, socket}
   end
 
   def handle_in("request_donor_detail", donor_id, socket) do
     donor = 
       Repo.one( from s in Saints.Donor,
         where: s.id == ^donor_id,
-        preload: [:address, :phone, :note]    
+        preload: [:addresses, :phones, :notes]    
       )
-      |> Map.merge(%{hideDetails: false})
     push socket, "ok_donor", %{donor: donor}
     {:noreply, socket}
   end
