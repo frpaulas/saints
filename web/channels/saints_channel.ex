@@ -61,9 +61,6 @@ defmodule Saints.SaintsChannel do
             "middle_name" => donor["middleName"], 
             "last_name"=>donor["lastName"], 
             "name_ext"=>donor["nameExt"] #, 
-#            "address"=>donor["address"], 
-#            "phone"=>donor["phone"], 
-#            "note"=>donor["note"]
           }
     changeset = Repo.one(from u in Saints.Donor, where: u.id == ^donor["id"], preload: [:addresses, :phones, :notes])
       |> Saints.Donor.changename(db_donor)
@@ -99,9 +96,10 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_in("update_phone", phone, socket) do
-    phone_db = %{ "id" => phone["id"],
-                  "number" => phone["number"],
-                  "of_type" => phone["ofType"]
+    phone_db = %{ "id"        => phone["id"],
+                  "location"  => phone["location"],
+                  "number"    => phone["number"],
+                  "of_type"   => phone["ofType"]
                 }
     changeset = Repo.one(from p in Saints.Phone, where: p.id == ^phone["id"])
       |> Saints.Phone.changeset(phone_db)

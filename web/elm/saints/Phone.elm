@@ -6,15 +6,17 @@ import Html.Events exposing (..)
 
 type alias ID = Int
 type alias Phone =
-  { id:      ID
-  , ofType:  String
-  , number:  String
+  { id:       ID
+  , location: String
+  , ofType:   String
+  , number:   String
   }
 initPhone: Phone
 initPhone =
-  { id      = 0
-  , ofType  = ""
-  , number  = ""
+  { id       = 0
+  , location = ""
+  , ofType   = ""
+  , number   = ""
   }
 type alias Model =
   { phone: Phone
@@ -45,6 +47,7 @@ phoneUpdate =
 type Action 
   = NoOp
   | ToggleEditing
+  | Location String
   | OfType String
   | Number String
 
@@ -57,6 +60,12 @@ update action model =
       let
         phone = model.phone
         newPhone = {phone | ofType = s}
+      in
+        { model | phone = newPhone }
+    Location s -> 
+      let
+        phone = model.phone
+        newPhone = {phone | location = s}
       in
         { model | phone = newPhone }
     Number s -> 
@@ -74,19 +83,36 @@ view address model =
   in
     [ li 
         [ onClick address ToggleEditing ] 
-        [ text (phone.ofType ++ ": " ++ phone.number) ]
+        [ text (phone.location ++ " " ++ phone.ofType ++ ": " ++ phone.number) ]
     , li
       []
       [ ul
         [ editingClass model ]
         [ li 
           [] 
-          [ span [] [inputOfType address phone]
+          [ span [] [inputLocation address phone]
           , cancelSave address model
           ]
+        , li [] [inputOfType address phone]
         , li [] [inputNumber address phone]
         ]
       ]
+    ]
+
+inputLocation: Signal.Address Action -> Phone -> Html
+inputLocation address phone =
+  p 
+    []
+    [ input 
+      [ id "location"
+      , type' "text"
+      , placeholder "Location (home, office, etc.)"
+      , autofocus True
+      , name "location"
+      , on "input" targetValue (\str -> Signal.message address (Location str))
+      , value phone.location
+      ]
+      []
     ]
 
 inputOfType: Signal.Address Action -> Phone -> Html
@@ -96,7 +122,7 @@ inputOfType address phone =
     [ input 
       [ id "ofType"
       , type' "text"
-      , placeholder "Type (phone, email, etc."
+      , placeholder "Type (phone, email, etc.)"
       , autofocus True
       , name "ofType"
       , on "input" targetValue (\str -> Signal.message address (OfType str))
