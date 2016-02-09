@@ -10,12 +10,16 @@ import Html.Events exposing (..)
 type alias ID = Int
 type alias Note = 
   { id: ID
+  , author: String
   , memo: String
+  , updated_at: String -- not editable
   }
 initNote: Note
 initNote =
   { id = 0
+  , author = ""
   , memo = ""
+  , updated_at = "" -- note editable, comes from DB
   }
 type alias Model =
   { note: Note
@@ -46,6 +50,7 @@ noteUpdate =
 type Action 
   = NoOp
   | Memo String
+  | Author String
   | ToggleEditing
   | SaveEdit
 
@@ -57,6 +62,12 @@ update action model =
       let
         note = model.note
         newNote = {note | memo = s}
+      in 
+        {model | note = newNote}
+    Author s ->
+      let
+        note = model.note
+        newNote = {note | author = s}
       in 
         {model | note = newNote}
     ToggleEditing -> {model | editing = not model.editing}
@@ -76,7 +87,9 @@ view address model =
   in
     [ li 
       [ onClick address ToggleEditing, viewingClass model ] 
-      [ text note.memo ]
+      [ text (note.author ++ " says: " ++ note.memo)
+      , span [ style [("float", "right")]] [text ("at: " ++ note.updated_at)]
+      ]
     , li 
       []
       [ ul
