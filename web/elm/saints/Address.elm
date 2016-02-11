@@ -1,5 +1,5 @@
-module Saints.Address ( Model, Address, init, makeModel, addressUpdate,
-                        Action, update, view
+module Saints.Address ( Model, Address, init, makeModel, new, addressUpdate,
+                        addressDelete, Action, update, view
                       ) where
 
 import Html exposing (..)
@@ -10,6 +10,7 @@ import Graphics.Input exposing (dropDown)
 type alias ID = Int
 type alias Address =
   { id:       ID
+  , donor_id: ID
   , location: String
   , address1: String
   , address2: String
@@ -21,6 +22,7 @@ type alias Address =
 initAddress: Address
 initAddress =
   { id = 0
+  , donor_id = 0
   , location = ""
   , address1 = ""
   , address2 = ""
@@ -47,11 +49,24 @@ makeModel addr =
   , editing = False
   }
 
+new: ID -> Model
+new donor_id =
+  let
+    address = initAddress
+    newAddress = {address | donor_id = donor_id}
+  in
+    { address = newAddress
+    , editing = True
+    }
 
 -- SIGNALS
 
 addressUpdate: Signal.Mailbox Address
 addressUpdate =
+  Signal.mailbox initAddress
+
+addressDelete: Signal.Mailbox Address
+addressDelete =
   Signal.mailbox initAddress
 
 
@@ -61,6 +76,7 @@ type Action
   = NoOp
   | ToggleEditing
   | SaveEdit
+  | Delete
   | Location String
   | Address1 String
   | Address2 String
@@ -75,6 +91,7 @@ update action model =
     NoOp -> model
     ToggleEditing -> {model | editing = not model.editing}
     SaveEdit -> {model | editing = not model.editing}
+    Delete -> model
     Location s -> 
       let
         addr = model.address
@@ -124,6 +141,7 @@ view address model =
   in
     [ li [ onClick address ToggleEditing] 
         [ text addr.location
+        , button [ deleteButtonStyle, onClick addressDelete.address addr ] [ text "-"]
         , p [] [ text addr.address1 ]
         , p [] [ text addr.address2 ]
         , p [] [ text (addr.city ++ ", " ++ addr.state ++ " " ++ addr.zip) ]
@@ -260,4 +278,19 @@ cancelSave address model =
     , button [ onClick addressUpdate.address model.address] [text "save"]
     ]
 
+-- STYLE
+
+deleteButtonStyle: Attribute
+deleteButtonStyle =
+  style
+        [ ("position", "absolute")
+        , ("float", "right")
+        , ("right", "1px")
+        , ("top", "3px")
+        , ("padding", "0px 4px")
+        , ("line-height", "0.9")
+        , ("display", "inline-block")
+        , ("z-index", "1")
+        , ("background-color", "red")
+        ]
 

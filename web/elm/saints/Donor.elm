@@ -56,8 +56,8 @@ initDonor = emptyDonor
 initDBDonor: DBDonor
 initDBDonor = emptyDonor
 
-makeModel: Bool -> DBDonor -> Model
-makeModel hideDetails donor =
+makeModel: Bool -> Bool -> DBDonor -> Model
+makeModel hideDetails detailsInHand donor =
   { donor = 
     { id =         donor.id
     , title =      donor.title
@@ -71,18 +71,21 @@ makeModel hideDetails donor =
     }
   , hideDetails = hideDetails
   , hideEdit = True
+  , detailsInHand = detailsInHand
   }
 
 type alias Model =
   { donor: Donor
   , hideDetails: Bool
   , hideEdit: Bool
+  , detailsInHand: Bool
   }
 init: Model
 init =
   { donor = initDonor
   , hideDetails   = True
   , hideEdit      = True
+  , detailsInHand = False
   }
 
 -- SIGNALS
@@ -104,6 +107,7 @@ type Action
   | ToggleDetails
   | ToggleEdit
   | SaveDonor
+  | Delete
   | Title String
   | FirstName String
   | MiddleName String
@@ -112,6 +116,9 @@ type Action
   | ModifyNote ID Note.Action
   | ModifyAddr ID Address.Action
   | ModifyPhone ID Phone.Action
+  | NewNote
+  | NewAddress
+  | NewPhone
 
 update: Action -> Model -> Model
 update action model =
@@ -125,6 +132,7 @@ update action model =
     ToggleDetails -> { model | hideDetails = (not model.hideDetails)}
     ToggleEdit    -> { model | hideEdit = (not model.hideEdit)}
     SaveDonor     -> { model | hideEdit = (not model.hideEdit)}
+    Delete        -> model
     Title       s -> 
       let
         donor = model.donor
@@ -167,26 +175,30 @@ update action model =
           {this | addresses = updatedDonorAddresses this.addresses id addrAction}
       in
         {model | donor = updatedDonor model.donor}
---      let
---        updateAddr addrModel = 
---          if addrModel.address.id == id
---            then Address.update addrAction addrModel
---            else addrModel
---      in
---        {model | address = List.map updateAddr model.address}
     ModifyPhone id phoneAction ->
       let
         updatedDonor this = 
           {this | phones = updatedDonorPhones this.phones id phoneAction}
       in
         {model | donor = updatedDonor model.donor}
---      let
---        updatePhone phoneModel = 
---          if phoneModel.phone.id == id
---            then Phone.update phoneAction phoneModel
---            else phoneModel
---      in
---        {model | phone = List.map updatePhone model.phone}
+    NewNote -> 
+      let
+        donor = model.donor
+        newDonor = {donor | notes = donor.notes ++ [Note.newNote donor.id]} 
+      in
+        {model | donor = newDonor}
+    NewAddress ->
+      let
+        donor = model.donor
+        newDonor = {donor | addresses = donor.addresses ++ [Address.new donor.id]} 
+      in
+        {model | donor = newDonor}
+    NewPhone ->
+      let
+        donor = model.donor
+        newDonor = {donor | phones = donor.phones ++ [Phone.new donor.id]} 
+      in
+        {model | donor = newDonor}
 
 updatedDonorNotes: List Note.Model -> ID -> Note.Action -> List Note.Model
 updatedDonorNotes notes id action =
@@ -226,7 +238,7 @@ view address model =
     donor  = model.donor
     notes  = List.map (viewNotes address) donor.notes
               |> List.concat
-    addres = List.map (viewAddr address) donor.addresses
+    theseAddresses = List.map (viewAddr address) donor.addresses
               |> List.concat
     phones = List.map (viewPhone address) donor.phones
               |> List.concat
@@ -235,7 +247,9 @@ view address model =
       [ onEnterDetails address model, onMouseLeave address ToggleDetails ] 
       [ span 
         [ onClick address ToggleEdit]
-        [ fullNameText donor ]
+        [ fullNameText donor 
+        , button [ deleteButtonStyle model, onClick address Delete ] [ text "-"]
+        ]
       , span
           [ style [("float", "right"), ("margin-top", "-6px")] ]
           [ text "$"
@@ -243,9 +257,27 @@ view address model =
           , saveButton address model
           ]
       , donorNameEdit address model
-      , ul [ detailsClass model] notes 
-      , ul [ detailsClass model] addres 
-      , ul [ detailsClass model] phones
+      , p
+        []
+        [ button
+          [ addButtonStyle model, onClick address NewNote]
+          [ text "+"]
+        , ul [ detailsClass model] notes
+        ] 
+      , p
+        []
+        [ button
+          [ addButtonStyle model, onClick address NewAddress]
+          [ text "+"]
+        , ul [ detailsClass model] theseAddresses
+        ]
+      , p
+        []
+        [ button
+          [ addButtonStyle model, onClick address NewPhone]
+          [ text "+"]
+        , ul [ detailsClass model] phones
+        ]
 --      , donorDetailsFor address model
       ]
 
@@ -290,25 +322,15 @@ donorNameEdit address model =
 
 onClickDetails: Signal.Address Action -> Model -> Html.Attribute
 onClickDetails address model =
-  let
-    detailsInHand = (List.length model.donor.addresses
-                  + List.length model.donor.phones
-                  + List.length model.donor.notes) > 0
-  in
-    if detailsInHand
-      then (onClick address ToggleDetails)
-      else (onClick detailsGet.address model.donor)
+  if model.detailsInHand
+    then (onClick address ToggleDetails)
+    else (onClick detailsGet.address model.donor)
 
 onEnterDetails: Signal.Address Action -> Model -> Html.Attribute
 onEnterDetails address model =
-  let
-    detailsInHand = (List.length model.donor.addresses
-                  + List.length model.donor.phones
-                  + List.length model.donor.notes) > 0
-  in
-    if detailsInHand
-      then (onMouseEnter address ToggleDetails)
-      else (onMouseEnter detailsGet.address model.donor)
+  if model.detailsInHand
+    then (onMouseEnter address ToggleDetails)
+    else (onMouseEnter detailsGet.address model.donor)
 
 editButton: Model -> Html.Attribute
 editButton model =
@@ -409,3 +431,40 @@ inputNameExt address model =
 fullNameText: Donor -> Html
 fullNameText d =
   text (join " " [d.title, d.firstName, d.middleName, d.lastName, d.nameExt, "(", toString d.id, ")"])
+
+-- STYLE
+
+addButtonStyle: Model -> Attribute
+addButtonStyle model =
+  if model.hideDetails
+    then
+      style [("display", "none")]
+    else
+      style
+        [ ("position", "relative")
+        , ("float", "left")
+        , ("padding", "0px 2px")
+        , ("line-height", "0.8")
+        , ("display", "inline-block")
+        , ("left", "0px")
+        , ("top", "0px")
+        , ("z-index", "1")
+        ]
+
+deleteButtonStyle: Model -> Attribute
+deleteButtonStyle model =
+  if model.hideDetails
+    then
+      style [("display", "none")]
+    else
+      style
+            [ ("position", "absolute")
+            , ("float", "right")
+            , ("right", "1px")
+            , ("top", "0px")
+            , ("padding", "0px 4px")
+            , ("line-height", "0.9")
+            , ("display", "inline-block")
+            , ("z-index", "1")
+            , ("background-color", "red")
+            ]

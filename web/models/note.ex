@@ -1,7 +1,6 @@
 defmodule Saints.Note do
   use Saints.Web, :model
   schema "notes" do
-    # field :donor_id, :integer
     field :author, :string     
     field :memo, :string     
     timestamps
@@ -18,6 +17,7 @@ end
 defimpl Poison.Encoder, for: Saints.Note  do
   def encode(model, opts) do
     %{  id: model.id,
+        donor_id: model.donor_id,
         author: model.author,
         memo: model.memo,
         updated_at: model.updated_at

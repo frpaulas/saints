@@ -1,5 +1,5 @@
-module Saints.Note  ( Model, Note, init, makeModel, Action, 
-                     noteUpdate, update, view
+module Saints.Note  ( Model, Note, init, makeModel, newNote, Action, 
+                     noteUpdate, noteDelete, update, view
                     ) where
 
 
@@ -10,6 +10,7 @@ import Html.Events exposing (..)
 type alias ID = Int
 type alias Note = 
   { id: ID
+  , donor_id: ID
   , author: String
   , memo: String
   , updated_at: String -- not editable
@@ -17,6 +18,7 @@ type alias Note =
 initNote: Note
 initNote =
   { id = 0
+  , donor_id = 0
   , author = ""
   , memo = ""
   , updated_at = "" -- note editable, comes from DB
@@ -37,10 +39,24 @@ makeModel note =
   , editing = False
   }
 
+newNote: ID -> Model
+newNote donor_id =
+  let
+    note = initNote
+    newNote = {note | donor_id = donor_id}
+  in
+    { note = newNote
+    , editing = True
+    }
+
 -- SIGNALS
 
 noteUpdate: Signal.Mailbox Note
 noteUpdate =
+  Signal.mailbox initNote
+
+noteDelete: Signal.Mailbox Note
+noteDelete = 
   Signal.mailbox initNote
 
 
@@ -71,12 +87,7 @@ update action model =
       in 
         {model | note = newNote}
     ToggleEditing -> {model | editing = not model.editing}
-    SaveEdit ->
-      let 
-        foo = Debug.log "SAVE EDIT: " model
-        updatedModel = {model | editing = not model.editing}
-      in
-        updatedModel
+    SaveEdit -> {model | editing = not model.editing}
 
 
 -- VIEW
@@ -88,7 +99,11 @@ view address model =
     [ li 
       [ onClick address ToggleEditing, viewingClass model ] 
       [ text (note.author ++ " says: " ++ note.memo)
-      , span [ style [("float", "right")]] [text ("at: " ++ note.updated_at)]
+      , span 
+        [ style [("float", "right")]] 
+        [ text ("at: " ++ note.updated_at)
+        , button [ deleteButtonStyle, onClick noteDelete.address note ] [ text "-"]
+        ]
       ]
     , li 
       []
@@ -127,3 +142,19 @@ cancelSave address model =
     [ button [ onClick address ToggleEditing] [text "cancel"]
     , button [ onClick noteUpdate.address model.note] [text "save"]
     ]
+
+-- STYLE
+
+deleteButtonStyle: Attribute
+deleteButtonStyle =
+  style
+        [ ("position", "absolute")
+        , ("float", "right")
+        , ("right", "1px")
+        , ("top", "3px")
+        , ("padding", "0px 4px")
+        , ("line-height", "0.9")
+        , ("display", "inline-block")
+        , ("z-index", "1")
+        , ("background-color", "red")
+        ]

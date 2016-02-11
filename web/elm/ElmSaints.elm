@@ -11,11 +11,11 @@ import Json.Decode as Json exposing ((:=))
 import Debug
 
 import Saints.Address as Address
-import Saints.Address exposing (addressUpdate)
+import Saints.Address exposing (addressUpdate, addressDelete)
 import Saints.Note as Note
-import Saints.Note exposing (noteUpdate)
+import Saints.Note exposing (noteUpdate, noteDelete)
 import Saints.Phone as Phone
-import Saints.Phone exposing (phoneUpdate)
+import Saints.Phone exposing (phoneUpdate, phoneDelete)
 import Saints.Donor exposing (donorUpdate, detailsGet)
 import Saints.Donor as Donor
 
@@ -90,6 +90,8 @@ init =
 
 hideDetails = True
 showDetails = False
+noDetails = False
+gotDetails = True
 
 -- UPDATE
 
@@ -99,6 +101,7 @@ type Action
   | OKDonor Donor.DBDonor
   | SetDonors DBDonorList
   | Modify ID Donor.Action
+  | NewDonor
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
@@ -109,7 +112,7 @@ update action model =
       let 
         updateDonor donorModel =
           if donorModel.donor.id == donor.id 
-            then Donor.makeModel showDetails donor 
+            then Donor.makeModel showDetails gotDetails donor 
             else donorModel
       in
         ({model | donors = List.map updateDonor model.donors}, Effects.none)
@@ -118,7 +121,7 @@ update action model =
         newModel = 
           { searchName = db.searchName
           , page = db.page
-          , donors = List.map (Donor.makeModel hideDetails) db.donors
+          , donors = List.map (Donor.makeModel hideDetails noDetails) db.donors
           }
       in
         -- (donors, Effects.none)
@@ -131,6 +134,7 @@ update action model =
             else donorModel
       in
         ({model | donors = List.map updateDonor model.donors}, Effects.none)
+    NewDonor -> (model, Effects.none)
 
 -- VIEW
 
@@ -150,10 +154,11 @@ viewDonors address model =
 basicNav: Signal.Address Action -> Model -> Html
 basicNav address model =
   div []
-    [ button [ onClick nextPage.address ((model.page.pageNumber - 1), model.searchName)]  [ text "Prev"]
-    , button [ onClick nextPage.address (1, model.searchName)] [ text "First"]
-    , button [ onClick nextPage.address (model.page.totalPages, model.searchName)]  [ text "Last"]
-    , button [ onClick nextPage.address ((model.page.pageNumber + 1), model.searchName)]  [ text "Next"]
+    [ button [ buttonStyle, onClick nextPage.address ((model.page.pageNumber - 1), model.searchName)]  [ text "Prev"]
+    , button [ buttonStyle, onClick nextPage.address (1, model.searchName)] [ text "First"]
+    , button [ buttonStyle, onClick nextPage.address (model.page.totalPages, model.searchName)]  [ text "Last"]
+    , button [ buttonStyle, onClick nextPage.address ((model.page.pageNumber + 1), model.searchName)]  [ text "Next"]
+    , button [ buttonStyle, onClick address NewDonor]  [ text "New Donor"]
     , findDonor address model
     , pageInfo address model
     ]
@@ -224,13 +229,25 @@ port updateNote: Signal Note.Note
 port updateNote = 
   noteUpdate.signal
 
+port deleteNote: Signal Note.Note
+port deleteNote =
+  noteDelete.signal
+
 port updateAddress: Signal Address.Address
 port updateAddress =
   addressUpdate.signal
 
+port deleteAddress: Signal Address.Address
+port deleteAddress =
+  addressDelete.signal
+
 port updatePhone: Signal Phone.Phone
 port updatePhone =
   phoneUpdate.signal
+
+port deletePhone: Signal Phone.Phone
+port deletePhone =
+  phoneDelete.signal
 
 port requestDonorDetail: Signal Donor.Donor
 port requestDonorDetail =
@@ -239,3 +256,12 @@ port requestDonorDetail =
 
 port donorLists: Signal DBDonorList
 port okDonor: Signal Donor.DBDonor
+
+
+-- STYLE
+
+buttonStyle: Attribute
+buttonStyle =
+  style
+    [ ("margin", "0px 2px")
+    ]

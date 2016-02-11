@@ -1,4 +1,6 @@
-module Saints.Phone (Model, Phone, init, makeModel, phoneUpdate, Action, update, view) where
+module Saints.Phone ( Model, Phone, init, 
+                      makeModel, new, phoneUpdate, phoneDelete,
+                      Action, update, view) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -7,6 +9,7 @@ import Html.Events exposing (..)
 type alias ID = Int
 type alias Phone =
   { id:       ID
+  , donor_id: ID
   , location: String
   , ofType:   String
   , number:   String
@@ -14,6 +17,7 @@ type alias Phone =
 initPhone: Phone
 initPhone =
   { id       = 0
+  , donor_id = 0
   , location = ""
   , ofType   = ""
   , number   = ""
@@ -34,11 +38,24 @@ makeModel phone =
   , editing = False
   }
 
+new: ID -> Model
+new donor_id =
+  let
+    phone = initPhone
+    newPhone = {phone | donor_id = donor_id}
+  in
+    { phone = newPhone
+    , editing = True
+    }
 
 -- SIGNALS
 
 phoneUpdate: Signal.Mailbox Phone
 phoneUpdate =
+  Signal.mailbox initPhone
+
+phoneDelete: Signal.Mailbox Phone
+phoneDelete =
   Signal.mailbox initPhone
 
 
@@ -50,6 +67,7 @@ type Action
   | Location String
   | OfType String
   | Number String
+  | Delete
 
 update: Action -> Model -> Model
 update action model =
@@ -74,6 +92,7 @@ update action model =
         newPhone = {phone | number = s}
       in
         { model | phone = newPhone}
+    Delete -> model
 
 -- VIEW
     
@@ -83,7 +102,9 @@ view address model =
   in
     [ li 
         [ onClick address ToggleEditing ] 
-        [ text (phone.location ++ " " ++ phone.ofType ++ ": " ++ phone.number) ]
+        [ text (phone.location ++ " " ++ phone.ofType ++ ": " ++ phone.number) 
+        , button [ deleteButtonStyle, onClick phoneDelete.address phone ] [ text "-"]
+        ]
     , li
       []
       [ ul
@@ -159,3 +180,19 @@ cancelSave address model =
     [ button [ onClick address ToggleEditing] [text "cancel"]
     , button [ onClick phoneUpdate.address model.phone] [text "save"]
     ]
+
+-- STYLE
+
+deleteButtonStyle: Attribute
+deleteButtonStyle =
+  style
+        [ ("position", "absolute")
+        , ("float", "right")
+        , ("right", "1px")
+        , ("top", "3px")
+        , ("padding", "0px 4px")
+        , ("line-height", "0.9")
+        , ("display", "inline-block")
+        , ("z-index", "1")
+        , ("background-color", "red")
+        ]

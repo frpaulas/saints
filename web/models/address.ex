@@ -1,7 +1,6 @@
 defmodule Saints.Address do
   use Saints.Web, :model
   schema "addresses" do
-    # field :donor_id, :integer     
     field :location, :string, default: "home"
     field :address1, :string, default: ""
     field :address2, :string, default: ""
@@ -24,6 +23,7 @@ end
 defimpl Poison.Encoder, for: Saints.Address  do
   def encode(model, opts) do
     %{  id: model.id,
+        donor_id: model.donor_id,
         location: model.location,
         address1: model.address1,
         address2: model.address2,

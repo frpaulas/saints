@@ -20,6 +20,7 @@ end
 defimpl Poison.Encoder, for: Saints.Phone  do
   def encode(model, opts) do
     %{  id: model.id,
+        donor_id: model.donor_id,
         location: model.location,
         ofType: model.of_type,
         number: model.number
