@@ -13,9 +13,8 @@ defmodule Saints.SessionController do
   defp create_after_validation({:ok, conn}) do
     conn
     |> put_flash(:info, "Welcome back!")
-    |> render("donors.html") # web/templates/session/donors.html.eex
+    |> redirect(to: donor_path(conn, :index))
   end
-  
   defp create_after_validation({:error, _reason, conn}) do
     conn
     |> put_flash(:error, "Invalid username/password combination")
@@ -26,7 +25,7 @@ defmodule Saints.SessionController do
     conn
     |> Saints.Auth.logout()
     |> put_flash(:info, "You have been logged out")
-    |> redirect(to: page_path(conn, :index))
+    |> redirect(to: donor_path(conn, :index))
   end
 
 end

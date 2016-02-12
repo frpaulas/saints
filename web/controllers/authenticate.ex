@@ -11,6 +11,4 @@ defmodule Saints.Authenticate do
       |> halt()
   end
   def is_authentic(conn, _), do: conn
-
-
 end
