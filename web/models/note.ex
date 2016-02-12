@@ -20,7 +20,7 @@ defimpl Poison.Encoder, for: Saints.Note  do
         donor_id: model.donor_id,
         author: model.author,
         memo: model.memo,
-        updated_at: model.updated_at
+        updated_at: (if model.updated_at, do: model.updated_at, else: Ecto.DateTime.local)
       } |> Poison.Encoder.encode(opts)
   end
 end

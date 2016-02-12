@@ -244,7 +244,8 @@ view address model =
               |> List.concat
   in
     li 
-      [ onEnterDetails address model, onMouseLeave address ToggleDetails ] 
+--      [ onEnterDetails address model, onMouseLeave address ToggleDetails ] 
+      [ onClickDetails address model]
       [ span 
         [ onClick address ToggleEdit]
         [ fullNameText donor 

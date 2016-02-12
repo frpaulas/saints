@@ -6,6 +6,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Graphics.Input exposing (dropDown)
+import Json.Decode as Json
+
 
 type alias ID = Int
 type alias Address =
@@ -139,9 +141,9 @@ view: Signal.Address Action -> Model -> List Html
 view address model =
   let addr = model.address
   in
-    [ li [ onClick address ToggleEditing] 
+    [ li [ onClickAddr address ToggleEditing] 
         [ text addr.location
-        , button [ deleteButtonStyle, onClick addressDelete.address addr ] [ text "-"]
+        , button [ deleteButtonStyle, onClickAddr addressDelete.address addr ] [ text "-"]
         , p [] [ text addr.address1 ]
         , p [] [ text addr.address2 ]
         , p [] [ text (addr.city ++ ", " ++ addr.state ++ " " ++ addr.zip) ]
@@ -274,9 +276,14 @@ cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
     [ style [("float", "right"), ("margin-top", "-6px")] ]
-    [ button [ onClick address ToggleEditing] [text "cancel"]
-    , button [ onClick addressUpdate.address model.address] [text "save"]
+    [ button [ onClickAddr address ToggleEditing] [text "cancel"]
+    , button [ onClickAddr addressUpdate.address model.address] [text "save"]
     ]
+
+onClickAddr: Signal.Address a -> a -> Attribute
+onClickAddr address msg =
+  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
+
 
 -- STYLE
 

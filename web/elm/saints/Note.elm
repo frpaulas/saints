@@ -6,6 +6,7 @@ module Saints.Note  ( Model, Note, init, makeModel, newNote, Action,
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as Json
 
 type alias ID = Int
 type alias Note = 
@@ -97,12 +98,12 @@ view address model =
   let note = model.note
   in
     [ li 
-      [ onClick address ToggleEditing, viewingClass model ] 
+      [ onClickNote address ToggleEditing, viewingClass model ] 
       [ text (note.author ++ " says: " ++ note.memo)
       , span 
         [ style [("float", "right")]] 
         [ text ("at: " ++ note.updated_at)
-        , button [ deleteButtonStyle, onClick noteDelete.address note ] [ text "-"]
+        , button [ deleteButtonStyle, onClickNote noteDelete.address note ] [ text "-"]
         ]
       ]
     , li 
@@ -139,9 +140,13 @@ cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
     [ style [("float", "right"), ("margin-top", "-6px")] ]
-    [ button [ onClick address ToggleEditing] [text "cancel"]
-    , button [ onClick noteUpdate.address model.note] [text "save"]
+    [ button [ onClickNote address ToggleEditing] [text "cancel"]
+    , button [ onClickNote noteUpdate.address model.note] [text "save"]
     ]
+
+onClickNote: Signal.Address a -> a -> Attribute
+onClickNote address msg =
+  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 -- STYLE
 

@@ -5,6 +5,8 @@ module Saints.Phone ( Model, Phone, init,
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as Json
+
 
 type alias ID = Int
 type alias Phone =
@@ -101,9 +103,9 @@ view address model =
   let phone = model.phone
   in
     [ li 
-        [ onClick address ToggleEditing ] 
+        [ onClickPhone address ToggleEditing ] 
         [ text (phone.location ++ " " ++ phone.ofType ++ ": " ++ phone.number) 
-        , button [ deleteButtonStyle, onClick phoneDelete.address phone ] [ text "-"]
+        , button [ deleteButtonStyle, onClickPhone phoneDelete.address phone ] [ text "-"]
         ]
     , li
       []
@@ -177,9 +179,14 @@ cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
     [ style [("float", "right"), ("margin-top", "-20px")] ]
-    [ button [ onClick address ToggleEditing] [text "cancel"]
-    , button [ onClick phoneUpdate.address model.phone] [text "save"]
+    [ button [ onClickPhone address ToggleEditing] [text "cancel"]
+    , button [ onClickPhone phoneUpdate.address model.phone] [text "save"]
     ]
+
+onClickPhone: Signal.Address a -> a -> Attribute
+onClickPhone address msg =
+  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
+
 
 -- STYLE
 
