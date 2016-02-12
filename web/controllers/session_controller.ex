@@ -1,3 +1,4 @@
+require IEx
 defmodule Saints.SessionController do
   use Saints.Web, :controller
 
@@ -12,8 +13,9 @@ defmodule Saints.SessionController do
   defp create_after_validation({:ok, conn}) do
     conn
     |> put_flash(:info, "Welcome back!")
-    |> redirect(to: page_path(conn, :index))
+    |> render("donors.html") # web/templates/session/donors.html.eex
   end
+  
   defp create_after_validation({:error, _reason, conn}) do
     conn
     |> put_flash(:error, "Invalid username/password combination")
