@@ -70,7 +70,11 @@ elmApp.ports.requestDonorDetail.subscribe(function(donor) {
   channel.push("request_donor_detail", donor.id)
 });
 elmApp.ports.updateDonor.subscribe(function(donor) {
-  channel.push("update_donor", donor)
+  if (donor.id == 0) {channel.push("create_donor", donor)}
+  else {channel.push("update_donor", donor)}
+})
+elmApp.ports.deleteDonor.subscribe(function(donor) {
+  channel.push("delete_donor", donor)
 })
 elmApp.ports.updateNote.subscribe(function(note) {
   if (note.id == 0) {channel.push("create_note", note)}

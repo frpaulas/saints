@@ -17,14 +17,14 @@ defmodule Saints.Donor do
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(last_name), ~w(title first_name middle_name last_name name_ext))
+    |> cast(params, ~w(last_name), ~w(title first_name middle_name name_ext))
     |> cast_assoc(:addresses, require: true)
     |> cast_assoc(:phones, require: true)
     |> cast_assoc(:notes, require: true)
   end
   def changename(model, params \\ :empty) do
     model
-    |> cast(params, ~w(last_name), ~w(title first_name middle_name last_name name_ext))
+    |> cast(params, ~w(last_name), ~w(title first_name middle_name name_ext))
   end
 end
 

@@ -1,12 +1,13 @@
 module Saints.Donor ( Model, init, Action, update, view, makeModel,
-                      donorUpdate, detailsGet, initDonor, Donor,
-                      DBDonor, initDBDonor
+                      donorUpdate, detailsGet, initDonor, Donor, 
+                      fromScratch, DBDonor, initDBDonor, donorDelete
                     ) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String exposing (join)
+import Json.Decode as Json
 
 
 import Saints.Address as Address
@@ -74,6 +75,7 @@ makeModel hideDetails detailsInHand donor =
   , detailsInHand = detailsInHand
   }
 
+
 type alias Model =
   { donor: Donor
   , hideDetails: Bool
@@ -88,10 +90,22 @@ init =
   , detailsInHand = False
   }
 
+fromScratch: Model
+fromScratch = 
+  { donor         = initDonor
+  , hideDetails   = False
+  , hideEdit      = False
+  , detailsInHand = True
+  }
+
 -- SIGNALS
 
 donorUpdate: Signal.Mailbox Donor
 donorUpdate =
+  Signal.mailbox initDonor
+
+donorDelete: Signal.Mailbox Donor
+donorDelete =
   Signal.mailbox initDonor
 
 detailsGet: Signal.Mailbox Donor
@@ -249,7 +263,7 @@ view address model =
       [ span 
         [ onClick address ToggleEdit]
         [ fullNameText donor 
-        , button [ deleteButtonStyle model, onClick address Delete ] [ text "-"]
+        , button [ deleteButtonStyle model, onClickDonor donorDelete.address donor ] [ text "-"]
         ]
       , span
           [ style [("float", "right"), ("margin-top", "-6px")] ]
@@ -432,6 +446,10 @@ inputNameExt address model =
 fullNameText: Donor -> Html
 fullNameText d =
   text (join " " [d.title, d.firstName, d.middleName, d.lastName, d.nameExt, "(", toString d.id, ")"])
+
+onClickDonor: Signal.Address a -> a -> Attribute
+onClickDonor address msg =
+  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 -- STYLE
 

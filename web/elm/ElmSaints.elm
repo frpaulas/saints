@@ -16,7 +16,7 @@ import Saints.Note as Note
 import Saints.Note exposing (noteUpdate, noteDelete)
 import Saints.Phone as Phone
 import Saints.Phone exposing (phoneUpdate, phoneDelete)
-import Saints.Donor exposing (donorUpdate, detailsGet)
+import Saints.Donor exposing (donorUpdate, detailsGet, donorDelete)
 import Saints.Donor as Donor
 
 app = 
@@ -134,7 +134,8 @@ update action model =
             else donorModel
       in
         ({model | donors = List.map updateDonor model.donors}, Effects.none)
-    NewDonor -> (model, Effects.none)
+    NewDonor -> 
+      ({model | donors = [Donor.fromScratch] ++ model.donors}, Effects.none)
 
 -- VIEW
 
@@ -224,6 +225,10 @@ port requestPage =
 port updateDonor: Signal Donor.Donor
 port updateDonor = 
   donorUpdate.signal
+
+port deleteDonor: Signal Donor.Donor
+port deleteDonor =
+  donorDelete.signal
 
 port updateNote: Signal Note.Note
 port updateNote = 

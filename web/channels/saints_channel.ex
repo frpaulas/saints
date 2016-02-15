@@ -60,6 +60,14 @@ defmodule Saints.SaintsChannel do
     update_rec Saints.Donor, db_donor(donor), socket, "FAILED TO UPDATE DONOR NAME", [:addresses, :phones, :notes]
   end
 
+  def handle_in("create_donor", donor, socket) do
+    create_donor donor, socket, "FAILED TO CREATE DONOR"
+  end
+
+  def handle_in("delete_donor", donor, socket) do
+    delete_this Saints.Donor, donor, socket, "FAILED TO DELETE DONOR"
+  end
+
   def handle_in("update_note", note, socket) do
     update_rec Saints.Note, db_note(note), socket, "FAILED TO UPDATE NOTE"
   end
@@ -113,13 +121,14 @@ defmodule Saints.SaintsChannel do
 
 
   defp db_donor(donor) do
-    %{  title:        donor["title"],
-        first_name:   donor["firstName"], 
-        middle_name:  donor["middleName"], 
-        last_name:    donor["lastName"], 
-        name_ext:     donor["nameExt"],
-        id:           donor["id"]
-      }
+    %{  
+      title:        donor["title"],
+      first_name:   donor["firstName"], 
+      middle_name:  donor["middleName"], 
+      last_name:    donor["lastName"], 
+      name_ext:     donor["nameExt"],
+      id:           donor["id"]
+    }
 
   end
 
@@ -167,6 +176,21 @@ defmodule Saints.SaintsChannel do
     end
 
   end
+  def create_donor(map, socket, fail_msg \\ "DB FAIL") do
+    mx = %Saints.Donor{
+      title: map["title"],
+      first_name: map["firstName"],
+      middle_name: map["middleName"],
+      last_name: map["lastName"],
+      name_ext: map["nameExt"]
+    }
+    case Repo.insert(mx) do
+      {:ok, donor} ->
+        pushDonor donor.id, socket
+      {:error, resp} ->
+        {:error, %{reason: fail_msg}}
+    end
+  end
   defp create_assoc(assoc, map, socket, fail_msg \\ "DB FAIL") do
     new_assoc = Repo.get(Saints.Donor, map.donor_id)
       |> Ecto.build_assoc(assoc, map)
@@ -179,11 +203,16 @@ defmodule Saints.SaintsChannel do
     
   end
 
+
   defp delete_this(model, map, socket, fail_msg \\ "DB FAIL") do
     this = Repo.one(from m in model, where: m.id == ^map["id"])
     case Repo.delete(this) do
       {:ok, resp} ->
-        pushDonor resp.donor_id, socket
+        if model == Saints.Donor do
+          {:noreply, socket}
+        else
+          pushDonor resp.donor_id, socket
+        end
       {:error, error_msg} ->
         {:error, %{reason: fail_msg}}
     end
