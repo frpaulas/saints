@@ -18,8 +18,8 @@ type alias Note =
   }
 initNote: Note
 initNote =
-  { id = 0
-  , donor_id = 0
+  { id = -1
+  , donor_id = -1
   , author = ""
   , memo = ""
   , updated_at = "" -- note editable, comes from DB
@@ -27,17 +27,20 @@ initNote =
 type alias Model =
   { note: Note
   , editing: Bool
+  , new: Bool
   }
 init: Model
 init =
   { note = initNote
   , editing = False
+  , new = False
   }
 
 makeModel: Note -> Model
 makeModel note =
   { note = note
   , editing = False
+  , new = False
   }
 
 newNote: ID -> Model
@@ -48,6 +51,7 @@ newNote donor_id =
   in
     { note = newNote
     , editing = True
+    , new = True
     }
 
 -- SIGNALS
@@ -95,10 +99,11 @@ update action model =
 
 view: Signal.Address Action -> Model -> List Html
 view address model =
-  let note = model.note
+  let 
+    note = model.note
   in
     [ li 
-      [ onClickNote address ToggleEditing, viewingClass model ] 
+      [ onClickNote address ToggleEditing, viewingStyle model ] 
       [ text (note.author ++ " says: " ++ note.memo)
       , span 
         [ style [("float", "right")]] 
@@ -109,11 +114,12 @@ view address model =
     , li 
       []
       [ ul
-        [editingClass model] 
+        [editingStyle model] 
         [ li
-          [editingClass model]
-          [inputMemo address note]
-        , cancelSave address model
+          [editingStyle model]
+          [ cancelSave address model
+          , inputMemo address note
+          ]
         ]
       ]
     ]
@@ -127,20 +133,17 @@ inputMemo address note =
     , autofocus True
     , name "memo"
     , on "input" targetValue (\str -> Signal.message address (Memo str))
+    , onClickNote address NoOp
     , value note.memo
+    , inputStyle
     ]
     []
 
-editingClass: Model -> Html.Attribute
-editingClass model =
-  class (if model.editing then "edit_details" else "hide")
-viewingClass model =
-  class (if model.editing then "hide" else "")
 cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
-    [ style [("float", "right"), ("margin-top", "-6px")] ]
-    [ button [ onClickNote address ToggleEditing] [text "cancel"]
+    [ cancelSaveStyle ]
+    [ button [ onClickNote noteDelete.address model.note] [text "cancel"]
     , button [ onClickNote noteUpdate.address model.note] [text "save"]
     ]
 
@@ -149,6 +152,49 @@ onClickNote address msg =
   onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 -- STYLE
+
+inputStyle: Attribute
+inputStyle = 
+  style 
+  [ ("background-color", "lightblue")
+  , ("margin-top","5px")
+  , ("margin-left", "-100px")
+  , ("margin-bottom", "5px")
+  ]
+
+cancelSaveStyle: Attribute
+cancelSaveStyle =
+  style
+    [ ("float", "left")
+    , ("margin-top", "-15px")
+    , ("padding", "0")
+    , ("background-color", "lightblue")
+    ]
+
+viewingStyle: Model -> Attribute
+viewingStyle model =
+  if model.editing
+    then
+      style [("display", "none")]
+    else
+      style
+      [ ("margin-top", "0px")
+      , ("list-style-type", "none")
+      , ("background", "WhiteSmoke")
+      ]
+
+editingStyle: Model -> Attribute
+editingStyle model =
+  if model.editing
+    then
+      style
+      [ ("display", "block")
+      , ("list-style-type", "none")
+      , ("font-size", "0.8em")
+--      , ("padding-bottom", "10px")
+      ]
+    else
+      style [("display", "none")]
 
 deleteButtonStyle: Attribute
 deleteButtonStyle =

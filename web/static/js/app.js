@@ -70,28 +70,28 @@ elmApp.ports.requestDonorDetail.subscribe(function(donor) {
   channel.push("request_donor_detail", donor.id)
 });
 elmApp.ports.updateDonor.subscribe(function(donor) {
-  if (donor.id == 0) {channel.push("create_donor", donor)}
+  if (donor.id < 0) {channel.push("create_donor", donor)}
   else {channel.push("update_donor", donor)}
 })
 elmApp.ports.deleteDonor.subscribe(function(donor) {
   channel.push("delete_donor", donor)
 })
 elmApp.ports.updateNote.subscribe(function(note) {
-  if (note.id == 0) {channel.push("create_note", note)}
+  if (note.id < 0) {channel.push("create_note", note)}
   else {channel.push("update_note", note)};
 })
 elmApp.ports.deleteNote.subscribe(function(note) {
   channel.push("delete_note", note)
 }) 
 elmApp.ports.updateAddress.subscribe(function(address) {
-  if (address.id == 0) {channel.push("create_address", address)}
+  if (address.id < 0) {channel.push("create_address", address)}
   else {channel.push("update_address", address)};
 })
 elmApp.ports.deleteAddress.subscribe(function(address) {
   channel.push("delete_address", address)
 })
 elmApp.ports.updatePhone.subscribe(function(phone) {
-  if (phone.id == 0) {channel.push("create_phone", phone)}
+  if (phone.id < 0) {channel.push("create_phone", phone)}
   else {channel.push("update_phone", phone)};
 })
 elmApp.ports.deletePhone.subscribe(function(phone) {

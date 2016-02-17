@@ -40,7 +40,7 @@ type alias DBDonor =
   }
 
 emptyDonor =
-  { id =         0
+  { id =         -1
   , title =      ""
   , firstName =  ""
   , middleName = ""
@@ -93,7 +93,7 @@ init =
 fromScratch: Model
 fromScratch = 
   { donor         = initDonor
-  , hideDetails   = False
+  , hideDetails   = True
   , hideEdit      = False
   , detailsInHand = True
   }
@@ -269,29 +269,28 @@ view address model =
           [ style [("float", "right"), ("margin-top", "-6px")] ]
           [ text "$"
           , donation address model
-          , saveButton address model
           ]
       , donorNameEdit address model
       , p
-        []
+        [ notesStyle model]
         [ button
-          [ addButtonStyle model, onClick address NewNote]
-          [ text "+"]
-        , ul [ detailsClass model] notes
-        ] 
+          [ addButtonStyle model, onClickDonor address NewNote]
+          [ text "+ notes"]
+        , ul [ detailsStyle model ] notes 
+        ] -- end of this p
       , p
-        []
+        [notesStyle model]
         [ button
-          [ addButtonStyle model, onClick address NewAddress]
-          [ text "+"]
-        , ul [ detailsClass model] theseAddresses
+          [ addButtonStyle model, onClickDonor address NewAddress]
+          [ text "+ address"]
+        , ul [ detailsStyle model] theseAddresses
         ]
       , p
-        []
+        [notesStyle model]
         [ button
-          [ addButtonStyle model, onClick address NewPhone]
-          [ text "+"]
-        , ul [ detailsClass model] phones
+          [ addButtonStyle model, onClickDonor address NewPhone]
+          [ text "+ phone"]
+        , ul [ detailsStyle model] phones
         ]
 --      , donorDetailsFor address model
       ]
@@ -325,7 +324,8 @@ donorNameEdit address model =
   ul 
   [ editClass model] 
   [ text "Edit Name" 
-  , li 
+    , saveButton address model
+    , li 
     []
     [ inputTitle address model
     , inputFirstName address model
@@ -354,18 +354,15 @@ editButton model =
 saveButton: Signal.Address Action -> Model -> Html
 saveButton address model =
   button
-    [ class (if model.hideEdit then "hide" else "save_button")
---    , onClick address SaveDonor
+    [ saveButtonStyle model
     , onClick donorUpdate.address model.donor
     ]
-    [ text "Save"]
+    [ text "+"]
 editClass: Model -> Html.Attribute
 editClass model =
-  class (if model.hideEdit then "hide_details" else "edit_details")
+  editClassStyle model
+--  class (if model.hideEdit then "hide_details" else "edit_details")
 
-detailsClass: Model -> Html.Attribute
-detailsClass model =
-  class (if model.hideDetails then "hide_details" else "donor_details")
 
 inputTitle: Signal.Address Action -> Model -> Html
 inputTitle address model =
@@ -378,6 +375,7 @@ inputTitle address model =
       , autofocus True
       , name "title"
       , on "input" targetValue (\str -> Signal.message address (Title str))
+      , onClickDonor address NoOp
       , value donor.title
       ]
       []
@@ -393,6 +391,7 @@ inputFirstName address model =
       , autofocus True
       , name "first_name"
       , on "input" targetValue (\str -> Signal.message address (FirstName str))
+      , onClickDonor address NoOp
       , value donor.firstName
       ]
       []
@@ -408,6 +407,7 @@ inputMiddleName address model =
       , autofocus True
       , name "middle_name"
       , on "input" targetValue (\str -> Signal.message address (MiddleName str))
+      , onClickDonor address NoOp
       , value donor.middleName
       ]
       []
@@ -424,6 +424,7 @@ inputLastName address model =
       , name "last_name"
       , on "input" targetValue (\str -> Signal.message address (LastName str))
       , value donor.lastName
+      , onClickDonor address NoOp
       ]
       []
 
@@ -439,6 +440,7 @@ inputNameExt address model =
       , name "name_ext"
       , on "input" targetValue (\str -> Signal.message address (NameExt str))
       , value donor.nameExt
+      , onClickDonor address NoOp
       ]
       []
 
@@ -453,6 +455,31 @@ onClickDonor address msg =
 
 -- STYLE
 
+notesStyle: Model -> Attribute
+notesStyle model =
+  if model.hideDetails
+    then
+      style [("display", "none")]
+    else
+      style
+        [ ("margin-top", "0px")
+--        , ("background-color", "lightblue")
+        , ("font-size", "0.7em")
+        ]
+
+detailsStyle: Model -> Attribute
+detailsStyle model =
+  if model.hideDetails
+    then 
+      style [("display", "none")]
+    else
+      style
+      [ ("height", "auto")
+      , ("width", "99%")
+      , ("padding-top", "18px")
+      , ("box-shadow", "0 2px 5px rgba(0,0,0,0.5)")
+      ]
+
 addButtonStyle: Model -> Attribute
 addButtonStyle model =
   if model.hideDetails
@@ -465,8 +492,36 @@ addButtonStyle model =
         , ("padding", "0px 2px")
         , ("line-height", "0.8")
         , ("display", "inline-block")
-        , ("left", "0px")
-        , ("top", "0px")
+--        , ("left", "10px")
+--        , ("top", "0px")
+        ]
+
+saveButtonStyle: Model -> Attribute
+saveButtonStyle model =
+  if model.hideDetails
+    then
+      style [("display", "none")]
+    else
+      style
+        [ ("background-color", "green")
+        , ("color", "yellow")
+        , ("font-size", "0.8em")
+        , ("margin", "10px 0 0 5px")
+        , ("padding", "0px 3px")
+        ]
+
+editClassStyle: Model -> Attribute
+editClassStyle model =
+  if model.hideDetails
+    then
+      style [("display", "none")]
+    else
+      style
+        [ ("display", "block")
+        , ("list-style-type", "none")
+        , ("font-size", "0.8em")
+        , ("padding", "0")
+        , ("margin-top", "-5px")
         , ("z-index", "1")
         ]
 

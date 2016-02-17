@@ -192,6 +192,7 @@ defmodule Saints.SaintsChannel do
     end
   end
   defp create_assoc(assoc, map, socket, fail_msg \\ "DB FAIL") do
+    map = map |> Map.delete(:id)
     new_assoc = Repo.get(Saints.Donor, map.donor_id)
       |> Ecto.build_assoc(assoc, map)
     case Repo.insert(new_assoc) do
@@ -205,16 +206,21 @@ defmodule Saints.SaintsChannel do
 
 
   defp delete_this(model, map, socket, fail_msg \\ "DB FAIL") do
-    this = Repo.one(from m in model, where: m.id == ^map["id"])
-    case Repo.delete(this) do
-      {:ok, resp} ->
-        if model == Saints.Donor do
-          {:noreply, socket}
-        else
-          pushDonor resp.donor_id, socket
+    cond do
+      map["id"] < 0 -> 
+        pushDonor map["donor_id"], socket
+      true ->
+        this = Repo.one(from m in model, where: m.id == ^map["id"])
+        case Repo.delete(this) do
+          {:ok, resp} ->
+            if model == Saints.Donor do
+              {:noreply, socket}
+            else
+              pushDonor resp.donor_id, socket
+            end
+          {:error, error_msg} ->
+            {:error, %{reason: fail_msg}}
         end
-      {:error, error_msg} ->
-        {:error, %{reason: fail_msg}}
     end
   end
 

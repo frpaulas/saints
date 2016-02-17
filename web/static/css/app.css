@@ -201,10 +201,6 @@ ul.hide_details{
   display: none;
 }
 
-.save_button {
-  background-color: red;
-}
-
 .edit_button {
   background-color: lightblue;
 }

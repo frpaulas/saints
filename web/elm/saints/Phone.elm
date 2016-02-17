@@ -18,8 +18,8 @@ type alias Phone =
   }
 initPhone: Phone
 initPhone =
-  { id       = 0
-  , donor_id = 0
+  { id       = -1
+  , donor_id = -1
   , location = ""
   , ofType   = ""
   , number   = ""
@@ -133,6 +133,7 @@ inputLocation address phone =
       , autofocus True
       , name "location"
       , on "input" targetValue (\str -> Signal.message address (Location str))
+      , onClickPhone address NoOp
       , value phone.location
       ]
       []
@@ -149,6 +150,7 @@ inputOfType address phone =
       , autofocus True
       , name "ofType"
       , on "input" targetValue (\str -> Signal.message address (OfType str))
+      , onClickPhone address NoOp
       , value phone.ofType
       ]
       []
@@ -165,6 +167,7 @@ inputNumber address phone =
       , autofocus True
       , name "number"
       , on "input" targetValue (\str -> Signal.message address (Number str))
+      , onClickPhone address NoOp
       , value phone.number
       ]
       []

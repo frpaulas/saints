@@ -23,8 +23,8 @@ type alias Address =
   }
 initAddress: Address
 initAddress =
-  { id = 0
-  , donor_id = 0
+  { id = -1
+  , donor_id = -1
   , location = ""
   , address1 = ""
   , address2 = ""
@@ -178,6 +178,7 @@ inputLocation address model =
   , autofocus True
   , name "location"
   , on "input" targetValue (\str -> Signal.message address (Location str))
+  , onClickAddr address NoOp
   , value model.location
   ]
   []
@@ -192,6 +193,7 @@ inputAddress1 address model =
     , autofocus True
     , name "address1"
     , on "input" targetValue (\str -> Signal.message address (Address1 str))
+    , onClickAddr address NoOp
     , value model.address1
     ]
     []
@@ -206,6 +208,7 @@ inputAddress2 address model =
     , autofocus True
     , name "address2"
     , on "input" targetValue (\str -> Signal.message address (Address2 str))
+    , onClickAddr address NoOp
     , value model.address2
     ]
     []
@@ -220,6 +223,7 @@ inputCity address model =
     , autofocus True
     , name "city"
     , on "input" targetValue (\str -> Signal.message address (City str))
+    , onClickAddr address NoOp
     , value model.city
     ]
     []
@@ -234,6 +238,7 @@ inputState address model =
     , autofocus True
     , name "state"
     , on "input" targetValue (\str -> Signal.message address (State str))
+    , onClickAddr address NoOp
     , value model.state
     ]
     []
@@ -248,6 +253,7 @@ inputZip address model =
     , autofocus True
     , name "zip"
     , on "input" targetValue (\str -> Signal.message address (Zip str))
+    , onClickAddr address NoOp
     , value model.zip
     ]
     []
@@ -261,6 +267,7 @@ inputCountry address model =
     , placeholder "Country"
     , autofocus True
     , name "country"
+    , onClickAddr address NoOp
     , on "input" targetValue (\str -> Signal.message address (Country str))
     , value model.country
     ]
