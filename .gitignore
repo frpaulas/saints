@@ -22,7 +22,6 @@ erl_crash.dump
 # Alternatively, you may comment the line below and commit the
 # secrets file as long as you replace its contents by environment
 # variables.
-/config/prod.secret.exs
 web/elm/elm-stuff/build-artifacts/0.16.0/user/project/1.0.0/Saints-Donor.elmo
 priv/static/images/ic_mode_edit_black_24dp_1x.png
 web/elm/elm-stuff/build-artifacts/0.16.0/user/project/1.0.0/Saints-Note.elmo
@@ -35,9 +34,7 @@ web/elm/elm-stuff/build-artifacts/0.16.0/user/project/1.0.0/Saints-Phone.elmo
 web/static/assets/images/ic_mode_edit_black_24dp_1x.png
 web/elm/elm-stuff/build-artifacts/0.16.0/user/project/1.0.0/Saints-Address.elmo
 priv/static/js/app.js.map
-priv/static/css/app.css
 web/elm/elm-stuff/build-artifacts/0.16.0/user/project/1.0.0/ElmSaints.elmo
-priv/static/js/app.js
 web/elm/elm-stuff/build-artifacts/0.16.0/user/project/1.0.0/ElmSaints.elmi
 priv/static/css/app.css.map
 web/static/vendor/elmsaints.js
