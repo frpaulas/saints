@@ -25,10 +25,7 @@ config :logger, level: :info
 
 config :saints, Saints.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("DB_USER"),
-  password: System.get_env("DB_PASSWORD"),
-  database: System.get_env("DB_NAME"),
-  hostname: System.get_env("DB_URL"),
+  url: System.get("DB_URL")
   pool_size: 10
 # ## SSL Support
 #
