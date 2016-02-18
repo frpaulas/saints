@@ -25,7 +25,7 @@ config :logger, level: :info
 
 config :saints, Saints.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: System.get("DB_URL"),
+  url: System.get_env("DB_URL"),
   pool_size: 10
 # ## SSL Support
 #
