@@ -5,14 +5,14 @@ use Mix.Config
 # your version control system.
 config :saints, Saints.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "saints.herokuapp.com", port: 80],
+  url: [host: "elmsaints.herokuapp.com", port: 80],
   cache_static_manifest: "priv/static/manifest.json",
   secret_key_base: "jzN65YFAcSYUSCDuJYcuYwWAvAgyMWkKB3LzF6hX47JfpAFaK6xTHpHtwCpaP6j5M"
 
 # Configure your database
 config :saints, Saints.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "euxpnmchvfdkyv",
-  password: "hfb5Vv2-F9TaeJj5eVKf1fP5dO",
-  database: "d6smdf8qmfoo00",
+  username: "xsquthemutpsfc",
+  password: "qPQxQYd-FJ-z80biF-xANqeUJj",
+  database: "d4u6f4p21o7f50",
   pool_size: 20
