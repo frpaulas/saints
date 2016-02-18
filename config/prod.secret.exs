@@ -12,7 +12,8 @@ config :saints, Saints.Endpoint,
 # Configure your database
 config :saints, Saints.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "xsquthemutpsfc",
-  password: "qPQxQYd-FJ-z80biF-xANqeUJj",
-  database: "d4u6f4p21o7f50",
+  hostname: System.get_env("DB_URL"),
+  username: System.get_env("DB_USER"),
+  password: System.get_env("DB_PASSWORD"),
+  database: System.get_env("DB_NAME"),
   pool_size: 20
