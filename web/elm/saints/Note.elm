@@ -103,30 +103,28 @@ view address model =
     note = model.note
   in
     [ li 
-      [ onClickNote address ToggleEditing, viewingStyle model ] 
+      [ onClickNote address ToggleEditing ] 
       [ text (note.author ++ " says: " ++ note.memo)
       , span 
         [ style [("float", "right")]] 
-        [ text ("at: " ++ note.updated_at)
-        , button [ deleteButtonStyle, onClickNote noteDelete.address note ] [ text "-"]
-        ]
+        [ text ("at: " ++ note.updated_at) ]
+      , button [ deleteButtonStyle, onClickNote noteDelete.address note ] [ text "-"]
       ]
     , li 
       []
-      [ ul
+      [ cancelSave address model
+      , ul
         [editingStyle model] 
-        [ li
-          [editingStyle model]
-          [ cancelSave address model
-          , inputMemo address note
-          ]
+        [ li [] [ inputMemo address note ]
         ]
       ]
     ]
 
 inputMemo: Signal.Address Action -> Note -> Html
 inputMemo address note =
-  input 
+  p
+  [ inputStyle ]
+  [ input 
     [ id "memo"
     , type' "text"
     , placeholder "Memo"
@@ -135,14 +133,15 @@ inputMemo address note =
     , on "input" targetValue (\str -> Signal.message address (Memo str))
     , onClickNote address NoOp
     , value note.memo
-    , inputStyle
+    , inputWidth "75%"
     ]
     []
+  ]
 
 cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
-    [ cancelSaveStyle ]
+    [ cancelSaveStyle model]
     [ button [ onClickNote noteDelete.address model.note] [text "cancel"]
     , button [ onClickNote noteUpdate.address model.note] [text "save"]
     ]
@@ -156,56 +155,59 @@ onClickNote address msg =
 inputStyle: Attribute
 inputStyle = 
   style 
-  [ ("background-color", "lightblue")
-  , ("margin-top","5px")
-  , ("margin-left", "-100px")
-  , ("margin-bottom", "5px")
+  [ ("margin-left", "-30px")
+  , ("margin-top", "-8px")
   ]
 
-cancelSaveStyle: Attribute
-cancelSaveStyle =
-  style
-    [ ("float", "left")
-    , ("margin-top", "-15px")
-    , ("padding", "0")
-    , ("background-color", "lightblue")
+inputWidth: String -> Attribute
+inputWidth width =
+  style [ ("width", width) ]
+
+cancelSaveStyle: Model -> Attribute
+cancelSaveStyle model =
+  hideAble
+    model.editing
+    [ ( "position", "absolute" )
+    , ( "top", "-17px" )
+    , ( "left", "0px" )
+    , ("line-height", "0.8")
+    , ("display", "inline-block")
     ]
 
 viewingStyle: Model -> Attribute
 viewingStyle model =
-  if model.editing
-    then
-      style [("display", "none")]
-    else
-      style
-      [ ("margin-top", "0px")
-      , ("list-style-type", "none")
-      , ("background", "WhiteSmoke")
-      ]
+  hideAble
+    (not model.editing)
+    [ ("margin-top", "0px")
+    , ("list-style-type", "none")
+    , ("background", "WhiteSmoke")
+    ]
 
 editingStyle: Model -> Attribute
 editingStyle model =
-  if model.editing
-    then
-      style
-      [ ("display", "block")
-      , ("list-style-type", "none")
-      , ("font-size", "0.8em")
---      , ("padding-bottom", "10px")
-      ]
-    else
-      style [("display", "none")]
+  hideAble 
+    model.editing
+    [ ("display", "block")
+    , ("list-style-type", "none")
+    , ("font-size", "0.8em")
+    , ("padding-bottom", "1px")
+    , ("padding-top", "7px")
+    ]
+
+hideAble: Bool -> List (String, String) -> Attribute
+hideAble show attr =
+  if show then style attr else style [("display", "none")]
 
 deleteButtonStyle: Attribute
 deleteButtonStyle =
   style
-        [ ("position", "absolute")
-        , ("float", "right")
-        , ("right", "1px")
-        , ("top", "3px")
-        , ("padding", "0px 4px")
-        , ("line-height", "0.9")
-        , ("display", "inline-block")
-        , ("z-index", "1")
-        , ("background-color", "red")
-        ]
+    [ ("position", "absolute")
+    , ("float", "right")
+    , ("right", "1px")
+    , ("top", "3px")
+    , ("padding", "0px 4px")
+    , ("line-height", "0.9")
+    , ("display", "inline-block")
+    , ("z-index", "1")
+    , ("background-color", "red")
+    ]

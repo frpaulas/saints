@@ -139,7 +139,8 @@ update action model =
 
 view: Signal.Address Action -> Model -> List Html
 view address model =
-  let addr = model.address
+  let 
+    addr = model.address
   in
     [ li [ onClickAddr address ToggleEditing] 
         [ text addr.location
@@ -151,19 +152,16 @@ view address model =
         ]
     , li
       []
-      [ ul 
-        [ editingClass model ] 
-        [ li 
-          [] 
-          [ span [] [ inputLocation address addr ]
-          , cancelSave address model
-          ]
-        , li [] [inputAddress1 address addr]
-        , li [] [inputAddress2 address addr]
-        , li [] [inputCity address addr]
-        , li [] [inputState address addr]
-        , li [] [inputZip address addr]
-        , li [] [inputCountry address addr]
+      [ cancelSave address model
+      , ul 
+        [ editingStyle model ] 
+        [ li [] [ inputLocation address addr ]
+        , li [] [ inputAddress1 address addr ]
+        , li [] [ inputAddress2 address addr ]
+        , li [] [ inputCity address addr ]
+        , li [] [ inputState address addr ]
+        , li [] [ inputZip address addr ]
+        , li [] [ inputCountry address addr ]
         ]
       ]
     ]
@@ -171,119 +169,135 @@ view address model =
 
 inputLocation: Signal.Address Action -> Address -> Html
 inputLocation address model =
-  input 
-  [ id "location"
-  , type' "text"
-  , placeholder "Location"
-  , autofocus True
-  , name "location"
-  , on "input" targetValue (\str -> Signal.message address (Location str))
-  , onClickAddr address NoOp
-  , value model.location
+  p
+    [ inputStyle ]
+    [ input 
+    [ id "location"
+    , type' "text"
+    , placeholder "Location"
+    , autofocus True
+    , name "location"
+    , on "input" targetValue (\str -> Signal.message address (Location str))
+    , onClickAddr address NoOp
+    , value model.location
+    , inputWidth "75%"
+    ]
+    []
   ]
-  []
-  
 
 inputAddress1: Signal.Address Action -> Address -> Html
 inputAddress1 address model =
-  input 
-    [ id "address1"
-    , type' "text"
-    , placeholder "Street Address"
-    , autofocus True
-    , name "address1"
-    , on "input" targetValue (\str -> Signal.message address (Address1 str))
-    , onClickAddr address NoOp
-    , value model.address1
-    ]
-    []
-  
+  p
+    [ inputStyle ]
+    [ input 
+      [ id "address1"
+      , type' "text"
+      , placeholder "Street Address"
+      , autofocus True
+      , name "address1"
+      , on "input" targetValue (\str -> Signal.message address (Address1 str))
+      , onClickAddr address NoOp
+      , value model.address1
+      , inputWidth "75%"
+      ]
+      []
+  ]
 
 inputAddress2: Signal.Address Action -> Address -> Html
 inputAddress2 address model =
-  input 
-    [ id "address2"
-    , type' "text"
-    , placeholder "Street Address"
-    , autofocus True
-    , name "address2"
-    , on "input" targetValue (\str -> Signal.message address (Address2 str))
-    , onClickAddr address NoOp
-    , value model.address2
+  p
+    [ inputStyle ]
+    [ input 
+      [ id "address2"
+      , type' "text"
+      , placeholder "Street Address"
+      , autofocus True
+      , name "address2"
+      , on "input" targetValue (\str -> Signal.message address (Address2 str))
+      , onClickAddr address NoOp
+      , value model.address2
+      , inputWidth "75%"
+      ]
+      []
     ]
-    []
-  
 
 inputCity: Signal.Address Action -> Address -> Html
 inputCity address model =
-  input 
-    [ id "city"
-    , type' "text"
-    , placeholder "City"
-    , autofocus True
-    , name "city"
-    , on "input" targetValue (\str -> Signal.message address (City str))
-    , onClickAddr address NoOp
-    , value model.city
+  p
+    [ inputStyle ]
+    [ input 
+      [ id "city"
+      , type' "text"
+      , placeholder "City"
+      , autofocus True
+      , name "city"
+      , on "input" targetValue (\str -> Signal.message address (City str))
+      , onClickAddr address NoOp
+      , value model.city
+      , inputWidth "75%"
+      ]
+      []
     ]
-    []
-  
 
 inputState: Signal.Address Action -> Address -> Html
 inputState address model =
-  input 
-    [ id "state"
-    , type' "text"
-    , placeholder "State or Province"
-    , autofocus True
-    , name "state"
-    , on "input" targetValue (\str -> Signal.message address (State str))
-    , onClickAddr address NoOp
-    , value model.state
+  p
+    [ inputStyle ]
+    [ input 
+      [ id "state"
+      , type' "text"
+      , placeholder "State or Province"
+      , autofocus True
+      , name "state"
+      , on "input" targetValue (\str -> Signal.message address (State str))
+      , onClickAddr address NoOp
+      , value model.state
+      , inputWidth "75%"
+      ]
+      []
     ]
-    []
-  
 
 inputZip: Signal.Address Action -> Address -> Html
 inputZip address model =
-  input 
-    [ id "zip"
-    , type' "text"
-    , placeholder "Postal Code"
-    , autofocus True
-    , name "zip"
-    , on "input" targetValue (\str -> Signal.message address (Zip str))
-    , onClickAddr address NoOp
-    , value model.zip
-    ]
-    []
-  
+  p
+    [ inputStyle ]
+    [ input 
+        [ id "zip"
+        , type' "text"
+        , placeholder "Postal Code"
+        , autofocus True
+        , name "zip"
+        , on "input" targetValue (\str -> Signal.message address (Zip str))
+        , onClickAddr address NoOp
+        , value model.zip
+        , inputWidth "75%"
+        ]
+        []
+      ]
 
 inputCountry: Signal.Address Action -> Address -> Html
 inputCountry address model =
-  input 
-    [ id "country"
-    , type' "text"
-    , placeholder "Country"
-    , autofocus True
-    , name "country"
-    , onClickAddr address NoOp
-    , on "input" targetValue (\str -> Signal.message address (Country str))
-    , value model.country
+  p
+    [ inputStyle ]
+    [ input 
+      [ id "country"
+      , type' "text"
+      , placeholder "Country"
+      , autofocus True
+      , name "country"
+      , onClickAddr address NoOp
+      , on "input" targetValue (\str -> Signal.message address (Country str))
+      , value model.country
+      , inputWidth "75%"
+      ]
+      []
     ]
-    []
   
-
-editingClass: Model -> Html.Attribute
-editingClass model =
-  class (if model.editing then "edit_details" else "hide")
-viewingClass model =
-  class (if model.editing then "hide" else "")
 cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
-    [ style [("float", "right"), ("margin-top", "-6px")] ]
-    [ button [ onClickAddr address ToggleEditing] [text "cancel"]
+    [ cancelSaveStyle model ]
+    [ button [ onClickAddr addressDelete.address model.address] [text "cancel"]
     , button [ onClickAddr addressUpdate.address model.address] [text "save"]
     ]
 
@@ -293,6 +307,39 @@ onClickAddr address msg =
 
 
 -- STYLE
+
+inputWidth: String -> Attribute
+inputWidth width =
+  style [ ("width", width) ]
+
+inputStyle: Attribute
+inputStyle = 
+  style
+    [ ( "margin-left", "-30px")
+    , ( "margin-top", "-8px")
+    ]
+
+editingStyle: Model -> Attribute
+editingStyle model =
+  hideAble
+    model.editing 
+    [ ("display", "block") 
+    , ("list-style-type", "none")
+    , ("font-size", "0.8em")
+    , ("padding-bottom", "1px")
+    , ("padding-top", "5px")
+    ]
+
+cancelSaveStyle: Model -> Attribute
+cancelSaveStyle model =
+  hideAble
+    model.editing 
+    [ ( "position", "absolute" )
+    , ( "top", "-20px" )
+    , ( "left", "0px" )
+    , ("line-height", "0.8")
+    , ("display", "inline-block")
+    ]
 
 deleteButtonStyle: Attribute
 deleteButtonStyle =
@@ -307,4 +354,8 @@ deleteButtonStyle =
         , ("z-index", "1")
         , ("background-color", "red")
         ]
+
+hideAble: Bool -> List (String, String) -> Attribute
+hideAble show attr =
+  if show then style attr else style [("display", "none")]
 

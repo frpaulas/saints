@@ -492,8 +492,6 @@ addButtonStyle model =
         , ("padding", "0px 2px")
         , ("line-height", "0.8")
         , ("display", "inline-block")
---        , ("left", "10px")
---        , ("top", "0px")
         ]
 
 saveButtonStyle: Model -> Attribute

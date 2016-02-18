@@ -85,7 +85,7 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_in("create_address", address, socket) do
-    create_assoc :address, db_address(address), socket, "FAILED TO CREATE ADDRESS"
+    create_assoc :addresses, db_address(address), socket, "FAILED TO CREATE ADDRESS"
   end
 
   def handle_in("delete_address", address, socket) do
@@ -97,7 +97,7 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_in("create_phone", phone, socket) do
-    create_assoc :phone, db_phone(phone), socket, "FAILED TO CREATE PHONE"
+    create_assoc :phones, db_phone(phone), socket, "FAILED TO CREATE PHONE"
   end
   def handle_in("delete_phone", phone, socket) do
     delete_this Saints.Phone, phone, socket, "DB FAILED TO DELETE PHONE"

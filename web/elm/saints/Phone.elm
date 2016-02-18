@@ -100,7 +100,8 @@ update action model =
     
 view: Signal.Address Action -> Model -> List Html
 view address model =
-  let phone = model.phone
+  let 
+    phone = model.phone
   in
     [ li 
         [ onClickPhone address ToggleEditing ] 
@@ -109,13 +110,10 @@ view address model =
         ]
     , li
       []
-      [ ul
-        [ editingClass model ]
-        [ li 
-          [] 
-          [ span [] [inputLocation address phone]
-          , cancelSave address model
-          ]
+      [ cancelSave address model
+      , ul
+        [ editingStyle model ]
+        [ li [] [inputLocation address phone]
         , li [] [inputOfType address phone]
         , li [] [inputNumber address phone]
         ]
@@ -125,7 +123,7 @@ view address model =
 inputLocation: Signal.Address Action -> Phone -> Html
 inputLocation address phone =
   p 
-    []
+    [ inputStyle ]
     [ input 
       [ id "location"
       , type' "text"
@@ -135,6 +133,7 @@ inputLocation address phone =
       , on "input" targetValue (\str -> Signal.message address (Location str))
       , onClickPhone address NoOp
       , value phone.location
+      , inputWidth "75%"
       ]
       []
     ]
@@ -142,7 +141,7 @@ inputLocation address phone =
 inputOfType: Signal.Address Action -> Phone -> Html
 inputOfType address phone =
   p 
-    []
+    [ inputStyle ]
     [ input 
       [ id "ofType"
       , type' "text"
@@ -152,6 +151,7 @@ inputOfType address phone =
       , on "input" targetValue (\str -> Signal.message address (OfType str))
       , onClickPhone address NoOp
       , value phone.ofType
+      , inputWidth "75%"
       ]
       []
     ]
@@ -159,7 +159,7 @@ inputOfType address phone =
 inputNumber: Signal.Address Action -> Phone -> Html
 inputNumber address phone =
   p 
-    []
+    [ inputStyle ]
     [ input 
       [ id "number"
       , type' "text"
@@ -169,20 +169,16 @@ inputNumber address phone =
       , on "input" targetValue (\str -> Signal.message address (Number str))
       , onClickPhone address NoOp
       , value phone.number
+      , inputWidth "75%"
       ]
       []
     ]
 
-editingClass: Model -> Html.Attribute
-editingClass model =
-  class (if model.editing then "edit_details" else "hide")
-viewingClass model =
-  class (if model.editing then "hide" else "")
 cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
-    [ style [("float", "right"), ("margin-top", "-20px")] ]
-    [ button [ onClickPhone address ToggleEditing] [text "cancel"]
+    [ cancelSaveStyle model ]
+    [ button [ onClickPhone phoneDelete.address model.phone] [text "cancel"]
     , button [ onClickPhone phoneUpdate.address model.phone] [text "save"]
     ]
 
@@ -193,16 +189,53 @@ onClickPhone address msg =
 
 -- STYLE
 
+inputWidth: String -> Attribute
+inputWidth width =
+  style [ ("width", width) ]
+
+editingStyle: Model -> Attribute
+editingStyle model =
+  hideAble
+    model.editing 
+    [ ("display", "block") 
+    , ("list-style-type", "none")
+    , ("font-size", "0.8em")
+    , ("padding-bottom", "1px")
+    , ("padding-top", "5px")
+    ]
+
+cancelSaveStyle: Model -> Attribute
+cancelSaveStyle model = 
+  hideAble
+    model.editing
+    [ ( "position", "absolute" )
+    , ( "top", "-20px" )
+    , ( "left", "0px" )
+    , ("line-height", "0.8")
+    , ("display", "inline-block")
+    ]
+
+inputStyle: Attribute
+inputStyle = 
+  style
+    [ ( "margin-left", "-30px")
+    , ( "margin-top", "-8px")
+    ]
+
 deleteButtonStyle: Attribute
 deleteButtonStyle =
   style
-        [ ("position", "absolute")
-        , ("float", "right")
-        , ("right", "1px")
-        , ("top", "3px")
-        , ("padding", "0px 4px")
-        , ("line-height", "0.9")
-        , ("display", "inline-block")
-        , ("z-index", "1")
-        , ("background-color", "red")
-        ]
+    [ ("position", "absolute")
+    , ("float", "right")
+    , ("right", "1px")
+    , ("top", "3px")
+    , ("padding", "0px 4px")
+    , ("line-height", "0.9")
+    , ("display", "inline-block")
+    , ("z-index", "1")
+    , ("background-color", "red")
+    ]
+
+hideAble: Bool -> List (String, String) -> Attribute
+hideAble show attr =
+  if show then style attr else style [("display", "none")]
