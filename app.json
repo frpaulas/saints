@@ -2,7 +2,8 @@
     "name": "saints in Elm",
     "repository": "https://github.com/frpaulas/saints",
     "env": {
-        "ELM_COMPILE": "elm make ElmSaints.elm"
+        "ELM_COMPILE": "elm make ElmSaints.elm",
+        "ELM_STATIC_DIR": "web/static/"
     },
     "buildpacks": [
         {
