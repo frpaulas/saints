@@ -29,7 +29,7 @@ config :saints, Saints.Repo,
   password: System.get_env("DB_PASSWORD"),
   database: "d4u6f4p21o7f50",
   hostname: System.get_env("DB_HOSTNAME"),
-  url: System.get("DB_URL")
+  url: System.get("DB_URL"),
   pool_size: 10
 # ## SSL Support
 #
