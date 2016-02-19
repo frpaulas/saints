@@ -26,6 +26,7 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on('set_donors', data => {
+  console.log("SET DONORS: ", data);
   elmApp.ports.donorLists.send(data.donors)
 })
 
