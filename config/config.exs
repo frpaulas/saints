@@ -9,7 +9,7 @@ use Mix.Config
 config :saints, Saints.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
-  secret_key_base: System.get_env("SECRET_KEY_BASE"),
+  secret_key_base: "jsB28HwJpTyZwNY9bc9LyN6quE9LamXh8WHSgUvSLfXntAv4g4eLLMYzZZRUpEC72e8ahfKvUBrw", # System.get_env("SECRET_KEY_BASE"),
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: Saints.PubSub,
            adapter: Phoenix.PubSub.PG2]
