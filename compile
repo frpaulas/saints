@@ -1,0 +1,5 @@
+# saints/compile
+info "Building Phoenix static assets"
+npm run compile
+
+mix phoenix.digest
