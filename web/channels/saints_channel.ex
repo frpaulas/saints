@@ -57,7 +57,7 @@ defmodule Saints.SaintsChannel do
   end
 
   def handle_in("update_donor", donor, socket) do
-    update_rec Saints.Donor, db_donor(donor), socket, "FAILED TO UPDATE DONOR NAME", [:addresses, :phones, :notes]
+    update_rec Saints.Donor, db_donor(donor), socket, "FAILED TO UPDATE DONOR NAME", [:addresses, :phones, :notes, :donations]
   end
 
   def handle_in("create_donor", donor, socket) do
@@ -66,6 +66,18 @@ defmodule Saints.SaintsChannel do
 
   def handle_in("delete_donor", donor, socket) do
     delete_this Saints.Donor, donor, socket, "FAILED TO DELETE DONOR"
+  end
+
+  def handle_in("update_donation", donation, socket) do
+    update_rec Saints.Donation, db_donation(donation), socket, "FAILED TO UPDATE DONATION"
+  end
+
+  def handle_in("create_donation", donation, socket) do
+    create_assoc :donations, db_donation(donation), socket, "FAILED TO CREATE DONATION"
+  end
+
+  def handle_in("delete_donation", donation, socket) do
+    delete_this Saints.Donation, donation, socket, "DB FAILED TO DELETE DONATION"
   end
 
   def handle_in("update_note", note, socket) do
@@ -129,7 +141,16 @@ defmodule Saints.SaintsChannel do
       name_ext:     donor["nameExt"],
       id:           donor["id"]
     }
+  end
 
+  defp db_donation(donation) do
+    import Decimal, only: [new: 1]
+    %{  amount: donation["amount"] |> Decimal.new,
+        of_type: donation["ofType"],
+        of_type_id: donation["ofTypeID"],
+        donor_id: donation["donor_id"],
+        id: donation["id"]
+    }
   end
 
   defp db_phone(phone) do
@@ -234,7 +255,7 @@ defp author(map) do
 end
 
   defp pushDonor(id, socket) do
-    d = Repo.one(from d in Saints.Donor, where: d.id == ^id, preload: [:addresses, :phones, :notes])
+    d = Repo.one(from d in Saints.Donor, where: d.id == ^id, preload: [:addresses, :phones, :notes, :donations])
     push socket, "ok_donor", %{donor: d}
     {:noreply, socket}
   end

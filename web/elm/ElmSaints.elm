@@ -18,6 +18,8 @@ import Saints.Phone as Phone
 import Saints.Phone exposing (phoneUpdate, phoneDelete)
 import Saints.Donor exposing (donorUpdate, detailsGet, donorDelete)
 import Saints.Donor as Donor
+import Saints.Donation exposing (donationUpdate, donationDelete)
+import Saints.Donation as Donation
 
 app = 
   StartApp.start
@@ -229,6 +231,14 @@ port updateDonor =
 port deleteDonor: Signal Donor.Donor
 port deleteDonor =
   donorDelete.signal
+
+port updateDonation: Signal Donation.Donation
+port updateDonation =
+  donationUpdate.signal
+
+port deleteDonation: Signal Donation.Donation
+port deleteDonation =
+  donationDelete.signal
 
 port updateNote: Signal Note.Note
 port updateNote = 

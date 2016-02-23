@@ -31,6 +31,7 @@ channel.on('set_donors', data => {
 })
 
 channel.on('ok_donor', data => {
+  console.log("OK DONOR: ", data);
   elmApp.ports.okDonor.send(data.donor)
 })
 
@@ -49,15 +50,16 @@ var elmDiv = document.getElementById('elm-main')
         , donors: []
         }
       , okDonor: {
-            id:           0
+            id:           -1
           , title:        ""
           , firstName:    ""
           , middleName:   ""
           , lastName:     ""
           , nameExt:      ""
           , phones:        []
-          , addresses:      []
+          , addresses:     []
           , notes:         []
+          , donations:     []
         }
       }
   , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)
@@ -71,12 +73,20 @@ elmApp.ports.requestDonorDetail.subscribe(function(donor) {
   channel.push("request_donor_detail", donor.id)
 });
 elmApp.ports.updateDonor.subscribe(function(donor) {
+  console.log("UPDATE DONOR: ", donor);
   if (donor.id < 0) {channel.push("create_donor", donor)}
   else {channel.push("update_donor", donor)}
 })
 elmApp.ports.deleteDonor.subscribe(function(donor) {
   channel.push("delete_donor", donor)
 })
+elmApp.ports.updateDonation.subscribe(function(donation) {
+  if (donation.id < 0) {channel.push("create_donation", donation)}
+  else {channel.push("update_donation", donation)};
+})
+elmApp.ports.deleteDonation.subscribe(function(donation) {
+  channel.push("delete_donation", donation)
+}) 
 elmApp.ports.updateNote.subscribe(function(note) {
   if (note.id < 0) {channel.push("create_note", note)}
   else {channel.push("update_note", note)};

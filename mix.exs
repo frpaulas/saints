@@ -38,7 +38,8 @@ defmodule Saints.Mixfile do
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 1.0"},
-      {:scrivener, "~> 1.0"}
+      {:scrivener, "~> 1.0"},
+      {:decimal, "~> 1.1"}
 #      {:ecto, "~> 1.1"},
 #      {:phoenix_haml, ">= 0.2.0"},
     ]

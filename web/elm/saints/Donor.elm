@@ -13,6 +13,7 @@ import Json.Decode as Json
 import Saints.Address as Address
 import Saints.Note as Note
 import Saints.Phone as Phone
+import Saints.Donation as Donation
 
 type alias ID = Int
 type alias Donor =
@@ -25,6 +26,7 @@ type alias Donor =
   , phones:     List Phone.Model
   , addresses:  List Address.Model
   , notes:      List Note.Model
+  , donations:  List Donation.Model
   }
 
 type alias DBDonor =
@@ -37,6 +39,7 @@ type alias DBDonor =
   , phones:     List Phone.Phone
   , addresses:  List Address.Address
   , notes:      List Note.Note
+  , donations:  List Donation.Donation
   }
 
 emptyDonor =
@@ -49,6 +52,7 @@ emptyDonor =
   , phones =     []
   , addresses =  []
   , notes =      []
+  , donations =  []
   }
 
 initDonor: Donor
@@ -69,6 +73,7 @@ makeModel hideDetails detailsInHand donor =
     , phones =     List.map Phone.makeModel donor.phones
     , addresses =  List.map Address.makeModel donor.addresses
     , notes =      List.map Note.makeModel donor.notes
+    , donations =  List.map Donation.makeModel donor.donations
     }
   , hideDetails = hideDetails
   , hideEdit = True
@@ -127,12 +132,14 @@ type Action
   | MiddleName String
   | LastName String
   | NameExt String
+  | ModifyDonation ID Donation.Action
   | ModifyNote ID Note.Action
   | ModifyAddr ID Address.Action
   | ModifyPhone ID Phone.Action
   | NewNote
   | NewAddress
   | NewPhone
+  | NewDonation
 
 update: Action -> Model -> Model
 update action model =
@@ -195,6 +202,12 @@ update action model =
           {this | phones = updatedDonorPhones this.phones id phoneAction}
       in
         {model | donor = updatedDonor model.donor}
+    ModifyDonation id donationAction ->
+      let
+        updatedDonor this = 
+          {this | donations = updatedDonorDonations this.donations id donationAction}
+      in
+        {model | donor = updatedDonor model.donor}
     NewNote -> 
       let
         donor = model.donor
@@ -213,6 +226,13 @@ update action model =
         newDonor = {donor | phones = donor.phones ++ [Phone.new donor.id]} 
       in
         {model | donor = newDonor}
+    NewDonation ->
+      let
+        donor = model.donor
+        newDonor = {donor | donations = donor.donations ++ [Donation.new donor.id]} 
+      in
+        {model | donor = newDonor}
+
 
 updatedDonorNotes: List Note.Model -> ID -> Note.Action -> List Note.Model
 updatedDonorNotes notes id action =
@@ -244,12 +264,24 @@ updatedDonorAddresses addresses id action =
   in
     List.map addrAction addresses
 
+updatedDonorDonations: List Donation.Model -> ID -> Donation.Action -> List Donation.Model
+updatedDonorDonations donations id action =
+  let 
+    donationAction this =
+      if this.donation.id == id
+        then Donation.update action this
+        else this
+  in
+    List.map donationAction donations
+
 -- VIEW
 
 view: Signal.Address Action -> Model -> Html
 view address model =
   let
     donor  = model.donor
+    donations = List.map (viewDonations address) donor.donations
+              |> List.concat
     notes  = List.map (viewNotes address) donor.notes
               |> List.concat
     theseAddresses = List.map (viewAddr address) donor.addresses
@@ -274,6 +306,13 @@ view address model =
       , p
         [ notesStyle model]
         [ button
+          [ addButtonStyle model, onClickDonor address NewDonation]
+          [ text "+ donations"]
+        , ul [ detailsStyle model ] donations 
+        ] -- end of this p
+      , p
+        [ notesStyle model]
+        [ button
           [ addButtonStyle model, onClickDonor address NewNote]
           [ text "+ notes"]
         , ul [ detailsStyle model ] notes 
@@ -294,6 +333,10 @@ view address model =
         ]
 --      , donorDetailsFor address model
       ]
+
+viewDonations: Signal.Address Action -> Donation.Model -> List Html
+viewDonations address model =
+  Donation.view (Signal.forwardTo address (ModifyDonation model.donation.id)) model
 
 viewNotes: Signal.Address Action -> Note.Model -> List Html
 viewNotes address model =

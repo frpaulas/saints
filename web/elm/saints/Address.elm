@@ -137,6 +137,9 @@ update action model =
       in
         { model | address = newAddress }
 
+
+-- VIEW
+
 view: Signal.Address Action -> Model -> List Html
 view address model =
   let 
