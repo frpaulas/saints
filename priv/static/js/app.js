@@ -16354,6 +16354,7 @@ channel.on('set_donors', function (data) {
 });
 
 channel.on('ok_donor', function (data) {
+  console.log("OK DONOR: ", data);
   elmApp.ports.okDonor.send(data.donor);
 });
 
@@ -16395,6 +16396,7 @@ elmApp.ports.requestDonorDetail.subscribe(function (donor) {
   channel.push("request_donor_detail", donor.id);
 });
 elmApp.ports.updateDonor.subscribe(function (donor) {
+  console.log("UPDATE DONOR: ", donor);
   if (donor.id < 0) {
     channel.push("create_donor", donor);
   } else {
