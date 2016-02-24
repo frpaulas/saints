@@ -9,6 +9,8 @@ defmodule Saints.Donor do
     field :middle_name, :string     
     field :last_name, :string     
     field :name_ext, :string  
+
+    timestamps
     has_many :addresses, Saints.Address
     has_many :phones, Saints.Phone 
     has_many :notes, Saints.Note

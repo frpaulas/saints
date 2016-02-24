@@ -3,7 +3,9 @@ defmodule Saints.Phone do
   schema "phones" do
     field :location, :string
     field :of_type, :string     
-    field :number, :string      
+    field :number, :string  
+
+    timestamps    
     belongs_to :donor, Saints.Donor
     
   end

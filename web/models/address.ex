@@ -8,6 +8,8 @@ defmodule Saints.Address do
     field :state, :string, default: ""
     field :zip, :string, default: ""
     field :country, :string, default: ""
+
+    timestamps
     belongs_to :donor, Saints.Donor
     
   end
