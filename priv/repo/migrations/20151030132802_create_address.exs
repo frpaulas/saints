@@ -2,7 +2,7 @@ defmodule Saints.Repo.Migrations.CreateAddress do
   use Ecto.Migration
 
   def change do
-    create table(:address) do
+    create table(:addresses) do
       add :donor_id, references(:donor)     
       add :location, :string, null: false   
       add :address1, :string      
@@ -14,6 +14,6 @@ defmodule Saints.Repo.Migrations.CreateAddress do
       
       timestamps
     end
-    create index(:address, [:donor_id])
+    create index(:addresses, [:donor_id])
   end
 end

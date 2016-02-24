@@ -13,5 +13,6 @@ defmodule Saints.Repo.Migrations.CreateUser do
     end
 
     create index(:users, [:username])
+    create unique_index(:users, [:email])
   end
 end

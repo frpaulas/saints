@@ -12,6 +12,6 @@ defmodule Saints.Repo.Migrations.AddDonorTable do
       timestamps
     end
 
-    create unique_index(:donor, [:last_name])
+    create index(:donor, [:last_name], unique: false)
   end
 end
