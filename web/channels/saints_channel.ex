@@ -1,4 +1,5 @@
 require IEx
+require Logger
 require Poison
 defmodule Saints.SaintsChannel do
   use Saints.Web, :channel
@@ -207,8 +208,10 @@ defmodule Saints.SaintsChannel do
     }
     case Repo.insert(mx) do
       {:ok, donor} ->
+        Logger.debug "INSERT DONOR OK: #{inspect donor}"
         pushDonor donor.id, socket
       {:error, resp} ->
+        Logger.debug "INSERT DONOR FAIL: #{resp}"
         {:error, %{reason: fail_msg}}
     end
   end
