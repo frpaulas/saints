@@ -2,11 +2,12 @@ defmodule Saints.User do
   use Saints.Web, :model
   schema "users" do
     field :name, :string
-    field :password, :string, virtual: true
-    field :username, :string, null: false
+    field :password,      :string, virtual: true
+    field :username,      :string, null: false
     field :password_hash, :string
-    field :email, :string
-    field :phone, :string
+    field :email,         :string
+    field :phone,         :string
+    field :admin,         :boolean, default: false
     
     timestamps
   end

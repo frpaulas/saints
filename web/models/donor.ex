@@ -4,11 +4,12 @@ defmodule Saints.Donor do
 
   schema "donor" do
     # field :donor_id, :integer     
-    field :title, :string     
-    field :first_name, :string      
-    field :middle_name, :string     
-    field :last_name, :string     
-    field :name_ext, :string  
+    field :title,       :string, default: ""     
+    field :first_name,  :string, default: ""      
+    field :middle_name, :string, default: ""     
+    field :last_name,   :string, default: ""  
+    field :name_ext,    :string, default: ""
+    field :aka,         :string, default: ""
 
     timestamps
     has_many :addresses, Saints.Address
