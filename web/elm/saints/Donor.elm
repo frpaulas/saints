@@ -23,6 +23,7 @@ type alias Donor =
   , middleName: String
   , lastName:   String
   , nameExt:    String
+  , aka:        String
   , phones:     List Phone.Model
   , addresses:  List Address.Model
   , notes:      List Note.Model
@@ -36,6 +37,7 @@ type alias DBDonor =
   , middleName: String
   , lastName:   String
   , nameExt:    String
+  , aka:        String
   , phones:     List Phone.Phone
   , addresses:  List Address.Address
   , notes:      List Note.Note
@@ -49,6 +51,7 @@ emptyDonor =
   , middleName = ""
   , lastName =   ""
   , nameExt =    ""
+  , aka =        ""
   , phones =     []
   , addresses =  []
   , notes =      []
@@ -132,6 +135,7 @@ type Action
   | MiddleName String
   | LastName String
   | NameExt String
+  | Aka String
   | ModifyDonation ID Donation.Action
   | ModifyNote ID Note.Action
   | ModifyAddr ID Address.Action
@@ -182,6 +186,12 @@ update action model =
       let
         donor = model.donor
         newDonor = {donor | nameExt = s}
+      in
+        { model | donor = newDonor }
+    Aka     s -> 
+      let
+        donor = model.donor
+        newDonor = {donor | aka = s}
       in
         { model | donor = newDonor }
     ModifyNote id noteAction ->
@@ -370,11 +380,12 @@ donorNameEdit address model =
     , saveButton address model
     , li 
     []
-    [ inputTitle address model
-    , inputFirstName address model
+    [ inputTitle      address model
+    , inputFirstName  address model
     , inputMiddleName address model
-    , inputLastName address model
-    , inputNameExt address model
+    , inputLastName   address model
+    , inputNameExt    address model
+    , inputAka        address model
     ]
   ]
 
@@ -486,6 +497,23 @@ inputNameExt address model =
       , onClickDonor address NoOp
       ]
       []
+
+inputAka: Signal.Address Action -> Model -> Html
+inputAka address model =
+  let aka = model.aka
+  in
+    input 
+      [ id "aka"
+      , type' "text"
+      , placeholder "Nick name"
+      , autofocus True
+      , name "aka"
+      , on "input" targetValue (\str -> Signal.message address (Aka str))
+      , value donor.aka
+      , onClickDonor address NoOp
+      ]
+      []
+
 
 
 fullNameText: Donor -> Html

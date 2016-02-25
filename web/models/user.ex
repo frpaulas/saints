@@ -14,7 +14,7 @@ defmodule Saints.User do
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(name username), ~w(email phone))
+    |> cast(params, ~w(name username), ~w(email phone admin))
     |> validate_length(:username, min: 1, max: 20)
   end
 

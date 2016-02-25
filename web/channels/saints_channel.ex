@@ -200,11 +200,12 @@ defmodule Saints.SaintsChannel do
   end
   def create_donor(map, socket, fail_msg \\ "DB FAIL") do
     mx = %Saints.Donor{
-      title: map["title"],
-      first_name: map["firstName"],
-      middle_name: map["middleName"],
-      last_name: map["lastName"],
-      name_ext: map["nameExt"]
+      title:        map["title"],
+      first_name:   map["firstName"],
+      middle_name:  map["middleName"],
+      last_name:    map["lastName"],
+      name_ext:     map["nameExt"],
+      aka:          map["aka"]
     }
     case Repo.insert(mx) do
       {:ok, donor} ->

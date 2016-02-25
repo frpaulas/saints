@@ -21,7 +21,7 @@ defmodule Saints.Donor do
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(last_name), ~w(title first_name middle_name name_ext))
+    |> cast(params, ~w(last_name), ~w(title first_name middle_name name_ext aka))
     |> cast_assoc(:addresses, require: true)
     |> cast_assoc(:phones, require: true)
     |> cast_assoc(:notes, require: true)
@@ -29,7 +29,7 @@ defmodule Saints.Donor do
   end
   def changename(model, params \\ :empty) do
     model
-    |> cast(params, ~w(last_name), ~w(title first_name middle_name name_ext))
+    |> cast(params, ~w(last_name), ~w(title first_name middle_name name_ext aka))
   end
 end
 
@@ -41,6 +41,7 @@ defimpl Poison.Encoder, for: Saints.Donor  do
         middleName:   model.middle_name,
         lastName:     model.last_name,
         nameExt:      model.name_ext,
+        aka:          model.aka,
         addresses:    (if Ecto.assoc_loaded?( model.addresses ),  do: model.addresses, else: []),
         phones:       (if Ecto.assoc_loaded?( model.phones ),     do: model.phones,    else: []),
         notes:        (if Ecto.assoc_loaded?( model.notes ),      do: model.notes,     else: []),
