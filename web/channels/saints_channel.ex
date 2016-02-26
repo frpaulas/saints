@@ -117,6 +117,9 @@ defmodule Saints.SaintsChannel do
   end
 
 
+  def handle_in("request_donor_detail", donor_id, socket) when donor_id < 0 do
+    {:noreply, socket}
+  end
   def handle_in("request_donor_detail", donor_id, socket) do
     pushDonor donor_id, socket
   end
@@ -154,15 +157,6 @@ defmodule Saints.SaintsChannel do
     }
   end
 
-  defp db_phone(phone) do
-    %{  location: location(phone), 
-        of_type:  phone["ofType"], 
-        number:   phone["number"],
-        donor_id: phone["donor_id"],
-        id:       phone["id"]
-      }
-    
-  end
   defp db_note(note) do
     %{  author:   author(note), 
         memo:     note["memo"], 
@@ -185,6 +179,15 @@ defmodule Saints.SaintsChannel do
       }
   end
 
+  defp db_phone(phone) do
+    %{  location: location(phone), 
+        of_type:  phone["ofType"], 
+        number:   phone["number"],
+        donor_id: phone["donor_id"],
+        id:       phone["id"]
+      }
+  end
+    
   defp update_rec(model, map, socket, fail_msg \\ "DB_FAILED", preloads \\[]) do
     changeset = Repo.get(model, map.id)
       |> Repo.preload(preloads)
@@ -196,8 +199,8 @@ defmodule Saints.SaintsChannel do
       {:error, changeset} ->
         {:error, %{reason: fail_msg}}
     end
-
   end
+
   def create_donor(map, socket, fail_msg \\ "DB FAIL") do
     mx = %Saints.Donor{
       title:        map["title"],
@@ -216,6 +219,7 @@ defmodule Saints.SaintsChannel do
         {:error, %{reason: fail_msg}}
     end
   end
+
   defp create_assoc(assoc, map, socket, fail_msg \\ "DB FAIL") do
     map = map |> Map.delete(:id)
     new_assoc = Repo.get(Saints.Donor, map.donor_id)
@@ -226,28 +230,29 @@ defmodule Saints.SaintsChannel do
       {:error, msg} -> 
         {:error, %{reason: fail_msg}}
     end
-    
   end
 
 
   defp delete_this(model, map, socket, fail_msg \\ "DB FAIL") do
+    IO.puts "DELETE THIS: #{inspect map}"
     cond do
+      map["id"] < 0 && map["donor_id"] |> is_nil ->
+        {:noreply, socket}
       map["id"] < 0 -> 
         pushDonor map["donor_id"], socket
       true ->
-        this = Repo.one(from m in model, where: m.id == ^map["id"])
-        case Repo.delete(this) do
-          {:ok, resp} ->
-            if model == Saints.Donor do
-              {:noreply, socket}
-            else
-              pushDonor resp.donor_id, socket
-            end
-          {:error, error_msg} ->
-            {:error, %{reason: fail_msg}}
-        end
+        Repo.one(from m in model, where: m.id == ^map["id"])
+        |> repo_delete(model, socket, fail_msg)
     end
   end
+
+defp repo_delete(record, model, socket, msg) do
+  Repo.delete(record) |> _repo_delete(model, socket, msg)
+end
+
+defp _repo_delete({:ok, resp}, Saints.Donor, socket, _msg), do: {:noreply, socket}
+defp _repo_delete({:ok, resp}, model, socket, _msg), do: pushDonor resp.donor_id, socket
+defp _repo_delete({:ok, _error_msg}, _model, socket, msg), do: {:error, %{reason: msg}}
 
 
 defp location(map) do
@@ -259,8 +264,10 @@ defp author(map) do
 end
 
   defp pushDonor(id, socket) do
-    d = Repo.one(from d in Saints.Donor, where: d.id == ^id, preload: [:addresses, :phones, :notes, :donations])
-    push socket, "ok_donor", %{donor: d}
+    unless id |> is_nil do
+      d = Repo.one(from d in Saints.Donor, where: d.id == ^id, preload: [:addresses, :phones, :notes, :donations])
+      push socket, "ok_donor", %{donor: d}
+    end
     {:noreply, socket}
   end
 

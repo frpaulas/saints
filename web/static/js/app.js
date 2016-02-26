@@ -26,12 +26,10 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on('set_donors', data => {
-  console.log("SET DONORS: ", data);
   elmApp.ports.donorLists.send(data.donors)
 })
 
 channel.on('ok_donor', data => {
-  console.log("OK DONOR: ", data);
   elmApp.ports.okDonor.send(data.donor)
 })
 
@@ -56,10 +54,11 @@ var elmDiv = document.getElementById('elm-main')
           , middleName:   ""
           , lastName:     ""
           , nameExt:      ""
-          , phones:        []
-          , addresses:     []
-          , notes:         []
-          , donations:     []
+          , aka:          ""
+          , phones:       []
+          , addresses:    []
+          , notes:        []
+          , donations:    []
         }
       }
   , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)

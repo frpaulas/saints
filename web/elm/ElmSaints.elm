@@ -26,7 +26,7 @@ app =
     { init = init
     , update = update
     , view = view
-    , inputs = [incomingActions, incomingDonor]
+    , inputs = [incomingActions, incomingDonor, deletingDonor]
     }
 
 -- MAIN
@@ -104,12 +104,14 @@ type Action
   | SetDonors DBDonorList
   | Modify ID Donor.Action
   | NewDonor
+  | DeleteDonor Donor.Donor
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
     NoOp -> 
       (model, Effects.none)
+
     OKDonor donor ->
       let 
         updateDonor donorModel =
@@ -118,6 +120,7 @@ update action model =
             else donorModel
       in
         ({model | donors = List.map updateDonor model.donors}, Effects.none)
+
     SetDonors db ->
       let
         newModel = 
@@ -128,6 +131,7 @@ update action model =
       in
         -- (donors, Effects.none)
         (newModel, Effects.none)
+
     Modify id donorAction ->
       let
         updateDonor donorModel =
@@ -136,6 +140,13 @@ update action model =
             else donorModel
       in
         ({model | donors = List.map updateDonor model.donors}, Effects.none)
+
+    DeleteDonor donor ->
+      let
+        remainingDonors = List.filter (\d -> d.donor.id /= donor.id) model.donors
+      in
+        ({ model | donors = remainingDonors }, Effects.none)
+
     NewDonor -> 
       ({model | donors = [Donor.fromScratch] ++ model.donors}, Effects.none)
 
@@ -213,6 +224,10 @@ incomingActions =
 incomingDonor: Signal Action
 incomingDonor =
   Signal.map OKDonor okDonor
+
+deletingDonor: Signal Action
+deletingDonor =
+  Signal.map DeleteDonor donorDelete.signal
 
 donorOK: Signal.Mailbox Donor.Donor
 donorOK =

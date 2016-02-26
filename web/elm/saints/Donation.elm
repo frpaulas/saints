@@ -82,9 +82,9 @@ update: Action -> Model -> Model
 update action model =
   case action of
     NoOp -> model
+    Delete -> model
     ToggleEditing -> { model | editing = not model.editing }
     SaveEdit -> { model | editing = not model.editing }
-    Delete -> model
     Amount amt ->
       let
         d = model.donation
@@ -115,7 +115,11 @@ view address model =
         [ onClickDonation address ToggleEditing ]
         [ donationText donation 
         , button 
-            [ deleteButtonStyle, onClickDonation donationDelete.address donation ]
+--            [ deleteButtonStyle, onClickDonation donationDelete.address donation ]
+            [ deleteButtonStyle
+            , onClickDonation address Delete
+            , onClickDonation donationDelete.address donation
+            ]
             [ text "-"]
         ]
     , li
@@ -200,7 +204,7 @@ cancelSave address model =
   span 
     [ cancelSaveStyle model ]
     [ button [ onClickDonation donationDelete.address model.donation] [text "cancel"]
-    , button [ onClickDonation donationUpdate.address model.donation] [text "save"]
+    , button [ onClickDonation donationUpdate.address model.donation ] [text "save"]
     ]
 
 -- STYLE

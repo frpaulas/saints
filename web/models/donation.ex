@@ -13,7 +13,6 @@ defmodule Saints.Donation do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, ~w(amount), ~w(of_type of_type_id))
-    |> validate_format(:amount, ~r/^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$/)
   end
 end
 
