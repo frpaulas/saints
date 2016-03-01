@@ -33,12 +33,17 @@ channel.on('ok_donor', data => {
   elmApp.ports.okDonor.send(data.donor)
 })
 
+channel.on('db_msg', data => {
+  elmApp.ports.dbSez.send(data)
+})
+
 // Hook Up Elm
 
 var elmDiv = document.getElementById('elm-main')
   , initialState = {
       donorLists: { 
-        searchName: ""
+          searchName: ""
+        , flash: ""
         , page: {
               totalPages: 0
             , totalEntries: 0
@@ -46,7 +51,11 @@ var elmDiv = document.getElementById('elm-main')
             , pageNumber: 0
           }
         , donors: []
+        , dbMsg: {
+              ofType: "ok"
+            , text: ""
         }
+      }
       , okDonor: {
             id:           -1
           , title:        ""
@@ -59,7 +68,14 @@ var elmDiv = document.getElementById('elm-main')
           , addresses:    []
           , notes:        []
           , donations:    []
-        }
+      }
+      , dbSez: {
+          model:  ""
+        , id:     -1
+        , donor:  -1
+        , ofType: "ok"
+        , text:   ""
+      }
       }
   , elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState)
 

@@ -128,6 +128,7 @@ defmodule Saints.SaintsChannel do
     {:reply, {:ok, payload}, socket}
   end
 
+
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (donors:lobby).
   def handle_in("shout", payload, socket) do
@@ -239,29 +240,47 @@ defmodule Saints.SaintsChannel do
       map["id"] < 0 && map["donor_id"] |> is_nil ->
         {:noreply, socket}
       map["id"] < 0 -> 
-        pushDonor map["donor_id"], socket
+        {:noreply, socket}
       true ->
         Repo.one(from m in model, where: m.id == ^map["id"])
         |> repo_delete(model, socket, fail_msg)
     end
   end
 
-defp repo_delete(record, model, socket, msg) do
-  Repo.delete(record) |> _repo_delete(model, socket, msg)
-end
+  defp repo_delete(record, model, socket, msg) do
+    Repo.delete(record) |> _repo_delete(model, socket, msg)
+  end
 
-defp _repo_delete({:ok, resp}, Saints.Donor, socket, _msg), do: {:noreply, socket}
-defp _repo_delete({:ok, resp}, model, socket, _msg), do: pushDonor resp.donor_id, socket
-defp _repo_delete({:ok, _error_msg}, _model, socket, msg), do: {:error, %{reason: msg}}
+  defp _repo_delete({:ok, resp}, model, socket, _msg), do: db_sez_to socket, model, resp, "ok", "deleted"
+  defp _repo_delete({:error, resp}, model, socket, msg), do: db_sez_to socket, resp, model, "error", "msg"
 
+  defp db_sez_to(socket, Saints.Donor, resp, of_type, msg) do
+    push socket, "db_msg", %{ model:  "Donor",
+                              id:     resp.id,
+                              donor:  resp.id,
+                              ofType: of_type,
+                              text:   msg
+                            }
+    {:noreply, socket}
+  end
 
-defp location(map) do
-  if map["location"]|>String.strip|>String.length == 0, do: "unknown", else: map["location"]
-end
+  defp db_sez_to(socket, model, resp, of_type, msg) do
+    push socket, "db_msg", %{ model:  (Atom.to_string(model) |> String.split(".") |> Enum.reverse |> hd),
+                              id:     resp.id,
+                              donor:  resp.donor_id,
+                              ofType: of_type,
+                              text:   msg
+                            }
+    {:noreply, socket}
+  end
 
-defp author(map) do
-    if map["author"]|>String.strip|>String.length == 0, do: "unknown", else: map["author"]
-end
+  defp location(map) do
+    if map["location"]|>String.strip|>String.length == 0, do: "unknown", else: map["location"]
+  end
+
+  defp author(map) do
+      if map["author"]|>String.strip|>String.length == 0, do: "unknown", else: map["author"]
+  end
 
   defp pushDonor(id, socket) do
     unless id |> is_nil do

@@ -126,7 +126,6 @@ detailsGet =
 
 type Action 
   = NoOp
-  | OK String
   | ToggleDetails
   | ToggleEdit
   | SaveDonor
@@ -150,11 +149,6 @@ update: Action -> Model -> Model
 update action model =
   case action of
     NoOp -> model
-    OK resp ->
-      let
-        foo = Debug.log "OK RESP" resp
-      in
-        model
     ToggleDetails -> { model | hideDetails = (not model.hideDetails)}
     ToggleEdit    -> { model | hideEdit = (not model.hideEdit)}
     SaveDonor     -> { model | hideEdit = (not model.hideEdit)}
@@ -648,6 +642,6 @@ deleteButtonStyle model =
             , ("display", "inline-block")
             , ("z-index", "1")
             , ("font-size", "0.8em")
-            , ("background-color", "red")
             , ("color", "lightyellow")
+            , ("background-color", "crimson")
             ]

@@ -105,10 +105,14 @@ view address model =
     [ li 
       [ onClickNote address ToggleEditing ] 
       [ text (note.author ++ " says: " ++ note.memo)
+      , button 
+          [ deleteButtonStyle
+          , onClickNote noteDelete.address note 
+          ] 
+          [ text "delete"]
       , span 
         [ style [("float", "right")]] 
         [ text ("at: " ++ note.updated_at) ]
-      , button [ deleteButtonStyle, onClickNote noteDelete.address note ] [ text "-"]
       ]
     , li 
       []
@@ -201,13 +205,13 @@ hideAble show attr =
 deleteButtonStyle: Attribute
 deleteButtonStyle =
   style
-    [ ("position", "absolute")
+    [ ("margin", "3px -29px 0 5px")
     , ("float", "right")
-    , ("right", "1px")
-    , ("top", "3px")
     , ("padding", "0px 4px")
     , ("line-height", "0.9")
     , ("display", "inline-block")
     , ("z-index", "1")
-    , ("background-color", "red")
+    , ("font-size", "0.8em")
+    , ("color", "lightyellow")
+    , ("background-color", "crimson")
     ]

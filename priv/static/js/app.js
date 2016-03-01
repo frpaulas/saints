@@ -12989,16 +12989,16 @@ Elm.Saints.Address.make = function (_elm) {
                                                                                    ,_1: "none"}]));
    });
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                           ,_0: "position"
-                                                           ,_1: "absolute"}
+                                                           ,_0: "margin-right"
+                                                           ,_1: "-29px"}
                                                           ,{ctor: "_Tuple2",_0: "float",_1: "right"}
-                                                          ,{ctor: "_Tuple2",_0: "right",_1: "1px"}
-                                                          ,{ctor: "_Tuple2",_0: "top",_1: "3px"}
-                                                          ,{ctor: "_Tuple2",_0: "padding",_1: "0px 4px"}
+                                                          ,{ctor: "_Tuple2",_0: "padding",_1: "1px 4px"}
                                                           ,{ctor: "_Tuple2",_0: "line-height",_1: "0.9"}
                                                           ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}
                                                           ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
-                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "red"}]));
+                                                          ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
+                                                          ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
+                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
    var cancelSaveStyle = function (model) {
       return A2(hideAble,
       model.editing,
@@ -13039,11 +13039,11 @@ Elm.Saints.Address.make = function (_elm) {
       var _p1 = action;
       switch (_p1.ctor)
       {case "NoOp": return model;
+         case "Delete": return model;
          case "ToggleEditing": return _U.update(model,
            {editing: $Basics.not(model.editing)});
          case "SaveEdit": return _U.update(model,
            {editing: $Basics.not(model.editing)});
-         case "Delete": return model;
          case "Location": var addr = model.address;
            var newAddress = _U.update(addr,{location: _p1._0});
            return _U.update(model,{address: newAddress});
@@ -13081,9 +13081,9 @@ Elm.Saints.Address.make = function (_elm) {
    var Location = function (a) {
       return {ctor: "Location",_0: a};
    };
-   var Delete = {ctor: "Delete"};
    var SaveEdit = {ctor: "SaveEdit"};
    var ToggleEditing = {ctor: "ToggleEditing"};
+   var Delete = {ctor: "Delete"};
    var NoOp = {ctor: "NoOp"};
    var inputLocation = F2(function (address,model) {
       return A2($Html.p,
@@ -13265,8 +13265,9 @@ Elm.Saints.Address.make = function (_elm) {
                      _U.list([$Html.text(addr.location)
                              ,A2($Html.button,
                              _U.list([deleteButtonStyle
+                                     ,A2(onClickAddr,address,Delete)
                                      ,A2(onClickAddr,addressDelete.address,addr)]),
-                             _U.list([$Html.text("-")]))
+                             _U.list([$Html.text("delete")]))
                              ,A2($Html.p,_U.list([]),_U.list([$Html.text(addr.address1)]))
                              ,A2($Html.p,_U.list([]),_U.list([$Html.text(addr.address2)]))
                              ,A2($Html.p,
@@ -13342,16 +13343,16 @@ Elm.Saints.Note.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                           ,_0: "position"
-                                                           ,_1: "absolute"}
+                                                           ,_0: "margin"
+                                                           ,_1: "3px -29px 0 5px"}
                                                           ,{ctor: "_Tuple2",_0: "float",_1: "right"}
-                                                          ,{ctor: "_Tuple2",_0: "right",_1: "1px"}
-                                                          ,{ctor: "_Tuple2",_0: "top",_1: "3px"}
                                                           ,{ctor: "_Tuple2",_0: "padding",_1: "0px 4px"}
                                                           ,{ctor: "_Tuple2",_0: "line-height",_1: "0.9"}
                                                           ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}
                                                           ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
-                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "red"}]));
+                                                          ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
+                                                          ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
+                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
    var hideAble = F2(function (show,attr) {
       return show ? $Html$Attributes.style(attr) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                                                    ,_0: "display"
@@ -13476,17 +13477,17 @@ Elm.Saints.Note.make = function (_elm) {
                      _U.list([$Html.text(A2($Basics._op["++"],
                              note.author,
                              A2($Basics._op["++"]," says: ",note.memo)))
+                             ,A2($Html.button,
+                             _U.list([deleteButtonStyle
+                                     ,A2(onClickNote,noteDelete.address,note)]),
+                             _U.list([$Html.text("delete")]))
                              ,A2($Html.span,
                              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                                       ,_0: "float"
                                                                       ,_1: "right"}]))]),
                              _U.list([$Html.text(A2($Basics._op["++"],
                              "at: ",
-                             note.updated_at))]))
-                             ,A2($Html.button,
-                             _U.list([deleteButtonStyle
-                                     ,A2(onClickNote,noteDelete.address,note)]),
-                             _U.list([$Html.text("-")]))]))
+                             note.updated_at))]))]))
                      ,A2($Html.li,
                      _U.list([]),
                      _U.list([A2(cancelSave,address,model)
@@ -13535,16 +13536,16 @@ Elm.Saints.Phone.make = function (_elm) {
                                                                                    ,_1: "none"}]));
    });
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                           ,_0: "position"
-                                                           ,_1: "absolute"}
+                                                           ,_0: "margin-right"
+                                                           ,_1: "-29px"}
                                                           ,{ctor: "_Tuple2",_0: "float",_1: "right"}
-                                                          ,{ctor: "_Tuple2",_0: "right",_1: "1px"}
-                                                          ,{ctor: "_Tuple2",_0: "top",_1: "3px"}
-                                                          ,{ctor: "_Tuple2",_0: "padding",_1: "0px 4px"}
+                                                          ,{ctor: "_Tuple2",_0: "padding",_1: "1px 4px"}
                                                           ,{ctor: "_Tuple2",_0: "line-height",_1: "0.9"}
                                                           ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}
                                                           ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
-                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "red"}]));
+                                                          ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
+                                                          ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
+                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
    var inputStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                     ,_0: "margin-left"
                                                     ,_1: "-30px"}
@@ -13593,12 +13594,10 @@ Elm.Saints.Phone.make = function (_elm) {
          case "Location": var phone = model.phone;
            var newPhone = _U.update(phone,{location: _p1._0});
            return _U.update(model,{phone: newPhone});
-         case "Number": var phone = model.phone;
+         default: var phone = model.phone;
            var newPhone = _U.update(phone,{number: _p1._0});
-           return _U.update(model,{phone: newPhone});
-         default: return model;}
+           return _U.update(model,{phone: newPhone});}
    });
-   var Delete = {ctor: "Delete"};
    var Number = function (a) {    return {ctor: "Number",_0: a};};
    var OfType = function (a) {    return {ctor: "OfType",_0: a};};
    var Location = function (a) {
@@ -13709,7 +13708,7 @@ Elm.Saints.Phone.make = function (_elm) {
                              ,A2($Html.button,
                              _U.list([deleteButtonStyle
                                      ,A2(onClickPhone,phoneDelete.address,phone)]),
-                             _U.list([$Html.text("-")]))]))
+                             _U.list([$Html.text("delete")]))]))
                      ,A2($Html.li,
                      _U.list([]),
                      _U.list([A2(cancelSave,address,model)
@@ -13766,16 +13765,16 @@ Elm.Saints.Donation.make = function (_elm) {
                                                                                    ,_1: "none"}]));
    });
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                           ,_0: "position"
-                                                           ,_1: "absolute"}
+                                                           ,_0: "margin-right"
+                                                           ,_1: "-29px"}
                                                           ,{ctor: "_Tuple2",_0: "float",_1: "right"}
-                                                          ,{ctor: "_Tuple2",_0: "right",_1: "1px"}
-                                                          ,{ctor: "_Tuple2",_0: "top",_1: "3px"}
-                                                          ,{ctor: "_Tuple2",_0: "padding",_1: "0px 4px"}
+                                                          ,{ctor: "_Tuple2",_0: "padding",_1: "1px 4px"}
                                                           ,{ctor: "_Tuple2",_0: "line-height",_1: "0.9"}
                                                           ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}
                                                           ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
-                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "red"}]));
+                                                          ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
+                                                          ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
+                                                          ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
    var cancelSaveStyle = function (model) {
       return A2(hideAble,
       model.editing,
@@ -13821,7 +13820,6 @@ Elm.Saints.Donation.make = function (_elm) {
       var _p1 = action;
       switch (_p1.ctor)
       {case "NoOp": return model;
-         case "Delete": return model;
          case "ToggleEditing": return _U.update(model,
            {editing: $Basics.not(model.editing)});
          case "SaveEdit": return _U.update(model,
@@ -13841,7 +13839,6 @@ Elm.Saints.Donation.make = function (_elm) {
    };
    var OfType = function (a) {    return {ctor: "OfType",_0: a};};
    var Amount = function (a) {    return {ctor: "Amount",_0: a};};
-   var Delete = {ctor: "Delete"};
    var SaveEdit = {ctor: "SaveEdit"};
    var ToggleEditing = {ctor: "ToggleEditing"};
    var NoOp = {ctor: "NoOp"};
@@ -13945,9 +13942,8 @@ Elm.Saints.Donation.make = function (_elm) {
                      _U.list([donationText(donation)
                              ,A2($Html.button,
                              _U.list([deleteButtonStyle
-                                     ,A2(onClickDonation,address,Delete)
                                      ,A2(onClickDonation,donationDelete.address,donation)]),
-                             _U.list([$Html.text("-")]))]))
+                             _U.list([$Html.text("delete")]))]))
                      ,A2($Html.li,
                      _U.list([]),
                      _U.list([A2(cancelSave,address,model)
@@ -14016,11 +14012,11 @@ Elm.Saints.Donor.make = function (_elm) {
                                                                                                                   ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
                                                                                                                   ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
                                                                                                                   ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "background-color"
-                                                                                                                   ,_1: "red"}
-                                                                                                                  ,{ctor: "_Tuple2"
                                                                                                                    ,_0: "color"
-                                                                                                                   ,_1: "lightyellow"}]));
+                                                                                                                   ,_1: "lightyellow"}
+                                                                                                                  ,{ctor: "_Tuple2"
+                                                                                                                   ,_0: "background-color"
+                                                                                                                   ,_1: "crimson"}]));
    };
    var editStyle = function (model) {
       return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
@@ -14201,8 +14197,6 @@ Elm.Saints.Donor.make = function (_elm) {
       var _p1 = action;
       switch (_p1.ctor)
       {case "NoOp": return model;
-         case "OK": var foo = A2($Debug.log,"OK RESP",_p1._0);
-           return model;
          case "ToggleDetails": return _U.update(model,
            {hideDetails: $Basics.not(model.hideDetails)});
          case "ToggleEdit": return _U.update(model,
@@ -14333,7 +14327,6 @@ Elm.Saints.Donor.make = function (_elm) {
    var SaveDonor = {ctor: "SaveDonor"};
    var ToggleEdit = {ctor: "ToggleEdit"};
    var ToggleDetails = {ctor: "ToggleDetails"};
-   var OK = function (a) {    return {ctor: "OK",_0: a};};
    var NoOp = {ctor: "NoOp"};
    var inputTitle = F2(function (address,model) {
       var donor = model.donor;
@@ -14706,6 +14699,22 @@ Elm.ElmSaints.make = function (_elm) {
    var buttonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                      ,_0: "margin"
                                                      ,_1: "0px 2px"}]));
+   var dbSez = Elm.Native.Port.make(_elm).inboundSignal("dbSez",
+   "ElmSaints.DbMsg",
+   function (v) {
+      return typeof v === "object" && "model" in v && "id" in v && "donor" in v && "ofType" in v && "text" in v ? {_: {}
+                                                                                                                  ,model: typeof v.model === "string" || typeof v.model === "object" && v.model instanceof String ? v.model : _U.badPort("a string",
+                                                                                                                  v.model)
+                                                                                                                  ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                  v.id)
+                                                                                                                  ,donor: typeof v.donor === "number" && isFinite(v.donor) && Math.floor(v.donor) === v.donor ? v.donor : _U.badPort("an integer",
+                                                                                                                  v.donor)
+                                                                                                                  ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
+                                                                                                                  v.ofType)
+                                                                                                                  ,text: typeof v.text === "string" || typeof v.text === "object" && v.text instanceof String ? v.text : _U.badPort("a string",
+                                                                                                                  v.text)} : _U.badPort("an object with fields `model`, `id`, `donor`, `ofType`, `text`",
+      v);
+   });
    var okDonor = Elm.Native.Port.make(_elm).inboundSignal("okDonor",
    "Saints.Donor.DBDonor",
    function (v) {
@@ -15179,6 +15188,42 @@ Elm.ElmSaints.make = function (_elm) {
                       _U.list([]),
                       _U.list([$Html.text($Basics.toString(model.page.pageNumber))]))]))]))]));
    });
+   var deletion = F2(function (msg,model) {
+      var updatedDonor = function (donor) {
+         if (_U.eq(donor.id,msg.donor)) {
+               var _p0 = msg.model;
+               switch (_p0)
+               {case "Donation": var remaining = A2($List.filter,
+                    function (el) {
+                       return !_U.eq(el.donation.id,msg.id);
+                    },
+                    donor.donations);
+                    return _U.update(donor,{donations: remaining});
+                  case "Note": var remaining = A2($List.filter,
+                    function (el) {
+                       return !_U.eq(el.note.id,msg.id);
+                    },
+                    donor.notes);
+                    return _U.update(donor,{notes: remaining});
+                  case "Phone": var remaining = A2($List.filter,
+                    function (el) {
+                       return !_U.eq(el.phone.id,msg.id);
+                    },
+                    donor.phones);
+                    return _U.update(donor,{phones: remaining});
+                  case "Address": var remaining = A2($List.filter,
+                    function (el) {
+                       return !_U.eq(el.address.id,msg.id);
+                    },
+                    donor.addresses);
+                    return _U.update(donor,{addresses: remaining});
+                  default: return donor;}
+            } else return donor;
+      };
+      return _U.update(model,{donor: updatedDonor(model.donor)});
+   });
+   var DbResp = function (a) {    return {ctor: "DbResp",_0: a};};
+   var dbResp = A2($Signal.map,DbResp,dbSez);
    var DeleteDonor = function (a) {
       return {ctor: "DeleteDonor",_0: a};
    };
@@ -15255,34 +15300,39 @@ Elm.ElmSaints.make = function (_elm) {
    var showDetails = false;
    var hideDetails = true;
    var update = F2(function (action,model) {
-      var _p0 = action;
-      switch (_p0.ctor)
+      var _p1 = action;
+      switch (_p1.ctor)
       {case "NoOp": return {ctor: "_Tuple2"
                            ,_0: model
                            ,_1: $Effects.none};
-         case "OKDonor": var _p1 = _p0._0;
+         case "DbResp": return {ctor: "_Tuple2"
+                               ,_0: _U.update(model,
+                               {donors: A2($List.map,deletion(_p1._0),model.donors)})
+                               ,_1: $Effects.none};
+         case "OKDonor": var _p2 = _p1._0;
            var updateDonor = function (donorModel) {
               return _U.eq(donorModel.donor.id,
-              _p1.id) ? A3($Saints$Donor.makeModel,
+              _p2.id) ? A3($Saints$Donor.makeModel,
               showDetails,
               gotDetails,
-              _p1) : donorModel;
+              _p2) : donorModel;
            };
            return {ctor: "_Tuple2"
                   ,_0: _U.update(model,
                   {donors: A2($List.map,updateDonor,model.donors)})
                   ,_1: $Effects.none};
-         case "SetDonors": var _p2 = _p0._0;
-           var newModel = {searchName: _p2.searchName
-                          ,page: _p2.page
+         case "SetDonors": var _p3 = _p1._0;
+           var newModel = {searchName: _p3.searchName
+                          ,page: _p3.page
                           ,donors: A2($List.map,
                           A2($Saints$Donor.makeModel,hideDetails,noDetails),
-                          _p2.donors)};
+                          _p3.donors)
+                          ,flash: ""};
            return {ctor: "_Tuple2",_0: newModel,_1: $Effects.none};
          case "Modify": var updateDonor = function (donorModel) {
               return _U.eq(donorModel.donor.id,
-              _p0._0) ? A2($Saints$Donor.update,
-              _p0._1,
+              _p1._0) ? A2($Saints$Donor.update,
+              _p1._1,
               donorModel) : donorModel;
            };
            return {ctor: "_Tuple2"
@@ -15291,7 +15341,7 @@ Elm.ElmSaints.make = function (_elm) {
                   ,_1: $Effects.none};
          case "DeleteDonor": var remainingDonors = A2($List.filter,
            function (d) {
-              return !_U.eq(d.donor.id,_p0._0.id);
+              return !_U.eq(d.donor.id,_p1._0.id);
            },
            model.donors);
            return {ctor: "_Tuple2"
@@ -15309,7 +15359,10 @@ Elm.ElmSaints.make = function (_elm) {
                   ,pageSize: 0
                   ,pageNumber: 0};
    var init = {ctor: "_Tuple2"
-              ,_0: {searchName: "",page: initPage,donors: _U.list([])}
+              ,_0: {searchName: ""
+                   ,page: initPage
+                   ,donors: _U.list([])
+                   ,flash: ""}
               ,_1: $Effects.none};
    var initDBDonorList = {searchName: ""
                          ,page: initPage
@@ -15317,8 +15370,16 @@ Elm.ElmSaints.make = function (_elm) {
    var DBDonorList = F3(function (a,b,c) {
       return {searchName: a,page: b,donors: c};
    });
-   var Model = F3(function (a,b,c) {
-      return {searchName: a,page: b,donors: c};
+   var Model = F4(function (a,b,c,d) {
+      return {searchName: a,page: b,donors: c,flash: d};
+   });
+   var initDbMsg = {model: ""
+                   ,id: -1
+                   ,donor: -1
+                   ,ofType: "ok"
+                   ,text: ""};
+   var DbMsg = F5(function (a,b,c,d,e) {
+      return {model: a,id: b,donor: c,ofType: d,text: e};
    });
    var Page = F4(function (a,b,c,d) {
       return {totalPages: a
@@ -15331,7 +15392,8 @@ Elm.ElmSaints.make = function (_elm) {
                              ,view: view
                              ,inputs: _U.list([incomingActions
                                               ,incomingDonor
-                                              ,deletingDonor])});
+                                              ,deletingDonor
+                                              ,dbResp])});
    var main = app.html;
    var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
    app.tasks);
@@ -15339,6 +15401,8 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,app: app
                                   ,main: main
                                   ,Page: Page
+                                  ,DbMsg: DbMsg
+                                  ,initDbMsg: initDbMsg
                                   ,Model: Model
                                   ,DBDonorList: DBDonorList
                                   ,initDBDonorList: initDBDonorList
@@ -15354,7 +15418,9 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,Modify: Modify
                                   ,NewDonor: NewDonor
                                   ,DeleteDonor: DeleteDonor
+                                  ,DbResp: DbResp
                                   ,update: update
+                                  ,deletion: deletion
                                   ,view: view
                                   ,viewDonors: viewDonors
                                   ,basicNav: basicNav
@@ -15362,6 +15428,7 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,findDonor: findDonor
                                   ,nextPage: nextPage
                                   ,incomingActions: incomingActions
+                                  ,dbResp: dbResp
                                   ,incomingDonor: incomingDonor
                                   ,deletingDonor: deletingDonor
                                   ,donorOK: donorOK
@@ -16466,19 +16533,28 @@ channel.on('ok_donor', function (data) {
   elmApp.ports.okDonor.send(data.donor);
 });
 
+channel.on('db_msg', function (data) {
+  elmApp.ports.dbSez.send(data);
+});
+
 // Hook Up Elm
 
 var elmDiv = document.getElementById('elm-main'),
     initialState = {
   donorLists: {
     searchName: "",
+    flash: "",
     page: {
       totalPages: 0,
       totalEntries: 0,
       pageSize: 0,
       pageNumber: 0
     },
-    donors: []
+    donors: [],
+    dbMsg: {
+      ofType: "ok",
+      text: ""
+    }
   },
   okDonor: {
     id: -1,
@@ -16492,6 +16568,13 @@ var elmDiv = document.getElementById('elm-main'),
     addresses: [],
     notes: [],
     donations: []
+  },
+  dbSez: {
+    model: "",
+    id: -1,
+    donor: -1,
+    ofType: "ok",
+    text: ""
   }
 },
     elmApp = Elm.embed(Elm.ElmSaints, elmDiv, initialState);

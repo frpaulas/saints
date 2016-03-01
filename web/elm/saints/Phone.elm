@@ -69,7 +69,6 @@ type Action
   | Location String
   | OfType String
   | Number String
-  | Delete
 
 update: Action -> Model -> Model
 update action model =
@@ -94,7 +93,6 @@ update action model =
         newPhone = {phone | number = s}
       in
         { model | phone = newPhone}
-    Delete -> model
 
 -- VIEW
     
@@ -106,7 +104,11 @@ view address model =
     [ li 
         [ onClickPhone address ToggleEditing ] 
         [ text (phone.location ++ " " ++ phone.ofType ++ ": " ++ phone.number) 
-        , button [ deleteButtonStyle, onClickPhone phoneDelete.address phone ] [ text "-"]
+        , button 
+            [ deleteButtonStyle
+            , onClickPhone phoneDelete.address phone 
+            ] 
+            [ text "delete"]
         ]
     , li
       []
@@ -225,15 +227,15 @@ inputStyle =
 deleteButtonStyle: Attribute
 deleteButtonStyle =
   style
-    [ ("position", "absolute")
+    [ ("margin-right", "-29px")
     , ("float", "right")
-    , ("right", "1px")
-    , ("top", "3px")
-    , ("padding", "0px 4px")
+    , ("padding", "1px 4px")
     , ("line-height", "0.9")
     , ("display", "inline-block")
     , ("z-index", "1")
-    , ("background-color", "red")
+    , ("font-size", "0.8em")
+    , ("color", "lightyellow")
+    , ("background-color", "crimson")
     ]
 
 hideAble: Bool -> List (String, String) -> Attribute

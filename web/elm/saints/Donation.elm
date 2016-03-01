@@ -66,14 +66,12 @@ donationDelete: Signal.Mailbox Donation
 donationDelete =
   Signal.mailbox initDonation
 
-
 -- UPDATE 
 
 type Action 
   = NoOp
   | ToggleEditing
   | SaveEdit
-  | Delete
   | Amount String
   | OfType String
   | OfTypeID String
@@ -82,7 +80,6 @@ update: Action -> Model -> Model
 update action model =
   case action of
     NoOp -> model
-    Delete -> model
     ToggleEditing -> { model | editing = not model.editing }
     SaveEdit -> { model | editing = not model.editing }
     Amount amt ->
@@ -115,12 +112,10 @@ view address model =
         [ onClickDonation address ToggleEditing ]
         [ donationText donation 
         , button 
---            [ deleteButtonStyle, onClickDonation donationDelete.address donation ]
             [ deleteButtonStyle
-            , onClickDonation address Delete
             , onClickDonation donationDelete.address donation
             ]
-            [ text "-"]
+            [ text "delete"]
         ]
     , li
         []
@@ -245,15 +240,15 @@ cancelSaveStyle model =
 deleteButtonStyle: Attribute
 deleteButtonStyle =
   style
-        [ ("position", "absolute")
+        [ ("margin-right", "-29px")
         , ("float", "right")
-        , ("right", "1px")
-        , ("top", "3px")
-        , ("padding", "0px 4px")
+        , ("padding", "1px 4px")
         , ("line-height", "0.9")
         , ("display", "inline-block")
         , ("z-index", "1")
-        , ("background-color", "red")
+        , ("font-size", "0.8em")
+        , ("color", "lightyellow")
+        , ("background-color", "crimson")
         ]
 
 hideAble: Bool -> List (String, String) -> Attribute

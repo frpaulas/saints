@@ -26,7 +26,7 @@ app =
     { init = init
     , update = update
     , view = view
-    , inputs = [incomingActions, incomingDonor, deletingDonor]
+    , inputs = [incomingActions, incomingDonor, deletingDonor, dbResp]
     }
 
 -- MAIN
@@ -53,10 +53,27 @@ type alias Page =
   , pageNumber:   Int
   } 
 
+type alias DbMsg =
+  { model:  String
+  , id:     ID
+  , donor:  ID
+  , ofType: String
+  , text:   String
+  }
+initDbMsg: DbMsg
+initDbMsg =
+  { model   = ""
+  , id      = -1  
+  , donor   = -1
+  , ofType  = "ok"
+  , text    = ""
+  }
+
 type alias Model = 
   { searchName: SearchName
   , page:       Page
   , donors:     List Donor.Model
+  , flash:      String
   }
 
 type alias DBDonorList =
@@ -64,6 +81,7 @@ type alias DBDonorList =
   , page:       Page
   , donors:     List Donor.DBDonor
   }
+
 initDBDonorList: DBDonorList
 initDBDonorList =
   { searchName  = ""
@@ -86,6 +104,7 @@ init =
   ( { searchName  = ""
     , page        = initPage
     , donors      = []
+    , flash       = ""
     } 
     , Effects.none
   )
@@ -105,12 +124,16 @@ type Action
   | Modify ID Donor.Action
   | NewDonor
   | DeleteDonor Donor.Donor
+  | DbResp DbMsg
 
 update: Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
     NoOp -> 
       (model, Effects.none)
+
+    DbResp msg ->
+      ({model | donors = List.map (deletion msg) model.donors}, Effects.none)
 
     OKDonor donor ->
       let 
@@ -127,6 +150,7 @@ update action model =
           { searchName = db.searchName
           , page = db.page
           , donors = List.map (Donor.makeModel hideDetails noDetails) db.donors
+          , flash = ""
           }
       in
         -- (donors, Effects.none)
@@ -149,6 +173,43 @@ update action model =
 
     NewDonor -> 
       ({model | donors = [Donor.fromScratch] ++ model.donors}, Effects.none)
+
+deletion: DbMsg -> Donor.Model -> Donor.Model
+deletion msg model =
+--{ _ = {}, model = "Donation", id = 31, donor = 517, ofType = "ok", text = "deleted" }  let 
+  let
+    updatedDonor donor = if donor.id == msg.donor
+      then
+        case msg.model of
+          "Donation"  ->
+            let 
+              remaining = List.filter (\el -> el.donation.id /= msg.id ) donor.donations
+            in
+              {donor | donations = remaining}
+          "Note"      ->
+            let 
+              remaining = List.filter (\el -> el.note.id /= msg.id ) donor.notes
+            in
+              {donor | notes = remaining}
+
+          "Phone"     ->
+            let 
+              remaining = List.filter (\el -> el.phone.id /= msg.id ) donor.phones
+            in
+              {donor | phones = remaining}
+          "Address"   -> 
+            let 
+              remaining = List.filter (\el -> el.address.id /= msg.id ) donor.addresses
+            in
+              {donor | addresses = remaining}
+--          "Donor"     ->
+          _           ->
+            donor
+
+      else
+        donor
+  in
+    {model | donor = updatedDonor model.donor}
 
 -- VIEW
 
@@ -221,6 +282,10 @@ incomingActions: Signal Action
 incomingActions =
   Signal.map SetDonors donorLists
 
+dbResp: Signal Action
+dbResp =
+  Signal.map DbResp dbSez
+
 incomingDonor: Signal Action
 incomingDonor =
   Signal.map OKDonor okDonor
@@ -232,6 +297,7 @@ deletingDonor =
 donorOK: Signal.Mailbox Donor.Donor
 donorOK =
   Signal.mailbox Donor.initDonor
+
 
 -- PORTS
 
@@ -286,6 +352,7 @@ port requestDonorDetail =
 
 port donorLists: Signal DBDonorList
 port okDonor: Signal Donor.DBDonor
+port dbSez: Signal DbMsg
 
 
 -- STYLE

@@ -78,7 +78,6 @@ type Action
   = NoOp
   | ToggleEditing
   | SaveEdit
-  | Delete
   | Location String
   | Address1 String
   | Address2 String
@@ -93,7 +92,6 @@ update action model =
     NoOp -> model
     ToggleEditing -> {model | editing = not model.editing}
     SaveEdit -> {model | editing = not model.editing}
-    Delete -> model
     Location s -> 
       let
         addr = model.address
@@ -147,7 +145,11 @@ view address model =
   in
     [ li [ onClickAddr address ToggleEditing] 
         [ text addr.location
-        , button [ deleteButtonStyle, onClickAddr addressDelete.address addr ] [ text "-"]
+        , button 
+            [ deleteButtonStyle
+            , onClickAddr addressDelete.address addr 
+            ] 
+            [ text "delete"]
         , p [] [ text addr.address1 ]
         , p [] [ text addr.address2 ]
         , p [] [ text (addr.city ++ ", " ++ addr.state ++ " " ++ addr.zip) ]
@@ -347,15 +349,15 @@ cancelSaveStyle model =
 deleteButtonStyle: Attribute
 deleteButtonStyle =
   style
-        [ ("position", "absolute")
+        [ ("margin-right", "-29px")
         , ("float", "right")
-        , ("right", "1px")
-        , ("top", "3px")
-        , ("padding", "0px 4px")
+        , ("padding", "1px 4px")
         , ("line-height", "0.9")
         , ("display", "inline-block")
         , ("z-index", "1")
-        , ("background-color", "red")
+        , ("font-size", "0.8em")
+        , ("color", "lightyellow")
+        , ("background-color", "crimson")
         ]
 
 hideAble: Bool -> List (String, String) -> Attribute
