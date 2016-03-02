@@ -12964,13 +12964,12 @@ Elm.StartApp.make = function (_elm) {
                                  ,App: App};
 };
 Elm.Saints = Elm.Saints || {};
-Elm.Saints.Address = Elm.Saints.Address || {};
-Elm.Saints.Address.make = function (_elm) {
+Elm.Saints.Helper = Elm.Saints.Helper || {};
+Elm.Saints.Helper.make = function (_elm) {
    "use strict";
    _elm.Saints = _elm.Saints || {};
-   _elm.Saints.Address = _elm.Saints.Address || {};
-   if (_elm.Saints.Address.values)
-   return _elm.Saints.Address.values;
+   _elm.Saints.Helper = _elm.Saints.Helper || {};
+   if (_elm.Saints.Helper.values) return _elm.Saints.Helper.values;
    var _U = Elm.Native.Utils.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Debug = Elm.Debug.make(_elm),
@@ -12988,6 +12987,39 @@ Elm.Saints.Address.make = function (_elm) {
                                                                                    ,_0: "display"
                                                                                    ,_1: "none"}]));
    });
+   var onClickLimited = F2(function (address,msg) {
+      return A4($Html$Events.onWithOptions,
+      "click",
+      {stopPropagation: true,preventDefault: true},
+      $Json$Decode.value,
+      function (_p0) {
+         return A2($Signal.message,address,msg);
+      });
+   });
+   return _elm.Saints.Helper.values = {_op: _op
+                                      ,onClickLimited: onClickLimited
+                                      ,hideAble: hideAble};
+};
+Elm.Saints = Elm.Saints || {};
+Elm.Saints.Address = Elm.Saints.Address || {};
+Elm.Saints.Address.make = function (_elm) {
+   "use strict";
+   _elm.Saints = _elm.Saints || {};
+   _elm.Saints.Address = _elm.Saints.Address || {};
+   if (_elm.Saints.Address.values)
+   return _elm.Saints.Address.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Saints$Helper = Elm.Saints.Helper.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                            ,_0: "margin-right"
                                                            ,_1: "-29px"}
@@ -13000,7 +13032,7 @@ Elm.Saints.Address.make = function (_elm) {
                                                           ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
                                                           ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
    var cancelSaveStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
               ,{ctor: "_Tuple2",_0: "top",_1: "-20px"}
@@ -13009,7 +13041,7 @@ Elm.Saints.Address.make = function (_elm) {
               ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}]));
    };
    var editingStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "display",_1: "block"}
               ,{ctor: "_Tuple2",_0: "list-style-type",_1: "none"}
@@ -13026,44 +13058,34 @@ Elm.Saints.Address.make = function (_elm) {
                                              ,_0: "width"
                                              ,_1: width}]));
    };
-   var onClickAddr = F2(function (address,msg) {
-      return A4($Html$Events.onWithOptions,
-      "click",
-      {stopPropagation: true,preventDefault: true},
-      $Json$Decode.value,
-      function (_p0) {
-         return A2($Signal.message,address,msg);
-      });
-   });
    var update = F2(function (action,model) {
-      var _p1 = action;
-      switch (_p1.ctor)
+      var _p0 = action;
+      switch (_p0.ctor)
       {case "NoOp": return model;
-         case "Delete": return model;
          case "ToggleEditing": return _U.update(model,
            {editing: $Basics.not(model.editing)});
          case "SaveEdit": return _U.update(model,
            {editing: $Basics.not(model.editing)});
          case "Location": var addr = model.address;
-           var newAddress = _U.update(addr,{location: _p1._0});
+           var newAddress = _U.update(addr,{location: _p0._0});
            return _U.update(model,{address: newAddress});
          case "Address1": var addr = model.address;
-           var newAddress = _U.update(addr,{address1: _p1._0});
+           var newAddress = _U.update(addr,{address1: _p0._0});
            return _U.update(model,{address: newAddress});
          case "Address2": var addr = model.address;
-           var newAddress = _U.update(addr,{address2: _p1._0});
+           var newAddress = _U.update(addr,{address2: _p0._0});
            return _U.update(model,{address: newAddress});
          case "City": var addr = model.address;
-           var newAddress = _U.update(addr,{city: _p1._0});
+           var newAddress = _U.update(addr,{city: _p0._0});
            return _U.update(model,{address: newAddress});
          case "State": var addr = model.address;
-           var newAddress = _U.update(addr,{state: _p1._0});
+           var newAddress = _U.update(addr,{state: _p0._0});
            return _U.update(model,{address: newAddress});
          case "Zip": var addr = model.address;
-           var newAddress = _U.update(addr,{zip: _p1._0});
+           var newAddress = _U.update(addr,{zip: _p0._0});
            return _U.update(model,{address: newAddress});
          default: var addr = model.address;
-           var newAddress = _U.update(addr,{country: _p1._0});
+           var newAddress = _U.update(addr,{country: _p0._0});
            return _U.update(model,{address: newAddress});}
    });
    var Country = function (a) {
@@ -13083,7 +13105,6 @@ Elm.Saints.Address.make = function (_elm) {
    };
    var SaveEdit = {ctor: "SaveEdit"};
    var ToggleEditing = {ctor: "ToggleEditing"};
-   var Delete = {ctor: "Delete"};
    var NoOp = {ctor: "NoOp"};
    var inputLocation = F2(function (address,model) {
       return A2($Html.p,
@@ -13100,7 +13121,7 @@ Elm.Saints.Address.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Location(str));
               })
-              ,A2(onClickAddr,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.location)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13120,7 +13141,7 @@ Elm.Saints.Address.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Address1(str));
               })
-              ,A2(onClickAddr,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.address1)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13140,7 +13161,7 @@ Elm.Saints.Address.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Address2(str));
               })
-              ,A2(onClickAddr,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.address2)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13160,7 +13181,7 @@ Elm.Saints.Address.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,City(str));
               })
-              ,A2(onClickAddr,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.city)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13180,7 +13201,7 @@ Elm.Saints.Address.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,State(str));
               })
-              ,A2(onClickAddr,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.state)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13200,7 +13221,7 @@ Elm.Saints.Address.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Zip(str));
               })
-              ,A2(onClickAddr,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.zip)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13214,7 +13235,7 @@ Elm.Saints.Address.make = function (_elm) {
               ,$Html$Attributes.placeholder("Country")
               ,$Html$Attributes.autofocus(true)
               ,$Html$Attributes.name("country")
-              ,A2(onClickAddr,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,A3($Html$Events.on,
               "input",
               $Html$Events.targetValue,
@@ -13252,21 +13273,26 @@ Elm.Saints.Address.make = function (_elm) {
       return A2($Html.span,
       _U.list([cancelSaveStyle(model)]),
       _U.list([A2($Html.button,
-              _U.list([A2(onClickAddr,addressDelete.address,model.address)]),
+              _U.list([A2($Saints$Helper.onClickLimited,
+              addressDelete.address,
+              model.address)]),
               _U.list([$Html.text("cancel")]))
               ,A2($Html.button,
-              _U.list([A2(onClickAddr,addressUpdate.address,model.address)]),
+              _U.list([A2($Saints$Helper.onClickLimited,
+              addressUpdate.address,
+              model.address)]),
               _U.list([$Html.text("save")]))]));
    });
    var view = F2(function (address,model) {
       var addr = model.address;
       return _U.list([A2($Html.li,
-                     _U.list([A2(onClickAddr,address,ToggleEditing)]),
+                     _U.list([A2($Saints$Helper.onClickLimited,
+                     address,
+                     ToggleEditing)]),
                      _U.list([$Html.text(addr.location)
                              ,A2($Html.button,
                              _U.list([deleteButtonStyle
-                                     ,A2(onClickAddr,address,Delete)
-                                     ,A2(onClickAddr,addressDelete.address,addr)]),
+                                     ,A2($Saints$Helper.onClickLimited,addressDelete.address,addr)]),
                              _U.list([$Html.text("delete")]))
                              ,A2($Html.p,_U.list([]),_U.list([$Html.text(addr.address1)]))
                              ,A2($Html.p,_U.list([]),_U.list([$Html.text(addr.address2)]))
@@ -13336,10 +13362,10 @@ Elm.Saints.Note.make = function (_elm) {
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Html$Events = Elm.Html.Events.make(_elm),
-   $Json$Decode = Elm.Json.Decode.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Saints$Helper = Elm.Saints.Helper.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
@@ -13353,13 +13379,8 @@ Elm.Saints.Note.make = function (_elm) {
                                                           ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
                                                           ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
                                                           ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
-   var hideAble = F2(function (show,attr) {
-      return show ? $Html$Attributes.style(attr) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                   ,_0: "display"
-                                                                                   ,_1: "none"}]));
-   });
    var editingStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "display",_1: "block"}
               ,{ctor: "_Tuple2",_0: "list-style-type",_1: "none"}
@@ -13368,14 +13389,14 @@ Elm.Saints.Note.make = function (_elm) {
               ,{ctor: "_Tuple2",_0: "padding-top",_1: "7px"}]));
    };
    var viewingStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       $Basics.not(model.editing),
       _U.list([{ctor: "_Tuple2",_0: "margin-top",_1: "0px"}
               ,{ctor: "_Tuple2",_0: "list-style-type",_1: "none"}
               ,{ctor: "_Tuple2",_0: "background",_1: "WhiteSmoke"}]));
    };
    var cancelSaveStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
               ,{ctor: "_Tuple2",_0: "top",_1: "-17px"}
@@ -13392,24 +13413,15 @@ Elm.Saints.Note.make = function (_elm) {
                                                     ,_0: "margin-left"
                                                     ,_1: "-30px"}
                                                    ,{ctor: "_Tuple2",_0: "margin-top",_1: "-8px"}]));
-   var onClickNote = F2(function (address,msg) {
-      return A4($Html$Events.onWithOptions,
-      "click",
-      {stopPropagation: true,preventDefault: true},
-      $Json$Decode.value,
-      function (_p0) {
-         return A2($Signal.message,address,msg);
-      });
-   });
    var update = F2(function (action,model) {
-      var _p1 = action;
-      switch (_p1.ctor)
+      var _p0 = action;
+      switch (_p0.ctor)
       {case "NoOp": return model;
          case "Memo": var note = model.note;
-           var newNote = _U.update(note,{memo: _p1._0});
+           var newNote = _U.update(note,{memo: _p0._0});
            return _U.update(model,{note: newNote});
          case "Author": var note = model.note;
-           var newNote = _U.update(note,{author: _p1._0});
+           var newNote = _U.update(note,{author: _p0._0});
            return _U.update(model,{note: newNote});
          case "ToggleEditing": return _U.update(model,
            {editing: $Basics.not(model.editing)});
@@ -13436,7 +13448,7 @@ Elm.Saints.Note.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Memo(str));
               })
-              ,A2(onClickNote,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(note.memo)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13464,22 +13476,36 @@ Elm.Saints.Note.make = function (_elm) {
       return A2($Html.span,
       _U.list([cancelSaveStyle(model)]),
       _U.list([A2($Html.button,
-              _U.list([A2(onClickNote,noteDelete.address,model.note)]),
+              _U.list([A2($Saints$Helper.onClickLimited,
+              noteDelete.address,
+              model.note)]),
               _U.list([$Html.text("cancel")]))
               ,A2($Html.button,
-              _U.list([A2(onClickNote,noteUpdate.address,model.note)]),
+              _U.list([A2($Saints$Helper.onClickLimited,
+              noteUpdate.address,
+              model.note)]),
               _U.list([$Html.text("save")]))]));
    });
    var view = F2(function (address,model) {
       var note = model.note;
       return _U.list([A2($Html.li,
-                     _U.list([A2(onClickNote,address,ToggleEditing)]),
+                     _U.list([]),
+                     _U.list([A2(cancelSave,address,model)
+                             ,A2($Html.ul,
+                             _U.list([editingStyle(model)]),
+                             _U.list([A2($Html.li,
+                             _U.list([]),
+                             _U.list([A2(inputMemo,address,note)]))]))]))
+                     ,A2($Html.li,
+                     _U.list([A2($Saints$Helper.onClickLimited,
+                     address,
+                     ToggleEditing)]),
                      _U.list([$Html.text(A2($Basics._op["++"],
                              note.author,
                              A2($Basics._op["++"]," says: ",note.memo)))
                              ,A2($Html.button,
                              _U.list([deleteButtonStyle
-                                     ,A2(onClickNote,noteDelete.address,note)]),
+                                     ,A2($Saints$Helper.onClickLimited,noteDelete.address,note)]),
                              _U.list([$Html.text("delete")]))
                              ,A2($Html.span,
                              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
@@ -13487,15 +13513,7 @@ Elm.Saints.Note.make = function (_elm) {
                                                                       ,_1: "right"}]))]),
                              _U.list([$Html.text(A2($Basics._op["++"],
                              "at: ",
-                             note.updated_at))]))]))
-                     ,A2($Html.li,
-                     _U.list([]),
-                     _U.list([A2(cancelSave,address,model)
-                             ,A2($Html.ul,
-                             _U.list([editingStyle(model)]),
-                             _U.list([A2($Html.li,
-                             _U.list([]),
-                             _U.list([A2(inputMemo,address,note)]))]))]))]);
+                             note.updated_at))]))]))]);
    });
    var Note = F5(function (a,b,c,d,e) {
       return {id: a,donor_id: b,author: c,memo: d,updated_at: e};
@@ -13524,17 +13542,12 @@ Elm.Saints.Phone.make = function (_elm) {
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Html$Events = Elm.Html.Events.make(_elm),
-   $Json$Decode = Elm.Json.Decode.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Saints$Helper = Elm.Saints.Helper.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
-   var hideAble = F2(function (show,attr) {
-      return show ? $Html$Attributes.style(attr) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                   ,_0: "display"
-                                                                                   ,_1: "none"}]));
-   });
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                            ,_0: "margin-right"
                                                            ,_1: "-29px"}
@@ -13551,7 +13564,7 @@ Elm.Saints.Phone.make = function (_elm) {
                                                     ,_1: "-30px"}
                                                    ,{ctor: "_Tuple2",_0: "margin-top",_1: "-8px"}]));
    var cancelSaveStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
               ,{ctor: "_Tuple2",_0: "top",_1: "-20px"}
@@ -13560,7 +13573,7 @@ Elm.Saints.Phone.make = function (_elm) {
               ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}]));
    };
    var editingStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "display",_1: "block"}
               ,{ctor: "_Tuple2",_0: "list-style-type",_1: "none"}
@@ -13573,29 +13586,20 @@ Elm.Saints.Phone.make = function (_elm) {
                                              ,_0: "width"
                                              ,_1: width}]));
    };
-   var onClickPhone = F2(function (address,msg) {
-      return A4($Html$Events.onWithOptions,
-      "click",
-      {stopPropagation: true,preventDefault: true},
-      $Json$Decode.value,
-      function (_p0) {
-         return A2($Signal.message,address,msg);
-      });
-   });
    var update = F2(function (action,model) {
-      var _p1 = action;
-      switch (_p1.ctor)
+      var _p0 = action;
+      switch (_p0.ctor)
       {case "NoOp": return model;
          case "ToggleEditing": return _U.update(model,
            {editing: $Basics.not(model.editing)});
          case "OfType": var phone = model.phone;
-           var newPhone = _U.update(phone,{ofType: _p1._0});
+           var newPhone = _U.update(phone,{ofType: _p0._0});
            return _U.update(model,{phone: newPhone});
          case "Location": var phone = model.phone;
-           var newPhone = _U.update(phone,{location: _p1._0});
+           var newPhone = _U.update(phone,{location: _p0._0});
            return _U.update(model,{phone: newPhone});
          default: var phone = model.phone;
-           var newPhone = _U.update(phone,{number: _p1._0});
+           var newPhone = _U.update(phone,{number: _p0._0});
            return _U.update(model,{phone: newPhone});}
    });
    var Number = function (a) {    return {ctor: "Number",_0: a};};
@@ -13620,7 +13624,7 @@ Elm.Saints.Phone.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Location(str));
               })
-              ,A2(onClickPhone,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(phone.location)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13640,7 +13644,7 @@ Elm.Saints.Phone.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,OfType(str));
               })
-              ,A2(onClickPhone,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(phone.ofType)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13660,7 +13664,7 @@ Elm.Saints.Phone.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Number(str));
               })
-              ,A2(onClickPhone,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(phone.number)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13688,16 +13692,22 @@ Elm.Saints.Phone.make = function (_elm) {
       return A2($Html.span,
       _U.list([cancelSaveStyle(model)]),
       _U.list([A2($Html.button,
-              _U.list([A2(onClickPhone,phoneDelete.address,model.phone)]),
+              _U.list([A2($Saints$Helper.onClickLimited,
+              phoneDelete.address,
+              model.phone)]),
               _U.list([$Html.text("cancel")]))
               ,A2($Html.button,
-              _U.list([A2(onClickPhone,phoneUpdate.address,model.phone)]),
+              _U.list([A2($Saints$Helper.onClickLimited,
+              phoneUpdate.address,
+              model.phone)]),
               _U.list([$Html.text("save")]))]));
    });
    var view = F2(function (address,model) {
       var phone = model.phone;
       return _U.list([A2($Html.li,
-                     _U.list([A2(onClickPhone,address,ToggleEditing)]),
+                     _U.list([A2($Saints$Helper.onClickLimited,
+                     address,
+                     ToggleEditing)]),
                      _U.list([$Html.text(A2($Basics._op["++"],
                              phone.location,
                              A2($Basics._op["++"],
@@ -13707,7 +13717,7 @@ Elm.Saints.Phone.make = function (_elm) {
                              A2($Basics._op["++"],": ",phone.number)))))
                              ,A2($Html.button,
                              _U.list([deleteButtonStyle
-                                     ,A2(onClickPhone,phoneDelete.address,phone)]),
+                                     ,A2($Saints$Helper.onClickLimited,phoneDelete.address,phone)]),
                              _U.list([$Html.text("delete")]))]))
                      ,A2($Html.li,
                      _U.list([]),
@@ -13752,18 +13762,13 @@ Elm.Saints.Donation.make = function (_elm) {
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Html$Events = Elm.Html.Events.make(_elm),
-   $Json$Decode = Elm.Json.Decode.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Saints$Helper = Elm.Saints.Helper.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $String = Elm.String.make(_elm);
    var _op = {};
-   var hideAble = F2(function (show,attr) {
-      return show ? $Html$Attributes.style(attr) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                   ,_0: "display"
-                                                                                   ,_1: "none"}]));
-   });
    var deleteButtonStyle = $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                            ,_0: "margin-right"
                                                            ,_1: "-29px"}
@@ -13776,7 +13781,7 @@ Elm.Saints.Donation.make = function (_elm) {
                                                           ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
                                                           ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
    var cancelSaveStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
               ,{ctor: "_Tuple2",_0: "top",_1: "-20px"}
@@ -13785,7 +13790,7 @@ Elm.Saints.Donation.make = function (_elm) {
               ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}]));
    };
    var editingStyle = function (model) {
-      return A2(hideAble,
+      return A2($Saints$Helper.hideAble,
       model.editing,
       _U.list([{ctor: "_Tuple2",_0: "display",_1: "block"}
               ,{ctor: "_Tuple2",_0: "list-style-type",_1: "none"}
@@ -13802,36 +13807,27 @@ Elm.Saints.Donation.make = function (_elm) {
                                              ,_0: "width"
                                              ,_1: width}]));
    };
-   var onClickDonation = F2(function (address,msg) {
-      return A4($Html$Events.onWithOptions,
-      "click",
-      {stopPropagation: true,preventDefault: true},
-      $Json$Decode.value,
-      function (_p0) {
-         return A2($Signal.message,address,msg);
-      });
-   });
    var donationText = function (d) {
       return $Html.text(A2($String.join,
       " ",
       _U.list([d.amount,"from",d.ofType,d.ofTypeID])));
    };
    var update = F2(function (action,model) {
-      var _p1 = action;
-      switch (_p1.ctor)
+      var _p0 = action;
+      switch (_p0.ctor)
       {case "NoOp": return model;
          case "ToggleEditing": return _U.update(model,
            {editing: $Basics.not(model.editing)});
          case "SaveEdit": return _U.update(model,
            {editing: $Basics.not(model.editing)});
          case "Amount": var d = model.donation;
-           var newDonation = _U.update(d,{amount: _p1._0});
+           var newDonation = _U.update(d,{amount: _p0._0});
            return _U.update(model,{donation: newDonation});
          case "OfType": var d = model.donation;
-           var newDonation = _U.update(d,{ofType: _p1._0});
+           var newDonation = _U.update(d,{ofType: _p0._0});
            return _U.update(model,{donation: newDonation});
          default: var d = model.donation;
-           var newDonation = _U.update(d,{ofTypeID: _p1._0});
+           var newDonation = _U.update(d,{ofTypeID: _p0._0});
            return _U.update(model,{donation: newDonation});}
    });
    var OfTypeID = function (a) {
@@ -13857,7 +13853,7 @@ Elm.Saints.Donation.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Amount(str));
               })
-              ,A2(onClickDonation,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.amount)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13877,7 +13873,7 @@ Elm.Saints.Donation.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,OfType(str));
               })
-              ,A2(onClickDonation,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.ofType)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13897,7 +13893,7 @@ Elm.Saints.Donation.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,OfTypeID(str));
               })
-              ,A2(onClickDonation,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(model.ofTypeID)
               ,inputWidth("75%")]),
       _U.list([]))]));
@@ -13912,7 +13908,8 @@ Elm.Saints.Donation.make = function (_elm) {
                       ,donor_id: -1
                       ,amount: ""
                       ,ofType: ""
-                      ,ofTypeID: ""};
+                      ,ofTypeID: ""
+                      ,updated_at: ""};
    var init = {donation: initDonation,editing: false};
    var $new = function (donor_id) {
       var donation = initDonation;
@@ -13925,12 +13922,12 @@ Elm.Saints.Donation.make = function (_elm) {
       return A2($Html.span,
       _U.list([cancelSaveStyle(model)]),
       _U.list([A2($Html.button,
-              _U.list([A2(onClickDonation,
+              _U.list([A2($Saints$Helper.onClickLimited,
               donationDelete.address,
               model.donation)]),
               _U.list([$Html.text("cancel")]))
               ,A2($Html.button,
-              _U.list([A2(onClickDonation,
+              _U.list([A2($Saints$Helper.onClickLimited,
               donationUpdate.address,
               model.donation)]),
               _U.list([$Html.text("save")]))]));
@@ -13938,12 +13935,24 @@ Elm.Saints.Donation.make = function (_elm) {
    var view = F2(function (address,model) {
       var donation = model.donation;
       return _U.list([A2($Html.li,
-                     _U.list([A2(onClickDonation,address,ToggleEditing)]),
+                     _U.list([A2($Saints$Helper.onClickLimited,
+                     address,
+                     ToggleEditing)]),
                      _U.list([donationText(donation)
                              ,A2($Html.button,
                              _U.list([deleteButtonStyle
-                                     ,A2(onClickDonation,donationDelete.address,donation)]),
-                             _U.list([$Html.text("delete")]))]))
+                                     ,A2($Saints$Helper.onClickLimited,
+                                     donationDelete.address,
+                                     donation)]),
+                             _U.list([$Html.text("delete")]))
+                             ,A2($Html.span,
+                             _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
+                                                                      ,_0: "float"
+                                                                      ,_1: "right"}
+                                                                     ,{ctor: "_Tuple2",_0: "margin-right",_1: "5px"}]))]),
+                             _U.list([$Html.text(A2($Basics._op["++"],
+                             "at: ",
+                             donation.updated_at))]))]))
                      ,A2($Html.li,
                      _U.list([]),
                      _U.list([A2(cancelSave,address,model)
@@ -13959,8 +13968,13 @@ Elm.Saints.Donation.make = function (_elm) {
                                      _U.list([]),
                                      _U.list([A2(inputOfTypeID,address,donation)]))]))]))]);
    });
-   var Donation = F5(function (a,b,c,d,e) {
-      return {id: a,donor_id: b,amount: c,ofType: d,ofTypeID: e};
+   var Donation = F6(function (a,b,c,d,e,f) {
+      return {id: a
+             ,donor_id: b
+             ,amount: c
+             ,ofType: d
+             ,ofTypeID: e
+             ,updated_at: f};
    });
    return _elm.Saints.Donation.values = {_op: _op
                                         ,init: init
@@ -13986,125 +14000,82 @@ Elm.Saints.Donor.make = function (_elm) {
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Html$Events = Elm.Html.Events.make(_elm),
-   $Json$Decode = Elm.Json.Decode.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Saints$Address = Elm.Saints.Address.make(_elm),
    $Saints$Donation = Elm.Saints.Donation.make(_elm),
+   $Saints$Helper = Elm.Saints.Helper.make(_elm),
    $Saints$Note = Elm.Saints.Note.make(_elm),
    $Saints$Phone = Elm.Saints.Phone.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $String = Elm.String.make(_elm);
    var _op = {};
    var deleteButtonStyle = function (model) {
-      return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                 ,_0: "display"
-                                                                 ,_1: "none"}])) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                                                   ,_0: "margin-left"
-                                                                                                                   ,_1: "5px"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "top",_1: "0px"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "padding",_1: "1px 4px"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "line-height",_1: "0.9"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "display"
-                                                                                                                   ,_1: "inline-block"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "color"
-                                                                                                                   ,_1: "lightyellow"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "background-color"
-                                                                                                                   ,_1: "crimson"}]));
+      return A2($Saints$Helper.hideAble,
+      model.showDetails,
+      _U.list([{ctor: "_Tuple2",_0: "margin-left",_1: "5px"}
+              ,{ctor: "_Tuple2",_0: "top",_1: "0px"}
+              ,{ctor: "_Tuple2",_0: "padding",_1: "1px 4px"}
+              ,{ctor: "_Tuple2",_0: "line-height",_1: "0.9"}
+              ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}
+              ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
+              ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
+              ,{ctor: "_Tuple2",_0: "color",_1: "lightyellow"}
+              ,{ctor: "_Tuple2",_0: "background-color",_1: "crimson"}]));
    };
    var editStyle = function (model) {
-      return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                 ,_0: "display"
-                                                                 ,_1: "none"}])) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                                                   ,_0: "display"
-                                                                                                                   ,_1: "block"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "list-style-type"
-                                                                                                                   ,_1: "none"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "padding",_1: "0"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}]));
+      return A2($Saints$Helper.hideAble,
+      model.showDetails,
+      _U.list([{ctor: "_Tuple2",_0: "display",_1: "block"}
+              ,{ctor: "_Tuple2",_0: "list-style-type",_1: "none"}
+              ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
+              ,{ctor: "_Tuple2",_0: "padding",_1: "0"}
+              ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}]));
    };
    var cancelSaveStyle = function (model) {
-      return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                 ,_0: "display"
-                                                                 ,_1: "none"}])) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                                                   ,_0: "position"
-                                                                                                                   ,_1: "relative"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "top",_1: "0px"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "left",_1: "0px"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "line-height",_1: "0.8"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "display"
-                                                                                                                   ,_1: "inline-block"}]));
+      return A2($Saints$Helper.hideAble,
+      model.showDetails,
+      _U.list([{ctor: "_Tuple2",_0: "position",_1: "relative"}
+              ,{ctor: "_Tuple2",_0: "top",_1: "0px"}
+              ,{ctor: "_Tuple2",_0: "left",_1: "0px"}
+              ,{ctor: "_Tuple2",_0: "line-height",_1: "0.8"}
+              ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}]));
    };
    var saveButtonStyle = function (model) {
-      return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                 ,_0: "display"
-                                                                 ,_1: "none"}])) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                                                   ,_0: "background-color"
-                                                                                                                   ,_1: "green"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "color",_1: "yellow"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "margin"
-                                                                                                                   ,_1: "10px 0 0 5px"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "padding"
-                                                                                                                   ,_1: "0px 3px"}]));
+      return A2($Saints$Helper.hideAble,
+      model.showDetails,
+      _U.list([{ctor: "_Tuple2",_0: "background-color",_1: "green"}
+              ,{ctor: "_Tuple2",_0: "color",_1: "yellow"}
+              ,{ctor: "_Tuple2",_0: "font-size",_1: "0.8em"}
+              ,{ctor: "_Tuple2",_0: "margin",_1: "10px 0 0 5px"}
+              ,{ctor: "_Tuple2",_0: "padding",_1: "0px 3px"}]));
    };
    var addButtonStyle = function (model) {
-      return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                 ,_0: "display"
-                                                                 ,_1: "none"}])) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                                                   ,_0: "position"
-                                                                                                                   ,_1: "relative"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "float",_1: "left"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "padding",_1: "0px 2px"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "line-height",_1: "0.8"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "display"
-                                                                                                                   ,_1: "inline-block"}]));
+      return A2($Saints$Helper.hideAble,
+      model.showDetails,
+      _U.list([{ctor: "_Tuple2",_0: "position",_1: "relative"}
+              ,{ctor: "_Tuple2",_0: "float",_1: "left"}
+              ,{ctor: "_Tuple2",_0: "padding",_1: "0px 2px"}
+              ,{ctor: "_Tuple2",_0: "line-height",_1: "0.8"}
+              ,{ctor: "_Tuple2",_0: "display",_1: "inline-block"}]));
    };
    var detailsStyle = function (model) {
-      return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                 ,_0: "display"
-                                                                 ,_1: "none"}])) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                                                   ,_0: "height"
-                                                                                                                   ,_1: "auto"}
-                                                                                                                  ,{ctor: "_Tuple2",_0: "width",_1: "99%"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "padding-top"
-                                                                                                                   ,_1: "18px"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "box-shadow"
-                                                                                                                   ,_1: "0 2px 5px rgba(0,0,0,0.5)"}]));
+      return A2($Saints$Helper.hideAble,
+      model.showDetails,
+      _U.list([{ctor: "_Tuple2",_0: "height",_1: "auto"}
+              ,{ctor: "_Tuple2",_0: "width",_1: "99%"}
+              ,{ctor: "_Tuple2",_0: "padding-top",_1: "18px"}
+              ,{ctor: "_Tuple2"
+               ,_0: "box-shadow"
+               ,_1: "0 2px 5px rgba(0,0,0,0.5)"}]));
    };
    var notesStyle = function (model) {
-      return model.hideDetails ? $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                 ,_0: "display"
-                                                                 ,_1: "none"}])) : $Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                                                                                   ,_0: "margin-top"
-                                                                                                                   ,_1: "0px"}
-                                                                                                                  ,{ctor: "_Tuple2"
-                                                                                                                   ,_0: "font-size"
-                                                                                                                   ,_1: "0.7em"}]));
+      return A2($Saints$Helper.hideAble,
+      model.detailsInHand,
+      _U.list([{ctor: "_Tuple2",_0: "margin-top",_1: "0px"}
+              ,{ctor: "_Tuple2",_0: "font-size",_1: "0.7em"}]));
    };
-   var onClickDonor = F2(function (address,msg) {
-      return A4($Html$Events.onWithOptions,
-      "click",
-      {stopPropagation: true,preventDefault: true},
-      $Json$Decode.value,
-      function (_p0) {
-         return A2($Signal.message,address,msg);
-      });
-   });
    var fullNameText = function (d) {
       var id = _U.cmp(d.id,
       0) < 0 ? "New Entry" : A2($Basics._op["++"],
@@ -14194,58 +14165,57 @@ Elm.Saints.Donor.make = function (_elm) {
       return newNotes;
    });
    var update = F2(function (action,model) {
-      var _p1 = action;
-      switch (_p1.ctor)
+      var _p0 = action;
+      switch (_p0.ctor)
       {case "NoOp": return model;
          case "ToggleDetails": return _U.update(model,
-           {hideDetails: $Basics.not(model.hideDetails)});
+           {showDetails: $Basics.not(model.showDetails)});
          case "ToggleEdit": return _U.update(model,
            {hideEdit: $Basics.not(model.hideEdit)});
          case "SaveDonor": return _U.update(model,
            {hideEdit: $Basics.not(model.hideEdit)});
-         case "Delete": return model;
          case "Title": var donor = model.donor;
-           var newDonor = _U.update(donor,{title: _p1._0});
+           var newDonor = _U.update(donor,{title: _p0._0});
            return _U.update(model,{donor: newDonor});
          case "FirstName": var donor = model.donor;
-           var newDonor = _U.update(donor,{firstName: _p1._0});
+           var newDonor = _U.update(donor,{firstName: _p0._0});
            return _U.update(model,{donor: newDonor});
          case "MiddleName": var donor = model.donor;
-           var newDonor = _U.update(donor,{middleName: _p1._0});
+           var newDonor = _U.update(donor,{middleName: _p0._0});
            return _U.update(model,{donor: newDonor});
          case "LastName": var donor = model.donor;
-           var newDonor = _U.update(donor,{lastName: _p1._0});
+           var newDonor = _U.update(donor,{lastName: _p0._0});
            return _U.update(model,{donor: newDonor});
          case "NameExt": var donor = model.donor;
-           var newDonor = _U.update(donor,{nameExt: _p1._0});
+           var newDonor = _U.update(donor,{nameExt: _p0._0});
            return _U.update(model,{donor: newDonor});
          case "Aka": var donor = model.donor;
-           var newDonor = _U.update(donor,{aka: _p1._0});
+           var newDonor = _U.update(donor,{aka: _p0._0});
            return _U.update(model,{donor: newDonor});
          case "ModifyNote": var updatedDonor = function ($this) {
               return _U.update($this,
-              {notes: A3(updatedDonorNotes,$this.notes,_p1._0,_p1._1)});
+              {notes: A3(updatedDonorNotes,$this.notes,_p0._0,_p0._1)});
            };
            return _U.update(model,{donor: updatedDonor(model.donor)});
          case "ModifyAddr": var updatedDonor = function ($this) {
               return _U.update($this,
               {addresses: A3(updatedDonorAddresses,
               $this.addresses,
-              _p1._0,
-              _p1._1)});
+              _p0._0,
+              _p0._1)});
            };
            return _U.update(model,{donor: updatedDonor(model.donor)});
          case "ModifyPhone": var updatedDonor = function ($this) {
               return _U.update($this,
-              {phones: A3(updatedDonorPhones,$this.phones,_p1._0,_p1._1)});
+              {phones: A3(updatedDonorPhones,$this.phones,_p0._0,_p0._1)});
            };
            return _U.update(model,{donor: updatedDonor(model.donor)});
          case "ModifyDonation": var updatedDonor = function ($this) {
               return _U.update($this,
               {donations: A3(updatedDonorDonations,
               $this.donations,
-              _p1._0,
-              _p1._1)});
+              _p0._0,
+              _p0._1)});
            };
            return _U.update(model,{donor: updatedDonor(model.donor)});
          case "NewNote": var donor = model.donor;
@@ -14323,7 +14293,6 @@ Elm.Saints.Donor.make = function (_elm) {
       return {ctor: "FirstName",_0: a};
    };
    var Title = function (a) {    return {ctor: "Title",_0: a};};
-   var Delete = {ctor: "Delete"};
    var SaveDonor = {ctor: "SaveDonor"};
    var ToggleEdit = {ctor: "ToggleEdit"};
    var ToggleDetails = {ctor: "ToggleDetails"};
@@ -14342,7 +14311,7 @@ Elm.Saints.Donor.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,Title(str));
               })
-              ,A2(onClickDonor,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(donor.title)]),
       _U.list([]));
    });
@@ -14360,7 +14329,7 @@ Elm.Saints.Donor.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,FirstName(str));
               })
-              ,A2(onClickDonor,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(donor.firstName)]),
       _U.list([]));
    });
@@ -14378,7 +14347,7 @@ Elm.Saints.Donor.make = function (_elm) {
               function (str) {
                  return A2($Signal.message,address,MiddleName(str));
               })
-              ,A2(onClickDonor,address,NoOp)
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)
               ,$Html$Attributes.value(donor.middleName)]),
       _U.list([]));
    });
@@ -14397,7 +14366,7 @@ Elm.Saints.Donor.make = function (_elm) {
                  return A2($Signal.message,address,LastName(str));
               })
               ,$Html$Attributes.value(donor.lastName)
-              ,A2(onClickDonor,address,NoOp)]),
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)]),
       _U.list([]));
    });
    var inputNameExt = F2(function (address,model) {
@@ -14415,7 +14384,7 @@ Elm.Saints.Donor.make = function (_elm) {
                  return A2($Signal.message,address,NameExt(str));
               })
               ,$Html$Attributes.value(donor.nameExt)
-              ,A2(onClickDonor,address,NoOp)]),
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)]),
       _U.list([]));
    });
    var inputAka = F2(function (address,model) {
@@ -14433,16 +14402,16 @@ Elm.Saints.Donor.make = function (_elm) {
                  return A2($Signal.message,address,Aka(str));
               })
               ,$Html$Attributes.value(donor.aka)
-              ,A2(onClickDonor,address,NoOp)]),
+              ,A2($Saints$Helper.onClickLimited,address,NoOp)]),
       _U.list([]));
    });
    var Model = F4(function (a,b,c,d) {
       return {donor: a
-             ,hideDetails: b
+             ,showDetails: b
              ,hideEdit: c
              ,detailsInHand: d};
    });
-   var makeModel = F3(function (hideDetails,detailsInHand,donor) {
+   var makeModel = F3(function (showDetails,detailsInHand,donor) {
       return {donor: {id: donor.id
                      ,title: donor.title
                      ,firstName: donor.firstName
@@ -14458,7 +14427,7 @@ Elm.Saints.Donor.make = function (_elm) {
                      ,donations: A2($List.map,
                      $Saints$Donation.makeModel,
                      donor.donations)}
-             ,hideDetails: hideDetails
+             ,showDetails: showDetails
              ,hideEdit: true
              ,detailsInHand: detailsInHand};
    });
@@ -14475,13 +14444,13 @@ Elm.Saints.Donor.make = function (_elm) {
                     ,donations: _U.list([])};
    var initDonor = emptyDonor;
    var init = {donor: initDonor
-              ,hideDetails: true
+              ,showDetails: false
               ,hideEdit: true
               ,detailsInHand: false};
    var fromScratch = {donor: initDonor
-                     ,hideDetails: false
+                     ,showDetails: true
                      ,hideEdit: false
-                     ,detailsInHand: true};
+                     ,detailsInHand: false};
    var donorUpdate = $Signal.mailbox(initDonor);
    var donorDelete = $Signal.mailbox(initDonor);
    var detailsGet = $Signal.mailbox(initDonor);
@@ -14552,7 +14521,7 @@ Elm.Saints.Donor.make = function (_elm) {
               _U.list([fullNameText(donor)
                       ,A2($Html.button,
                       _U.list([deleteButtonStyle(model)
-                              ,A2(onClickDonor,donorDelete.address,donor)]),
+                              ,A2($Saints$Helper.onClickLimited,donorDelete.address,donor)]),
                       _U.list([$Html.text("delete")]))]))
               ,A2($Html.span,
               _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
@@ -14565,28 +14534,28 @@ Elm.Saints.Donor.make = function (_elm) {
               _U.list([notesStyle(model)]),
               _U.list([A2($Html.button,
                       _U.list([addButtonStyle(model)
-                              ,A2(onClickDonor,address,NewDonation)]),
+                              ,A2($Saints$Helper.onClickLimited,address,NewDonation)]),
                       _U.list([$Html.text("+ donations")]))
                       ,A2($Html.ul,_U.list([detailsStyle(model)]),donations)]))
               ,A2($Html.p,
               _U.list([notesStyle(model)]),
               _U.list([A2($Html.button,
                       _U.list([addButtonStyle(model)
-                              ,A2(onClickDonor,address,NewNote)]),
+                              ,A2($Saints$Helper.onClickLimited,address,NewNote)]),
                       _U.list([$Html.text("+ notes")]))
                       ,A2($Html.ul,_U.list([detailsStyle(model)]),notes)]))
               ,A2($Html.p,
               _U.list([notesStyle(model)]),
               _U.list([A2($Html.button,
                       _U.list([addButtonStyle(model)
-                              ,A2(onClickDonor,address,NewAddress)]),
+                              ,A2($Saints$Helper.onClickLimited,address,NewAddress)]),
                       _U.list([$Html.text("+ address")]))
                       ,A2($Html.ul,_U.list([detailsStyle(model)]),theseAddresses)]))
               ,A2($Html.p,
               _U.list([notesStyle(model)]),
               _U.list([A2($Html.button,
                       _U.list([addButtonStyle(model)
-                              ,A2(onClickDonor,address,NewPhone)]),
+                              ,A2($Saints$Helper.onClickLimited,address,NewPhone)]),
                       _U.list([$Html.text("+ phone")]))
                       ,A2($Html.ul,_U.list([detailsStyle(model)]),phones)]))]));
    });
@@ -14715,6 +14684,96 @@ Elm.ElmSaints.make = function (_elm) {
                                                                                                                   v.text)} : _U.badPort("an object with fields `model`, `id`, `donor`, `ofType`, `text`",
       v);
    });
+   var newDonor = Elm.Native.Port.make(_elm).inboundSignal("newDonor",
+   "Saints.Donor.DBDonor",
+   function (v) {
+      return typeof v === "object" && "id" in v && "title" in v && "firstName" in v && "middleName" in v && "lastName" in v && "nameExt" in v && "aka" in v && "phones" in v && "addresses" in v && "notes" in v && "donations" in v ? {_: {}
+                                                                                                                                                                                                                                       ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                       v.id)
+                                                                                                                                                                                                                                       ,title: typeof v.title === "string" || typeof v.title === "object" && v.title instanceof String ? v.title : _U.badPort("a string",
+                                                                                                                                                                                                                                       v.title)
+                                                                                                                                                                                                                                       ,firstName: typeof v.firstName === "string" || typeof v.firstName === "object" && v.firstName instanceof String ? v.firstName : _U.badPort("a string",
+                                                                                                                                                                                                                                       v.firstName)
+                                                                                                                                                                                                                                       ,middleName: typeof v.middleName === "string" || typeof v.middleName === "object" && v.middleName instanceof String ? v.middleName : _U.badPort("a string",
+                                                                                                                                                                                                                                       v.middleName)
+                                                                                                                                                                                                                                       ,lastName: typeof v.lastName === "string" || typeof v.lastName === "object" && v.lastName instanceof String ? v.lastName : _U.badPort("a string",
+                                                                                                                                                                                                                                       v.lastName)
+                                                                                                                                                                                                                                       ,nameExt: typeof v.nameExt === "string" || typeof v.nameExt === "object" && v.nameExt instanceof String ? v.nameExt : _U.badPort("a string",
+                                                                                                                                                                                                                                       v.nameExt)
+                                                                                                                                                                                                                                       ,aka: typeof v.aka === "string" || typeof v.aka === "object" && v.aka instanceof String ? v.aka : _U.badPort("a string",
+                                                                                                                                                                                                                                       v.aka)
+                                                                                                                                                                                                                                       ,phones: typeof v.phones === "object" && v.phones instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.phones.map(function (v) {
+                                                                                                                                                                                                                                          return typeof v === "object" && "id" in v && "donor_id" in v && "location" in v && "ofType" in v && "number" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                              ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                              v.id)
+                                                                                                                                                                                                                                                                                                                                                              ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                              v.donor_id)
+                                                                                                                                                                                                                                                                                                                                                              ,location: typeof v.location === "string" || typeof v.location === "object" && v.location instanceof String ? v.location : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                              v.location)
+                                                                                                                                                                                                                                                                                                                                                              ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                              v.ofType)
+                                                                                                                                                                                                                                                                                                                                                              ,number: typeof v.number === "string" || typeof v.number === "object" && v.number instanceof String ? v.number : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                              v.number)} : _U.badPort("an object with fields `id`, `donor_id`, `location`, `ofType`, `number`",
+                                                                                                                                                                                                                                          v);
+                                                                                                                                                                                                                                       })) : _U.badPort("an array",
+                                                                                                                                                                                                                                       v.phones)
+                                                                                                                                                                                                                                       ,addresses: typeof v.addresses === "object" && v.addresses instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.addresses.map(function (v) {
+                                                                                                                                                                                                                                          return typeof v === "object" && "id" in v && "donor_id" in v && "location" in v && "address1" in v && "address2" in v && "city" in v && "state" in v && "zip" in v && "country" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.id)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.donor_id)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,location: typeof v.location === "string" || typeof v.location === "object" && v.location instanceof String ? v.location : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.location)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,address1: typeof v.address1 === "string" || typeof v.address1 === "object" && v.address1 instanceof String ? v.address1 : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.address1)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,address2: typeof v.address2 === "string" || typeof v.address2 === "object" && v.address2 instanceof String ? v.address2 : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.address2)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,city: typeof v.city === "string" || typeof v.city === "object" && v.city instanceof String ? v.city : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.city)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,state: typeof v.state === "string" || typeof v.state === "object" && v.state instanceof String ? v.state : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.state)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,zip: typeof v.zip === "string" || typeof v.zip === "object" && v.zip instanceof String ? v.zip : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.zip)
+                                                                                                                                                                                                                                                                                                                                                                                                                                 ,country: typeof v.country === "string" || typeof v.country === "object" && v.country instanceof String ? v.country : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                 v.country)} : _U.badPort("an object with fields `id`, `donor_id`, `location`, `address1`, `address2`, `city`, `state`, `zip`, `country`",
+                                                                                                                                                                                                                                          v);
+                                                                                                                                                                                                                                       })) : _U.badPort("an array",
+                                                                                                                                                                                                                                       v.addresses)
+                                                                                                                                                                                                                                       ,notes: typeof v.notes === "object" && v.notes instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.notes.map(function (v) {
+                                                                                                                                                                                                                                          return typeof v === "object" && "id" in v && "donor_id" in v && "author" in v && "memo" in v && "updated_at" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                              ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                              v.id)
+                                                                                                                                                                                                                                                                                                                                                              ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                              v.donor_id)
+                                                                                                                                                                                                                                                                                                                                                              ,author: typeof v.author === "string" || typeof v.author === "object" && v.author instanceof String ? v.author : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                              v.author)
+                                                                                                                                                                                                                                                                                                                                                              ,memo: typeof v.memo === "string" || typeof v.memo === "object" && v.memo instanceof String ? v.memo : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                              v.memo)
+                                                                                                                                                                                                                                                                                                                                                              ,updated_at: typeof v.updated_at === "string" || typeof v.updated_at === "object" && v.updated_at instanceof String ? v.updated_at : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                              v.updated_at)} : _U.badPort("an object with fields `id`, `donor_id`, `author`, `memo`, `updated_at`",
+                                                                                                                                                                                                                                          v);
+                                                                                                                                                                                                                                       })) : _U.badPort("an array",
+                                                                                                                                                                                                                                       v.notes)
+                                                                                                                                                                                                                                       ,donations: typeof v.donations === "object" && v.donations instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.donations.map(function (v) {
+                                                                                                                                                                                                                                          return typeof v === "object" && "id" in v && "donor_id" in v && "amount" in v && "ofType" in v && "ofTypeID" in v && "updated_at" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                                                   ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                   v.id)
+                                                                                                                                                                                                                                                                                                                                                                                   ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                   v.donor_id)
+                                                                                                                                                                                                                                                                                                                                                                                   ,amount: typeof v.amount === "string" || typeof v.amount === "object" && v.amount instanceof String ? v.amount : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.amount)
+                                                                                                                                                                                                                                                                                                                                                                                   ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.ofType)
+                                                                                                                                                                                                                                                                                                                                                                                   ,ofTypeID: typeof v.ofTypeID === "string" || typeof v.ofTypeID === "object" && v.ofTypeID instanceof String ? v.ofTypeID : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.ofTypeID)
+                                                                                                                                                                                                                                                                                                                                                                                   ,updated_at: typeof v.updated_at === "string" || typeof v.updated_at === "object" && v.updated_at instanceof String ? v.updated_at : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.updated_at)} : _U.badPort("an object with fields `id`, `donor_id`, `amount`, `ofType`, `ofTypeID`, `updated_at`",
+                                                                                                                                                                                                                                          v);
+                                                                                                                                                                                                                                       })) : _U.badPort("an array",
+                                                                                                                                                                                                                                       v.donations)} : _U.badPort("an object with fields `id`, `title`, `firstName`, `middleName`, `lastName`, `nameExt`, `aka`, `phones`, `addresses`, `notes`, `donations`",
+      v);
+   });
    var okDonor = Elm.Native.Port.make(_elm).inboundSignal("okDonor",
    "Saints.Donor.DBDonor",
    function (v) {
@@ -14787,17 +14846,19 @@ Elm.ElmSaints.make = function (_elm) {
                                                                                                                                                                                                                                        })) : _U.badPort("an array",
                                                                                                                                                                                                                                        v.notes)
                                                                                                                                                                                                                                        ,donations: typeof v.donations === "object" && v.donations instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.donations.map(function (v) {
-                                                                                                                                                                                                                                          return typeof v === "object" && "id" in v && "donor_id" in v && "amount" in v && "ofType" in v && "ofTypeID" in v ? {_: {}
-                                                                                                                                                                                                                                                                                                                                                              ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
-                                                                                                                                                                                                                                                                                                                                                              v.id)
-                                                                                                                                                                                                                                                                                                                                                              ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
-                                                                                                                                                                                                                                                                                                                                                              v.donor_id)
-                                                                                                                                                                                                                                                                                                                                                              ,amount: typeof v.amount === "string" || typeof v.amount === "object" && v.amount instanceof String ? v.amount : _U.badPort("a string",
-                                                                                                                                                                                                                                                                                                                                                              v.amount)
-                                                                                                                                                                                                                                                                                                                                                              ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
-                                                                                                                                                                                                                                                                                                                                                              v.ofType)
-                                                                                                                                                                                                                                                                                                                                                              ,ofTypeID: typeof v.ofTypeID === "string" || typeof v.ofTypeID === "object" && v.ofTypeID instanceof String ? v.ofTypeID : _U.badPort("a string",
-                                                                                                                                                                                                                                                                                                                                                              v.ofTypeID)} : _U.badPort("an object with fields `id`, `donor_id`, `amount`, `ofType`, `ofTypeID`",
+                                                                                                                                                                                                                                          return typeof v === "object" && "id" in v && "donor_id" in v && "amount" in v && "ofType" in v && "ofTypeID" in v && "updated_at" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                                                   ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                   v.id)
+                                                                                                                                                                                                                                                                                                                                                                                   ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                   v.donor_id)
+                                                                                                                                                                                                                                                                                                                                                                                   ,amount: typeof v.amount === "string" || typeof v.amount === "object" && v.amount instanceof String ? v.amount : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.amount)
+                                                                                                                                                                                                                                                                                                                                                                                   ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.ofType)
+                                                                                                                                                                                                                                                                                                                                                                                   ,ofTypeID: typeof v.ofTypeID === "string" || typeof v.ofTypeID === "object" && v.ofTypeID instanceof String ? v.ofTypeID : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.ofTypeID)
+                                                                                                                                                                                                                                                                                                                                                                                   ,updated_at: typeof v.updated_at === "string" || typeof v.updated_at === "object" && v.updated_at instanceof String ? v.updated_at : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                   v.updated_at)} : _U.badPort("an object with fields `id`, `donor_id`, `amount`, `ofType`, `ofTypeID`, `updated_at`",
                                                                                                                                                                                                                                           v);
                                                                                                                                                                                                                                        })) : _U.badPort("an array",
                                                                                                                                                                                                                                        v.donations)} : _U.badPort("an object with fields `id`, `title`, `firstName`, `middleName`, `lastName`, `nameExt`, `aka`, `phones`, `addresses`, `notes`, `donations`",
@@ -14889,17 +14950,19 @@ Elm.ElmSaints.make = function (_elm) {
                                                                                                                                                                                                                                                                                                                               })) : _U.badPort("an array",
                                                                                                                                                                                                                                                                                                                               v.notes)
                                                                                                                                                                                                                                                                                                                               ,donations: typeof v.donations === "object" && v.donations instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.donations.map(function (v) {
-                                                                                                                                                                                                                                                                                                                                 return typeof v === "object" && "id" in v && "donor_id" in v && "amount" in v && "ofType" in v && "ofTypeID" in v ? {_: {}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     v.id)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     v.donor_id)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     ,amount: typeof v.amount === "string" || typeof v.amount === "object" && v.amount instanceof String ? v.amount : _U.badPort("a string",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     v.amount)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     v.ofType)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     ,ofTypeID: typeof v.ofTypeID === "string" || typeof v.ofTypeID === "object" && v.ofTypeID instanceof String ? v.ofTypeID : _U.badPort("a string",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     v.ofTypeID)} : _U.badPort("an object with fields `id`, `donor_id`, `amount`, `ofType`, `ofTypeID`",
+                                                                                                                                                                                                                                                                                                                                 return typeof v === "object" && "id" in v && "donor_id" in v && "amount" in v && "ofType" in v && "ofTypeID" in v && "updated_at" in v ? {_: {}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,id: typeof v.id === "number" && isFinite(v.id) && Math.floor(v.id) === v.id ? v.id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          v.id)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,donor_id: typeof v.donor_id === "number" && isFinite(v.donor_id) && Math.floor(v.donor_id) === v.donor_id ? v.donor_id : _U.badPort("an integer",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          v.donor_id)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,amount: typeof v.amount === "string" || typeof v.amount === "object" && v.amount instanceof String ? v.amount : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          v.amount)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,ofType: typeof v.ofType === "string" || typeof v.ofType === "object" && v.ofType instanceof String ? v.ofType : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          v.ofType)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,ofTypeID: typeof v.ofTypeID === "string" || typeof v.ofTypeID === "object" && v.ofTypeID instanceof String ? v.ofTypeID : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          v.ofTypeID)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,updated_at: typeof v.updated_at === "string" || typeof v.updated_at === "object" && v.updated_at instanceof String ? v.updated_at : _U.badPort("a string",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          v.updated_at)} : _U.badPort("an object with fields `id`, `donor_id`, `amount`, `ofType`, `ofTypeID`, `updated_at`",
                                                                                                                                                                                                                                                                                                                                  v);
                                                                                                                                                                                                                                                                                                                               })) : _U.badPort("an array",
                                                                                                                                                                                                                                                                                                                               v.donations)} : _U.badPort("an object with fields `id`, `title`, `firstName`, `middleName`, `lastName`, `nameExt`, `aka`, `phones`, `addresses`, `notes`, `donations`",
@@ -14951,7 +15014,8 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,donor_id: v.donation.donor_id
                                   ,amount: v.donation.amount
                                   ,ofType: v.donation.ofType
-                                  ,ofTypeID: v.donation.ofTypeID}
+                                  ,ofTypeID: v.donation.ofTypeID
+                                  ,updated_at: v.donation.updated_at}
                        ,editing: v.editing};
              })};
    },
@@ -15024,7 +15088,8 @@ Elm.ElmSaints.make = function (_elm) {
              ,donor_id: v.donor_id
              ,amount: v.amount
              ,ofType: v.ofType
-             ,ofTypeID: v.ofTypeID};
+             ,ofTypeID: v.ofTypeID
+             ,updated_at: v.updated_at};
    },
    $Saints$Donation.donationDelete.signal);
    var updateDonation = Elm.Native.Port.make(_elm).outboundSignal("updateDonation",
@@ -15033,7 +15098,8 @@ Elm.ElmSaints.make = function (_elm) {
              ,donor_id: v.donor_id
              ,amount: v.amount
              ,ofType: v.ofType
-             ,ofTypeID: v.ofTypeID};
+             ,ofTypeID: v.ofTypeID
+             ,updated_at: v.updated_at};
    },
    $Saints$Donation.donationUpdate.signal);
    var deleteDonor = Elm.Native.Port.make(_elm).outboundSignal("deleteDonor",
@@ -15079,7 +15145,8 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,donor_id: v.donation.donor_id
                                   ,amount: v.donation.amount
                                   ,ofType: v.donation.ofType
-                                  ,ofTypeID: v.donation.ofTypeID}
+                                  ,ofTypeID: v.donation.ofTypeID
+                                  ,updated_at: v.donation.updated_at}
                        ,editing: v.editing};
              })};
    },
@@ -15127,7 +15194,8 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,donor_id: v.donation.donor_id
                                   ,amount: v.donation.amount
                                   ,ofType: v.donation.ofType
-                                  ,ofTypeID: v.donation.ofTypeID}
+                                  ,ofTypeID: v.donation.ofTypeID
+                                  ,updated_at: v.donation.updated_at}
                        ,editing: v.editing};
              })};
    },
@@ -15230,6 +15298,10 @@ Elm.ElmSaints.make = function (_elm) {
    var deletingDonor = A2($Signal.map,
    DeleteDonor,
    $Saints$Donor.donorDelete.signal);
+   var NewDbDonor = function (a) {
+      return {ctor: "NewDbDonor",_0: a};
+   };
+   var donorNew = A2($Signal.map,NewDbDonor,newDonor);
    var NewDonor = {ctor: "NewDonor"};
    var basicNav = F2(function (address,model) {
       return A2($Html.div,
@@ -15297,8 +15369,8 @@ Elm.ElmSaints.make = function (_elm) {
    var NoOp = {ctor: "NoOp"};
    var gotDetails = true;
    var noDetails = false;
-   var showDetails = false;
-   var hideDetails = true;
+   var showDetails = true;
+   var hideDetails = false;
    var update = F2(function (action,model) {
       var _p1 = action;
       switch (_p1.ctor)
@@ -15347,12 +15419,25 @@ Elm.ElmSaints.make = function (_elm) {
            return {ctor: "_Tuple2"
                   ,_0: _U.update(model,{donors: remainingDonors})
                   ,_1: $Effects.none};
-         default: return {ctor: "_Tuple2"
-                         ,_0: _U.update(model,
-                         {donors: A2($Basics._op["++"],
-                         _U.list([$Saints$Donor.fromScratch]),
-                         model.donors)})
-                         ,_1: $Effects.none};}
+         case "NewDonor": return {ctor: "_Tuple2"
+                                 ,_0: _U.update(model,
+                                 {donors: A2($Basics._op["++"],
+                                 _U.list([$Saints$Donor.fromScratch]),
+                                 model.donors)})
+                                 ,_1: $Effects.none};
+         default: var _p4 = _p1._0;
+           var updateDonor = function (donorModel) {
+              return _U.cmp(donorModel.donor.id,
+              0) < 0 ? A3($Saints$Donor.makeModel,
+              showDetails,
+              gotDetails,
+              _p4) : donorModel;
+           };
+           var foo = A2($Debug.log,"NEW DB DONOR",_p4);
+           return {ctor: "_Tuple2"
+                  ,_0: _U.update(model,
+                  {donors: A2($List.map,updateDonor,model.donors)})
+                  ,_1: $Effects.none};}
    });
    var initPage = {totalPages: 0
                   ,totalEntries: 0
@@ -15393,7 +15478,8 @@ Elm.ElmSaints.make = function (_elm) {
                              ,inputs: _U.list([incomingActions
                                               ,incomingDonor
                                               ,deletingDonor
-                                              ,dbResp])});
+                                              ,dbResp
+                                              ,donorNew])});
    var main = app.html;
    var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
    app.tasks);
@@ -15417,6 +15503,7 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,SetDonors: SetDonors
                                   ,Modify: Modify
                                   ,NewDonor: NewDonor
+                                  ,NewDbDonor: NewDbDonor
                                   ,DeleteDonor: DeleteDonor
                                   ,DbResp: DbResp
                                   ,update: update
@@ -15432,6 +15519,7 @@ Elm.ElmSaints.make = function (_elm) {
                                   ,incomingDonor: incomingDonor
                                   ,deletingDonor: deletingDonor
                                   ,donorOK: donorOK
+                                  ,donorNew: donorNew
                                   ,buttonStyle: buttonStyle};
 };
 
@@ -16533,6 +16621,10 @@ channel.on('ok_donor', function (data) {
   elmApp.ports.okDonor.send(data.donor);
 });
 
+channel.on('new_donor', function (data) {
+  elmApp.ports.newDonor.send(data.donor);
+});
+
 channel.on('db_msg', function (data) {
   elmApp.ports.dbSez.send(data);
 });
@@ -16540,6 +16632,19 @@ channel.on('db_msg', function (data) {
 // Hook Up Elm
 
 var elmDiv = document.getElementById('elm-main'),
+    donor = {
+  id: -1,
+  title: "",
+  firstName: "",
+  middleName: "",
+  lastName: "",
+  nameExt: "",
+  aka: "",
+  phones: [],
+  addresses: [],
+  notes: [],
+  donations: []
+},
     initialState = {
   donorLists: {
     searchName: "",
@@ -16556,19 +16661,8 @@ var elmDiv = document.getElementById('elm-main'),
       text: ""
     }
   },
-  okDonor: {
-    id: -1,
-    title: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    nameExt: "",
-    aka: "",
-    phones: [],
-    addresses: [],
-    notes: [],
-    donations: []
-  },
+  okDonor: donor,
+  newDonor: donor,
   dbSez: {
     model: "",
     id: -1,
@@ -16588,7 +16682,6 @@ elmApp.ports.requestDonorDetail.subscribe(function (donor) {
   channel.push("request_donor_detail", donor.id);
 });
 elmApp.ports.updateDonor.subscribe(function (donor) {
-  console.log("UPDATE DONOR: ", donor);
   if (donor.id < 0) {
     channel.push("create_donor", donor);
   } else {

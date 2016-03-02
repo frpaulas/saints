@@ -9,8 +9,10 @@ import Html.Events exposing (..)
 import String exposing (concat, join, toInt, split)
 import Regex
 import Json.Decode as Json
+import Saints.Helper exposing (onClickLimited, hideAble)
 
 type alias ID = Int
+
 type alias Pennies = String
 
 type alias Donation =
@@ -19,20 +21,24 @@ type alias Donation =
   , amount:   Pennies
   , ofType:   String -- e.g. check, cash, paypal
   , ofTypeID: String -- check no., paypal trans. id, etc.
+  , updated_at: String -- not editable
   }
+
 initDonation: Donation
 initDonation =
-  { id        = -1
-  , donor_id  = -1
-  , amount    = ""
-  , ofType    = "" -- e.g. check, cash, paypal
-  , ofTypeID  = "" -- check no., paypal trans. id, etc.
+  { id          = -1
+  , donor_id    = -1
+  , amount      = ""
+  , ofType      = "" -- e.g. check, cash, paypal
+  , ofTypeID    = "" -- check no., paypal trans. id, etc.
+  , updated_at  = "" -- not editable
   }
 
 type alias Model =
   { donation: Donation
   , editing: Bool
   }
+
 init: Model
 init =
   { donation = initDonation
@@ -58,6 +64,7 @@ new donor_id =
 
 -- SIGNALS
 
+
 donationUpdate: Signal.Mailbox Donation
 donationUpdate =
   Signal.mailbox initDonation
@@ -66,7 +73,9 @@ donationDelete: Signal.Mailbox Donation
 donationDelete =
   Signal.mailbox initDonation
 
+
 -- UPDATE 
+
 
 type Action 
   = NoOp
@@ -79,21 +88,27 @@ type Action
 update: Action -> Model -> Model
 update action model =
   case action of
+
     NoOp -> model
+
     ToggleEditing -> { model | editing = not model.editing }
+
     SaveEdit -> { model | editing = not model.editing }
+
     Amount amt ->
       let
         d = model.donation
         newDonation = { d | amount = amt }
       in
         { model | donation = newDonation}
+
     OfType s ->
       let
         d = model.donation
         newDonation = { d | ofType = s }
       in
         { model | donation = newDonation }
+
     OfTypeID s ->
       let
         d = model.donation
@@ -101,7 +116,9 @@ update action model =
       in
         { model | donation = newDonation }
 
+
 -- VIEW
+
 
 view: Signal.Address Action -> Model -> List Html
 view address model =
@@ -109,13 +126,16 @@ view address model =
     donation = model.donation
   in
     [ li 
-        [ onClickDonation address ToggleEditing ]
+        [ onClickLimited address ToggleEditing ]
         [ donationText donation 
         , button 
             [ deleteButtonStyle
-            , onClickDonation donationDelete.address donation
+            , onClickLimited donationDelete.address donation
             ]
             [ text "delete"]
+        , span 
+          [ style [("float", "right"), ("margin-right", "5px")]] 
+          [ text ("at: " ++ donation.updated_at) ]
         ]
     , li
         []
@@ -140,7 +160,7 @@ inputAmount address model =
     , autofocus True
     , name "amount"
     , on "input" targetValue (\str -> Signal.message address (Amount str))
-    , onClickDonation address NoOp
+    , onClickLimited address NoOp
     , value model.amount
     , inputWidth "75%"
     ]
@@ -158,7 +178,7 @@ inputOfType address model =
     , autofocus True
     , name "ofType"
     , on "input" targetValue (\str -> Signal.message address (OfType str))
-    , onClickDonation address NoOp
+    , onClickLimited address NoOp
     , value model.ofType
     , inputWidth "75%"
     ]
@@ -176,7 +196,7 @@ inputOfTypeID address model =
     , autofocus True
     , name "ofTypeID"
     , on "input" targetValue (\str -> Signal.message address (OfTypeID str))
-    , onClickDonation address NoOp
+    , onClickLimited address NoOp
     , value model.ofTypeID
     , inputWidth "75%"
     ]
@@ -186,23 +206,22 @@ inputOfTypeID address model =
 
 -- HELPERS
 
+
 donationText: Donation -> Html
 donationText d =
   text (join " " [ d.amount, "from", d.ofType, d.ofTypeID ] )
-
-onClickDonation: Signal.Address a -> a -> Attribute
-onClickDonation address msg =
-  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
     [ cancelSaveStyle model ]
-    [ button [ onClickDonation donationDelete.address model.donation] [text "cancel"]
-    , button [ onClickDonation donationUpdate.address model.donation ] [text "save"]
+    [ button [ onClickLimited donationDelete.address model.donation] [text "cancel"]
+    , button [ onClickLimited donationUpdate.address model.donation ] [text "save"]
     ]
 
+
 -- STYLE
+
 
 inputWidth: String -> Attribute
 inputWidth width =
@@ -250,9 +269,3 @@ deleteButtonStyle =
         , ("color", "lightyellow")
         , ("background-color", "crimson")
         ]
-
-hideAble: Bool -> List (String, String) -> Attribute
-hideAble show attr =
-  if show then style attr else style [("display", "none")]
-
-

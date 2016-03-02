@@ -214,7 +214,8 @@ defmodule Saints.SaintsChannel do
     case Repo.insert(mx) do
       {:ok, donor} ->
         Logger.debug "INSERT DONOR OK: #{inspect donor}"
-        pushDonor donor.id, socket
+        push socket, "new_donor", %{donor: donor}
+        {:noreply, socket}
       {:error, resp} ->
         Logger.debug "INSERT DONOR FAIL: #{resp}"
         {:error, %{reason: fail_msg}}
@@ -235,12 +236,19 @@ defmodule Saints.SaintsChannel do
 
 
   defp delete_this(model, map, socket, fail_msg \\ "DB FAIL") do
-    IO.puts "DELETE THIS: #{inspect map}"
     cond do
       map["id"] < 0 && map["donor_id"] |> is_nil ->
-        {:noreply, socket}
+        db_sez_to socket, 
+                  Saints.Donor, 
+                  %{ id: -1, donor_id: -1 }, 
+                  "ok", 
+                  "delete"
       map["id"] < 0 -> 
-        {:noreply, socket}
+        db_sez_to socket, 
+                  model,
+                  %{ id: map["id"], donor_id: map["donor_id"] },
+                  "ok", 
+                  "delete"
       true ->
         Repo.one(from m in model, where: m.id == ^map["id"])
         |> repo_delete(model, socket, fail_msg)
@@ -252,7 +260,7 @@ defmodule Saints.SaintsChannel do
   end
 
   defp _repo_delete({:ok, resp}, model, socket, _msg), do: db_sez_to socket, model, resp, "ok", "deleted"
-  defp _repo_delete({:error, resp}, model, socket, msg), do: db_sez_to socket, resp, model, "error", "msg"
+  defp _repo_delete({:error, resp}, model, socket, msg), do: db_sez_to socket, model, resp, "error", "msg"
 
   defp db_sez_to(socket, Saints.Donor, resp, of_type, msg) do
     push socket, "db_msg", %{ model:  "Donor",

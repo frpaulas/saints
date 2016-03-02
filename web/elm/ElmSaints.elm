@@ -26,20 +26,19 @@ app =
     { init = init
     , update = update
     , view = view
-    , inputs = [incomingActions, incomingDonor, deletingDonor, dbResp]
+    , inputs = [incomingActions, incomingDonor, deletingDonor, dbResp, donorNew]
     }
 
 -- MAIN
 
 main: Signal Html
 main = 
-  -- Signal.merge app.html nav.html
   app.html
-  -- nav.html
 
 port tasks: Signal (Task Never ())
 port tasks =
   app.tasks
+
 
 -- MODEL
 
@@ -60,6 +59,7 @@ type alias DbMsg =
   , ofType: String
   , text:   String
   }
+
 initDbMsg: DbMsg
 initDbMsg =
   { model   = ""
@@ -109,10 +109,11 @@ init =
     , Effects.none
   )
 
-hideDetails = True
-showDetails = False
-noDetails = False
-gotDetails = True
+hideDetails = False
+showDetails = True
+noDetails   = False
+gotDetails  = True
+
 
 -- UPDATE
 
@@ -123,6 +124,7 @@ type Action
   | SetDonors DBDonorList
   | Modify ID Donor.Action
   | NewDonor
+  | NewDbDonor Donor.DBDonor
   | DeleteDonor Donor.Donor
   | DbResp DbMsg
 
@@ -165,7 +167,7 @@ update action model =
       in
         ({model | donors = List.map updateDonor model.donors}, Effects.none)
 
-    DeleteDonor donor ->
+    DeleteDonor donor -> -- deletes the donor in elm, not the db
       let
         remainingDonors = List.filter (\d -> d.donor.id /= donor.id) model.donors
       in
@@ -174,6 +176,16 @@ update action model =
     NewDonor -> 
       ({model | donors = [Donor.fromScratch] ++ model.donors}, Effects.none)
 
+    NewDbDonor donor ->
+      let
+        foo = Debug.log "NEW DB DONOR" donor
+        updateDonor donorModel =
+          if donorModel.donor.id < 0
+            then Donor.makeModel showDetails gotDetails donor 
+            else donorModel
+      in
+        ({model | donors = List.map updateDonor model.donors}, Effects.none)
+
 deletion: DbMsg -> Donor.Model -> Donor.Model
 deletion msg model =
 --{ _ = {}, model = "Donation", id = 31, donor = 517, ofType = "ok", text = "deleted" }  let 
@@ -181,11 +193,13 @@ deletion msg model =
     updatedDonor donor = if donor.id == msg.donor
       then
         case msg.model of
+
           "Donation"  ->
             let 
               remaining = List.filter (\el -> el.donation.id /= msg.id ) donor.donations
             in
               {donor | donations = remaining}
+
           "Note"      ->
             let 
               remaining = List.filter (\el -> el.note.id /= msg.id ) donor.notes
@@ -197,12 +211,12 @@ deletion msg model =
               remaining = List.filter (\el -> el.phone.id /= msg.id ) donor.phones
             in
               {donor | phones = remaining}
+
           "Address"   -> 
             let 
               remaining = List.filter (\el -> el.address.id /= msg.id ) donor.addresses
             in
               {donor | addresses = remaining}
---          "Donor"     ->
           _           ->
             donor
 
@@ -215,7 +229,8 @@ deletion msg model =
 
 view: Signal.Address Action -> Model -> Html
 view address model =
-  let donors = List.map (viewDonors address) model.donors
+  let 
+    donors = List.map (viewDonors address) model.donors
   in
     div [ ] 
         [ basicNav address model
@@ -272,7 +287,9 @@ findDonor address model =
     ]
     []
 
+
 -- SIGNALS
+
 
 nextPage : Signal.Mailbox (Int, String)
 nextPage =
@@ -298,8 +315,13 @@ donorOK: Signal.Mailbox Donor.Donor
 donorOK =
   Signal.mailbox Donor.initDonor
 
+donorNew: Signal Action
+donorNew = 
+  Signal.map NewDbDonor newDonor
+
 
 -- PORTS
+
 
 port requestPage: Signal (Int, String)
 port requestPage = 
@@ -349,9 +371,9 @@ port requestDonorDetail: Signal Donor.Donor
 port requestDonorDetail =
   detailsGet.signal
 
-
 port donorLists: Signal DBDonorList
 port okDonor: Signal Donor.DBDonor
+port newDonor: Signal Donor.DBDonor
 port dbSez: Signal DbMsg
 
 

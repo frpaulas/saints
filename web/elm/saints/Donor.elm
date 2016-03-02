@@ -9,6 +9,7 @@ import Html.Events exposing (..)
 import Effects exposing (Effects, Never)
 import String exposing (join)
 import Json.Decode as Json
+import Saints.Helper exposing (onClickLimited, hideAble)
 
 import Saints.Address as Address
 import Saints.Note as Note
@@ -16,6 +17,7 @@ import Saints.Phone as Phone
 import Saints.Donation as Donation
 
 type alias ID = Int
+
 type alias Donor =
   { id:         ID
   , title:      String
@@ -65,7 +67,7 @@ initDBDonor: DBDonor
 initDBDonor = emptyDonor
 
 makeModel: Bool -> Bool -> DBDonor -> Model
-makeModel hideDetails detailsInHand donor =
+makeModel showDetails detailsInHand donor =
   { donor = 
     { id =          donor.id
     , title =       donor.title
@@ -79,7 +81,7 @@ makeModel hideDetails detailsInHand donor =
     , notes =       List.map Note.makeModel donor.notes
     , donations =   List.map Donation.makeModel donor.donations
     }
-  , hideDetails =   hideDetails
+  , showDetails =   showDetails
   , hideEdit =      True
   , detailsInHand = detailsInHand
   }
@@ -87,14 +89,15 @@ makeModel hideDetails detailsInHand donor =
 
 type alias Model =
   { donor:          Donor
-  , hideDetails:    Bool
+  , showDetails:    Bool
   , hideEdit:       Bool
   , detailsInHand:  Bool
   }
+
 init: Model
 init =
   { donor         = initDonor
-  , hideDetails   = True
+  , showDetails   = False
   , hideEdit      = True
   , detailsInHand = False
   }
@@ -102,12 +105,14 @@ init =
 fromScratch: Model
 fromScratch = 
   { donor         = initDonor
-  , hideDetails   = False
+  , showDetails   = True
   , hideEdit      = False
-  , detailsInHand = True
+  , detailsInHand = False
   }
 
+
 -- SIGNALS
+
 
 donorUpdate: Signal.Mailbox Donor
 donorUpdate =
@@ -124,12 +129,12 @@ detailsGet =
 
 -- UPDATE
 
+
 type Action 
   = NoOp
   | ToggleDetails
   | ToggleEdit
   | SaveDonor
-  | Delete
   | Title String
   | FirstName String
   | MiddleName String
@@ -148,89 +153,106 @@ type Action
 update: Action -> Model -> Model
 update action model =
   case action of
+
     NoOp -> model
-    ToggleDetails -> { model | hideDetails = (not model.hideDetails)}
+
+    ToggleDetails -> { model | showDetails = (not model.showDetails)}
+
     ToggleEdit    -> { model | hideEdit = (not model.hideEdit)}
+
     SaveDonor     -> { model | hideEdit = (not model.hideEdit)}
-    Delete        -> model
+
     Title       s -> 
       let
         donor = model.donor
         newDonor = {donor | title = s}
       in
         { model | donor = newDonor }
+
     FirstName   s -> 
       let
         donor = model.donor
         newDonor = {donor | firstName = s}
       in
         { model | donor = newDonor }
+
     MiddleName  s -> 
       let
         donor = model.donor
         newDonor = {donor | middleName = s}
       in
         { model | donor = newDonor }
+
     LastName    s -> 
       let
         donor = model.donor
         newDonor = {donor | lastName = s}
       in
         { model | donor = newDonor }
+
     NameExt     s -> 
       let
         donor = model.donor
         newDonor = {donor | nameExt = s}
       in
         { model | donor = newDonor }
+
     Aka     s -> 
       let
         donor = model.donor
         newDonor = {donor | aka = s}
       in
         { model | donor = newDonor }
+
     ModifyNote id noteAction ->
       let
         updatedDonor this = 
           {this | notes = updatedDonorNotes this.notes id noteAction}
       in
         {model | donor = updatedDonor model.donor}
+
     ModifyAddr id addrAction ->
       let
         updatedDonor this = 
           {this | addresses = updatedDonorAddresses this.addresses id addrAction}
       in
         {model | donor = updatedDonor model.donor}
+
     ModifyPhone id phoneAction ->
       let
         updatedDonor this = 
           {this | phones = updatedDonorPhones this.phones id phoneAction}
       in
         {model | donor = updatedDonor model.donor}
+
     ModifyDonation id donationAction ->
       let
         updatedDonor this =
           {this | donations = updatedDonorDonations this.donations id donationAction}
       in
         {model | donor = updatedDonor model.donor}
+
     NewNote -> 
       let
         donor = model.donor
         newDonor = {donor | notes = donor.notes ++ [Note.newNote donor.id]} 
       in
         {model | donor = newDonor}
+
     NewAddress ->
       let
         donor = model.donor
         newDonor = {donor | addresses = donor.addresses ++ [Address.new donor.id]} 
       in
         {model | donor = newDonor}
+
     NewPhone ->
       let
         donor = model.donor
         newDonor = {donor | phones = donor.phones ++ [Phone.new donor.id]} 
       in
         {model | donor = newDonor}
+
     NewDonation ->
       let
         donor = model.donor
@@ -298,7 +320,9 @@ updatedDonorDonations donations id action =
   in
     newDonations
 
+
 -- VIEW
+
 
 view: Signal.Address Action -> Model -> Html
 view address model =
@@ -319,7 +343,7 @@ view address model =
       [ span 
         [ onClick address ToggleEdit]
         [ fullNameText donor 
-        , button [ deleteButtonStyle model, onClickDonor donorDelete.address donor ] [ text "delete"]
+        , button [ deleteButtonStyle model, onClickLimited donorDelete.address donor ] [ text "delete"]
         ]
       , span
           [ style [("float", "right"), ("margin-top", "-6px")] ]
@@ -330,28 +354,28 @@ view address model =
       , p
         [ notesStyle model]
         [ button
-          [ addButtonStyle model, onClickDonor address NewDonation]
+          [ addButtonStyle model, onClickLimited address NewDonation]
           [ text "+ donations"]
         , ul [ detailsStyle model ] donations 
         ] -- end of this p
       , p
         [ notesStyle model]
         [ button
-          [ addButtonStyle model, onClickDonor address NewNote]
+          [ addButtonStyle model, onClickLimited address NewNote]
           [ text "+ notes"]
         , ul [ detailsStyle model ] notes 
         ] -- end of this p
       , p
         [notesStyle model]
         [ button
-          [ addButtonStyle model, onClickDonor address NewAddress]
+          [ addButtonStyle model, onClickLimited address NewAddress]
           [ text "+ address"]
         , ul [ detailsStyle model] theseAddresses
         ]
       , p
         [notesStyle model]
         [ button
-          [ addButtonStyle model, onClickDonor address NewPhone]
+          [ addButtonStyle model, onClickLimited address NewPhone]
           [ text "+ phone"]
         , ul [ detailsStyle model] phones
         ]
@@ -447,7 +471,7 @@ inputTitle address model =
       , autofocus True
       , name "title"
       , on "input" targetValue (\str -> Signal.message address (Title str))
-      , onClickDonor address NoOp
+      , onClickLimited address NoOp
       , value donor.title
       ]
       []
@@ -463,7 +487,7 @@ inputFirstName address model =
       , autofocus True
       , name "first_name"
       , on "input" targetValue (\str -> Signal.message address (FirstName str))
-      , onClickDonor address NoOp
+      , onClickLimited address NoOp
       , value donor.firstName
       ]
       []
@@ -480,7 +504,7 @@ inputMiddleName address model =
       , autofocus True
       , name "middle_name"
       , on "input" targetValue (\str -> Signal.message address (MiddleName str))
-      , onClickDonor address NoOp
+      , onClickLimited address NoOp
       , value donor.middleName
       ]
       []
@@ -497,7 +521,7 @@ inputLastName address model =
       , name "last_name"
       , on "input" targetValue (\str -> Signal.message address (LastName str))
       , value donor.lastName
-      , onClickDonor address NoOp
+      , onClickLimited address NoOp
       ]
       []
 
@@ -513,7 +537,7 @@ inputNameExt address model =
       , name "name_ext"
       , on "input" targetValue (\str -> Signal.message address (NameExt str))
       , value donor.nameExt
-      , onClickDonor address NoOp
+      , onClickLimited address NoOp
       ]
       []
 
@@ -529,7 +553,7 @@ inputAka address model =
       , name "aka"
       , on "input" targetValue (\str -> Signal.message address (Aka str))
       , value donor.aka
-      , onClickDonor address NoOp
+      , onClickLimited address NoOp
       ]
       []
 
@@ -540,108 +564,83 @@ fullNameText d =
   in
     text (join " " [d.title, d.firstName, d.middleName, d.lastName, d.nameExt, id])
 
-onClickDonor: Signal.Address a -> a -> Attribute
-onClickDonor address msg =
-  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 -- STYLE
 
+
 notesStyle: Model -> Attribute
 notesStyle model =
-  if model.hideDetails
-    then
-      style [("display", "none")]
-    else
-      style
-        [ ("margin-top", "0px")
---        , ("background-color", "lightblue")
-        , ("font-size", "0.7em")
-        ]
+  hideAble
+    model.detailsInHand
+    [ ("margin-top", "0px")
+    , ("font-size", "0.7em")
+    ]
 
 detailsStyle: Model -> Attribute
 detailsStyle model =
-  if model.hideDetails
-    then 
-      style [("display", "none")]
-    else
-      style
-      [ ("height", "auto")
-      , ("width", "99%")
-      , ("padding-top", "18px")
-      , ("box-shadow", "0 2px 5px rgba(0,0,0,0.5)")
-      ]
+  hideAble
+    model.showDetails
+    [ ("height", "auto")
+    , ("width", "99%")
+    , ("padding-top", "18px")
+    , ("box-shadow", "0 2px 5px rgba(0,0,0,0.5)")
+    ]
 
 addButtonStyle: Model -> Attribute
 addButtonStyle model =
-  if model.hideDetails
-    then
-      style [("display", "none")]
-    else
-      style
-        [ ("position", "relative")
-        , ("float", "left")
-        , ("padding", "0px 2px")
-        , ("line-height", "0.8")
-        , ("display", "inline-block")
-        ]
+  hideAble
+    model.showDetails
+    [ ("position", "relative")
+    , ("float", "left")
+    , ("padding", "0px 2px")
+    , ("line-height", "0.8")
+    , ("display", "inline-block")
+    ]
 
 saveButtonStyle: Model -> Attribute
 saveButtonStyle model =
-  if model.hideDetails
-    then
-      style [("display", "none")]
-    else
-      style
-        [ ("background-color", "green")
-        , ("color", "yellow")
-        , ("font-size", "0.8em")
-        , ("margin", "10px 0 0 5px")
-        , ("padding", "0px 3px")
-        ]
+  hideAble
+    model.showDetails
+    [ ("background-color", "green")
+    , ("color", "yellow")
+    , ("font-size", "0.8em")
+    , ("margin", "10px 0 0 5px")
+    , ("padding", "0px 3px")
+    ]
 
 cancelSaveStyle: Model -> Attribute
 cancelSaveStyle model = 
-  if model.hideDetails
-    then
-      style [("display", "none")]
-    else
-      style
-        [ ( "position", "relative" )
-        , ( "top", "0px" )
-        , ( "left", "0px" )
-        , ("line-height", "0.8")
-        , ("display", "inline-block")
-        ]
-
+  hideAble
+    model.showDetails
+    [ ( "position", "relative" )
+    , ( "top", "0px" )
+    , ( "left", "0px" )
+    , ("line-height", "0.8")
+    , ("display", "inline-block")
+    ]
 
 editStyle: Model -> Attribute
 editStyle model =
-  if model.hideDetails
-    then
-      style [("display", "none")]
-    else
-      style
-        [ ("display", "block")
-        , ("list-style-type", "none")
-        , ("font-size", "0.8em")
-        , ("padding", "0")
-        , ("z-index", "1")
-        ]
+  hideAble
+    model.showDetails
+    [ ("display", "block")
+    , ("list-style-type", "none")
+    , ("font-size", "0.8em")
+    , ("padding", "0")
+    , ("z-index", "1")
+    ]
 
 deleteButtonStyle: Model -> Attribute
 deleteButtonStyle model =
-  if model.hideDetails
-    then
-      style [("display", "none")]
-    else
-      style
-            [ ("margin-left", "5px")
-            , ("top", "0px")
-            , ("padding", "1px 4px")
-            , ("line-height", "0.9")
-            , ("display", "inline-block")
-            , ("z-index", "1")
-            , ("font-size", "0.8em")
-            , ("color", "lightyellow")
-            , ("background-color", "crimson")
-            ]
+  hideAble
+    model.showDetails
+    [ ("margin-left", "5px")
+    , ("top", "0px")
+    , ("padding", "1px 4px")
+    , ("line-height", "0.9")
+    , ("display", "inline-block")
+    , ("z-index", "1")
+    , ("font-size", "0.8em")
+    , ("color", "lightyellow")
+    , ("background-color", "crimson")
+    ]

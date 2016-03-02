@@ -6,9 +6,11 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import Saints.Helper exposing (onClickLimited, hideAble)
 
 
 type alias ID = Int
+
 type alias Phone =
   { id:       ID
   , donor_id: ID
@@ -16,6 +18,7 @@ type alias Phone =
   , ofType:   String
   , number:   String
   }
+
 initPhone: Phone
 initPhone =
   { id       = -1
@@ -24,10 +27,12 @@ initPhone =
   , ofType   = ""
   , number   = ""
   }
+
 type alias Model =
   { phone: Phone
   , editing: Bool
   }
+
 init: Model
 init =
   { phone = initPhone
@@ -50,7 +55,9 @@ new donor_id =
     , editing = True
     }
 
+
 -- SIGNALS
+
 
 phoneUpdate: Signal.Mailbox Phone
 phoneUpdate =
@@ -63,6 +70,7 @@ phoneDelete =
 
 -- UPDATE
 
+
 type Action 
   = NoOp
   | ToggleEditing
@@ -73,20 +81,25 @@ type Action
 update: Action -> Model -> Model
 update action model =
   case action of
+
     NoOp -> model
+
     ToggleEditing -> {model | editing = not model.editing}
+
     OfType s -> 
       let
         phone = model.phone
         newPhone = {phone | ofType = s}
       in
         { model | phone = newPhone }
+
     Location s -> 
       let
         phone = model.phone
         newPhone = {phone | location = s}
       in
         { model | phone = newPhone }
+
     Number s -> 
       let
         phone = model.phone
@@ -94,7 +107,9 @@ update action model =
       in
         { model | phone = newPhone}
 
+
 -- VIEW
+
     
 view: Signal.Address Action -> Model -> List Html
 view address model =
@@ -102,11 +117,11 @@ view address model =
     phone = model.phone
   in
     [ li 
-        [ onClickPhone address ToggleEditing ] 
+        [ onClickLimited address ToggleEditing ] 
         [ text (phone.location ++ " " ++ phone.ofType ++ ": " ++ phone.number) 
         , button 
             [ deleteButtonStyle
-            , onClickPhone phoneDelete.address phone 
+            , onClickLimited phoneDelete.address phone 
             ] 
             [ text "delete"]
         ]
@@ -133,7 +148,7 @@ inputLocation address phone =
       , autofocus True
       , name "location"
       , on "input" targetValue (\str -> Signal.message address (Location str))
-      , onClickPhone address NoOp
+      , onClickLimited address NoOp
       , value phone.location
       , inputWidth "75%"
       ]
@@ -151,7 +166,7 @@ inputOfType address phone =
       , autofocus True
       , name "ofType"
       , on "input" targetValue (\str -> Signal.message address (OfType str))
-      , onClickPhone address NoOp
+      , onClickLimited address NoOp
       , value phone.ofType
       , inputWidth "75%"
       ]
@@ -169,7 +184,7 @@ inputNumber address phone =
       , autofocus True
       , name "number"
       , on "input" targetValue (\str -> Signal.message address (Number str))
-      , onClickPhone address NoOp
+      , onClickLimited address NoOp
       , value phone.number
       , inputWidth "75%"
       ]
@@ -180,16 +195,13 @@ cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
     [ cancelSaveStyle model ]
-    [ button [ onClickPhone phoneDelete.address model.phone] [text "cancel"]
-    , button [ onClickPhone phoneUpdate.address model.phone] [text "save"]
+    [ button [ onClickLimited phoneDelete.address model.phone] [text "cancel"]
+    , button [ onClickLimited phoneUpdate.address model.phone] [text "save"]
     ]
-
-onClickPhone: Signal.Address a -> a -> Attribute
-onClickPhone address msg =
-  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 
 -- STYLE
+
 
 inputWidth: String -> Attribute
 inputWidth width =
@@ -237,7 +249,3 @@ deleteButtonStyle =
     , ("color", "lightyellow")
     , ("background-color", "crimson")
     ]
-
-hideAble: Bool -> List (String, String) -> Attribute
-hideAble show attr =
-  if show then style attr else style [("display", "none")]

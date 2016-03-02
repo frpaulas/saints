@@ -7,8 +7,10 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import Saints.Helper exposing (onClickLimited, hideAble)
 
 type alias ID = Int
+
 type alias Note = 
   { id: ID
   , donor_id: ID
@@ -16,6 +18,7 @@ type alias Note =
   , memo: String
   , updated_at: String -- not editable
   }
+
 initNote: Note
 initNote =
   { id = -1
@@ -29,6 +32,7 @@ type alias Model =
   , editing: Bool
   , new: Bool
   }
+
 init: Model
 init =
   { note = initNote
@@ -54,7 +58,9 @@ newNote donor_id =
     , new = True
     }
 
+
 -- SIGNALS
+
 
 noteUpdate: Signal.Mailbox Note
 noteUpdate =
@@ -67,6 +73,7 @@ noteDelete =
 
 
 -- UPDATE
+
 
 type Action 
   = NoOp
@@ -97,30 +104,31 @@ update action model =
 
 -- VIEW
 
+
 view: Signal.Address Action -> Model -> List Html
 view address model =
   let 
     note = model.note
   in
     [ li 
-      [ onClickNote address ToggleEditing ] 
-      [ text (note.author ++ " says: " ++ note.memo)
-      , button 
-          [ deleteButtonStyle
-          , onClickNote noteDelete.address note 
-          ] 
-          [ text "delete"]
-      , span 
-        [ style [("float", "right")]] 
-        [ text ("at: " ++ note.updated_at) ]
-      ]
-    , li 
       []
       [ cancelSave address model
       , ul
         [editingStyle model] 
         [ li [] [ inputMemo address note ]
         ]
+      ]
+    , li 
+      [ onClickLimited address ToggleEditing ] 
+      [ text (note.author ++ " says: " ++ note.memo)
+      , button 
+          [ deleteButtonStyle
+          , onClickLimited noteDelete.address note 
+          ] 
+          [ text "delete"]
+      , span 
+        [ style [("float", "right")]] 
+        [ text ("at: " ++ note.updated_at) ]
       ]
     ]
 
@@ -135,7 +143,7 @@ inputMemo address note =
     , autofocus True
     , name "memo"
     , on "input" targetValue (\str -> Signal.message address (Memo str))
-    , onClickNote address NoOp
+    , onClickLimited address NoOp
     , value note.memo
     , inputWidth "75%"
     ]
@@ -146,13 +154,9 @@ cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
     [ cancelSaveStyle model]
-    [ button [ onClickNote noteDelete.address model.note] [text "cancel"]
-    , button [ onClickNote noteUpdate.address model.note] [text "save"]
+    [ button [ onClickLimited noteDelete.address model.note] [text "cancel"]
+    , button [ onClickLimited noteUpdate.address model.note] [text "save"]
     ]
-
-onClickNote: Signal.Address a -> a -> Attribute
-onClickNote address msg =
-  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 -- STYLE
 
@@ -197,10 +201,6 @@ editingStyle model =
     , ("padding-bottom", "1px")
     , ("padding-top", "7px")
     ]
-
-hideAble: Bool -> List (String, String) -> Attribute
-hideAble show attr =
-  if show then style attr else style [("display", "none")]
 
 deleteButtonStyle: Attribute
 deleteButtonStyle =

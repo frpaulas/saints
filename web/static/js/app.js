@@ -33,6 +33,10 @@ channel.on('ok_donor', data => {
   elmApp.ports.okDonor.send(data.donor)
 })
 
+channel.on('new_donor', data => {
+  elmApp.ports.newDonor.send(data.donor)
+})
+
 channel.on('db_msg', data => {
   elmApp.ports.dbSez.send(data)
 })
@@ -40,6 +44,19 @@ channel.on('db_msg', data => {
 // Hook Up Elm
 
 var elmDiv = document.getElementById('elm-main')
+  , donor = {
+        id:           -1
+      , title:        ""
+      , firstName:    ""
+      , middleName:   ""
+      , lastName:     ""
+      , nameExt:      ""
+      , aka:          ""
+      , phones:       []
+      , addresses:    []
+      , notes:        []
+      , donations:    []
+  }
   , initialState = {
       donorLists: { 
           searchName: ""
@@ -56,19 +73,8 @@ var elmDiv = document.getElementById('elm-main')
             , text: ""
         }
       }
-      , okDonor: {
-            id:           -1
-          , title:        ""
-          , firstName:    ""
-          , middleName:   ""
-          , lastName:     ""
-          , nameExt:      ""
-          , aka:          ""
-          , phones:       []
-          , addresses:    []
-          , notes:        []
-          , donations:    []
-      }
+      , okDonor: donor
+      , newDonor: donor
       , dbSez: {
           model:  ""
         , id:     -1
@@ -88,7 +94,6 @@ elmApp.ports.requestDonorDetail.subscribe(function(donor) {
   channel.push("request_donor_detail", donor.id)
 });
 elmApp.ports.updateDonor.subscribe(function(donor) {
-  console.log("UPDATE DONOR: ", donor);
   if (donor.id < 0) {channel.push("create_donor", donor)}
   else {channel.push("update_donor", donor)}
 })

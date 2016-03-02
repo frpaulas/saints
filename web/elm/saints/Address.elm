@@ -7,9 +7,11 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Graphics.Input exposing (dropDown)
 import Json.Decode as Json
+import Saints.Helper exposing (onClickLimited, hideAble)
 
 
 type alias ID = Int
+
 type alias Address =
   { id:       ID
   , donor_id: ID
@@ -21,6 +23,7 @@ type alias Address =
   , zip:      String
   , country:  String
   }
+
 initAddress: Address
 initAddress =
   { id = -1
@@ -61,7 +64,9 @@ new donor_id =
     , editing = True
     }
 
+
 -- SIGNALS
+
 
 addressUpdate: Signal.Mailbox Address
 addressUpdate =
@@ -73,6 +78,7 @@ addressDelete =
 
 
 -- UPDATE
+
 
 type Action 
   = NoOp
@@ -89,45 +95,55 @@ type Action
 update: Action -> Model -> Model
 update action model =
   case action of
+
     NoOp -> model
+
     ToggleEditing -> {model | editing = not model.editing}
+
     SaveEdit -> {model | editing = not model.editing}
+
     Location s -> 
       let
         addr = model.address
         newAddress = {addr | location = s}
       in
         { model | address = newAddress }
+
     Address1 s -> 
       let
         addr = model.address
         newAddress = {addr | address1 = s}
       in
         { model | address = newAddress }
+
     Address2 s -> 
       let
         addr = model.address
         newAddress = {addr | address2 = s}
       in
         { model | address = newAddress }
+
     City s -> 
       let
         addr = model.address
         newAddress = {addr | city = s}
       in
         { model | address = newAddress }
+
     State s -> 
       let
         addr = model.address
         newAddress = {addr | state = s}
       in
         { model | address = newAddress }
+
     Zip s  -> 
       let
         addr = model.address
         newAddress = {addr | zip = s}
       in
         { model | address = newAddress }
+
     Country s -> 
       let
         addr = model.address
@@ -138,16 +154,17 @@ update action model =
 
 -- VIEW
 
+
 view: Signal.Address Action -> Model -> List Html
 view address model =
   let 
     addr = model.address
   in
-    [ li [ onClickAddr address ToggleEditing] 
+    [ li [ onClickLimited address ToggleEditing] 
         [ text addr.location
         , button 
             [ deleteButtonStyle
-            , onClickAddr addressDelete.address addr 
+            , onClickLimited addressDelete.address addr 
             ] 
             [ text "delete"]
         , p [] [ text addr.address1 ]
@@ -183,7 +200,7 @@ inputLocation address model =
     , autofocus True
     , name "location"
     , on "input" targetValue (\str -> Signal.message address (Location str))
-    , onClickAddr address NoOp
+    , onClickLimited address NoOp
     , value model.location
     , inputWidth "75%"
     ]
@@ -201,7 +218,7 @@ inputAddress1 address model =
       , autofocus True
       , name "address1"
       , on "input" targetValue (\str -> Signal.message address (Address1 str))
-      , onClickAddr address NoOp
+      , onClickLimited address NoOp
       , value model.address1
       , inputWidth "75%"
       ]
@@ -219,7 +236,7 @@ inputAddress2 address model =
       , autofocus True
       , name "address2"
       , on "input" targetValue (\str -> Signal.message address (Address2 str))
-      , onClickAddr address NoOp
+      , onClickLimited address NoOp
       , value model.address2
       , inputWidth "75%"
       ]
@@ -237,7 +254,7 @@ inputCity address model =
       , autofocus True
       , name "city"
       , on "input" targetValue (\str -> Signal.message address (City str))
-      , onClickAddr address NoOp
+      , onClickLimited address NoOp
       , value model.city
       , inputWidth "75%"
       ]
@@ -255,7 +272,7 @@ inputState address model =
       , autofocus True
       , name "state"
       , on "input" targetValue (\str -> Signal.message address (State str))
-      , onClickAddr address NoOp
+      , onClickLimited address NoOp
       , value model.state
       , inputWidth "75%"
       ]
@@ -273,7 +290,7 @@ inputZip address model =
         , autofocus True
         , name "zip"
         , on "input" targetValue (\str -> Signal.message address (Zip str))
-        , onClickAddr address NoOp
+        , onClickLimited address NoOp
         , value model.zip
         , inputWidth "75%"
         ]
@@ -290,7 +307,7 @@ inputCountry address model =
       , placeholder "Country"
       , autofocus True
       , name "country"
-      , onClickAddr address NoOp
+      , onClickLimited address NoOp
       , on "input" targetValue (\str -> Signal.message address (Country str))
       , value model.country
       , inputWidth "75%"
@@ -302,16 +319,13 @@ cancelSave: Signal.Address Action -> Model -> Html
 cancelSave address model = 
   span 
     [ cancelSaveStyle model ]
-    [ button [ onClickAddr addressDelete.address model.address] [text "cancel"]
-    , button [ onClickAddr addressUpdate.address model.address] [text "save"]
+    [ button [ onClickLimited addressDelete.address model.address] [text "cancel"]
+    , button [ onClickLimited addressUpdate.address model.address] [text "save"]
     ]
-
-onClickAddr: Signal.Address a -> a -> Attribute
-onClickAddr address msg =
-  onWithOptions "click" { stopPropagation = True, preventDefault = True } Json.value (\_ -> Signal.message address msg)
 
 
 -- STYLE
+
 
 inputWidth: String -> Attribute
 inputWidth width =
@@ -359,8 +373,3 @@ deleteButtonStyle =
         , ("color", "lightyellow")
         , ("background-color", "crimson")
         ]
-
-hideAble: Bool -> List (String, String) -> Attribute
-hideAble show attr =
-  if show then style attr else style [("display", "none")]
-
