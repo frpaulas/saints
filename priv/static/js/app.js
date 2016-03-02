@@ -14523,12 +14523,6 @@ Elm.Saints.Donor.make = function (_elm) {
                       _U.list([deleteButtonStyle(model)
                               ,A2($Saints$Helper.onClickLimited,donorDelete.address,donor)]),
                       _U.list([$Html.text("delete")]))]))
-              ,A2($Html.span,
-              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
-                                                       ,_0: "float"
-                                                       ,_1: "right"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-6px"}]))]),
-              _U.list([$Html.text("$"),A2(donation,address,model)]))
               ,A2(donorNameEdit,address,model)
               ,A2($Html.p,
               _U.list([notesStyle(model)]),

@@ -345,11 +345,11 @@ view address model =
         [ fullNameText donor 
         , button [ deleteButtonStyle model, onClickLimited donorDelete.address donor ] [ text "delete"]
         ]
-      , span
-          [ style [("float", "right"), ("margin-top", "-6px")] ]
-          [ text "$"
-          , donation address model
-          ]
+--      , span
+--          [ style [("float", "right"), ("margin-top", "-6px")] ]
+--          [ text "$"
+--          , donation address model
+--          ]
       , donorNameEdit address model
       , p
         [ notesStyle model]
