@@ -24,7 +24,8 @@ But as I have to keep track of development somewhere, here it is.
 	+ donors
 		+ edit name, address, phone, note
 		+ add address, phone, note
-		
+		+ add donor from scratch
+		+  add donations
 ### Next Steps
 + models
 	+ groups 
@@ -32,10 +33,8 @@ But as I have to keep track of development somewhere, here it is.
 	+ donations
 		+ donors have multiple donations
 + actions
-	+ add donor from scratch
 	+ add/remove groups
 	+ add/remove donors from groups
-	+ add donations
 + reports
 	+ export csv for bulk mailing
 	+ donations YTD
